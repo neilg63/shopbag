@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" :class="{'store-loaded': hasStore}">
     <nav class="store-nav">
       <div class="show-cart">{{numInCart}}</div>
       <div class="back-to-main" v-on:click="backToMain()">Back</div>
@@ -16,11 +16,13 @@ export default {
   data () {
     return {
       products: [],
-      numInCart: 0
+      numInCart: 0,
+      hasStore: false
     }
   },
   created () {
     this.products = this.$parent.products
+    this.hasStore = this.$parent.hasStore
   },
   methods: {
     backToMain () {
@@ -42,6 +44,14 @@ export default {
         document.body.classList.remove('show-store')
       }
       window.location = '#'
+    },
+    showEcwidProduct (product) {
+      let tg = '.grid-product--id-' + product.id + ' a.grid-product__title'
+      let el = document.querySelector(tg)
+      if (el) {
+        el.click()
+        document.body.classList.add('show-store')
+      }
     }
   }
 }
