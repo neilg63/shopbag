@@ -1,0 +1,31 @@
+@font-face {
+  font-family: "DayRoman";
+  src: url("/static/fonts/DAYROM.eot"); /* IE9 Compat Modes */
+  src: url("/static/fonts/DAYROM.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+    url("/static/fonts/DAYROM.otf") format("opentype"), /* Open Type Font */
+    url("/static/fonts/DAYROM.svg") format("svg"), /* Legacy iOS */
+    url("/static/fonts/DAYROM.ttf") format("truetype"), /* Safari, Android, iOS */
+    url("/static/fonts/DAYROM.woff") format("woff"), /* Modern Browsers */
+    url("/static/fonts/DAYROM.woff2") format("woff2"); /* Modern Browsers */
+  font-weight: normal;
+  font-style: normal;
+}
+
+#app,
+html#ecwid_html body#ecwid_body.show-store .ec-size .ec-store,
+html#ecwid_html body#ecwid_body.show-store {
+  font-family: 'DayRoman';
+}
+
+html#ecwid_html body#ecwid_body.show-store .ec-size.ec-size--xl .ec-store .product-details__product-title,
+html#ecwid_html body#ecwid_body.show-store .ec-size.ec-size--xl .ec-store .product-details__product-price {
+  font-size: 2em;
+}
+
+html#ecwid_html body#ecwid_body.show-store .ec-size .ec-store .product-details-module__title {
+  font-size: 1em;
+}
+
+html#ecwid_html body#ecwid_body.show-store .ec-size.ec-size--xl .ec-store .ec-breadcrumbs {
+  display: none;
+}
