@@ -10,6 +10,10 @@ Vue.use(VueLocalStorage, {
   bind: true //created computed members from your variable declarations
 })
 
+const bus = new Vue();
+
+Object.defineProperty(Vue.prototype,'$bus', { get() { return this.$root.bus } });
+
 
 Vue.config.productionTip = false
 
@@ -20,24 +24,34 @@ new Vue({
   components: { App },
   template: '<App/>',
   data: {
+    bus,
   	products: [],
   	productsSynced: false,
-  	hasStore: false
+    hasStore: false,
+  	showStore: false
   },
   created () {
+    this.updatePath()
+    window.addEventListener('hashchange',this.updatePath)
     let comp = this
     let matchedProducts = false
     let storedProductsData = this.$ls.get('products');
+    
     if (typeof storedProductsData == 'string') {
+
     	let storedProducts = JSON.parse(storedProductsData)
-    	if (storedProducts instanceof Array) {
+    	
+      if (storedProducts instanceof Array) {
 	    	if (storedProducts.length > 0) {
 	    		this.products = storedProducts
 	    		this.productsSynced = true
+	    		this.$bus.$emit('load-products', this.products)
 	    	}
 	    }
     }
-  	setTimeout(this.readStore, 8000)
+  	setTimeout(() => {
+  		comp.readStore()
+  	}, 8000)
   },
   methods: {
     readStore () {
@@ -47,24 +61,37 @@ new Vue({
       		this.updateStoreRefs(elems);	
       	}
       	this.hasStore = true
+        this.$bus.$emit('store-loaded', true)
       }
     },
     updateStoreRefs (elems) {
     	this.products = []
-    	for (let i = 0, elem, cls, prod, img, srcSet; i < elems.length; i++) {
+    	for (let i = 0, elem, cls, prod, img, srcSet, pr, prTxt; i < elems.length; i++) {
     		elem = elems.item(i)
     		cls = elem.classList
     		if (cls.length > 1) {
     			for (let j = 0; j < cls.length; j++) {
     				if (cls.item(j).indexOf('grid-product--id') === 0) {
-    					prod = { id: cls.item(j).split('-').pop()}
+    					prod = { id: cls.item(j).split('-').pop(), price: 0.00 }
     					img = elem.querySelector('.grid-product__image-wrap img');
     					if (img) {
     						srcSet = img.getAttribute('srcset')
     						if (srcSet) {
-    							prod.img = srcSet.split(',').pop().replace(/\s*\dx/,'');
-    							this.products.push(prod)		
+    							prod.img = srcSet.split(',').pop().replace(/\s*\dx/,'');		
     						}
+    					}
+    					pr = elem.querySelector('.grid-product__price-amount');
+    					if (pr) {
+    						prTxt = pr.textContent
+    						if (typeof prTxt == 'string') {
+    							prTxt = prTxt.replace(/[^0-9,.]/g,'').replace(/(\d+)\.,(\d\d\d)/,"$1$2").replace(/,(\d\d)\b/g,'.');
+    							if (prTxt.length > 0) {
+    								prod.price = parseFloat(prTxt)
+    							}
+    						}
+    					}
+    					if (img) {
+    						this.products.push(prod)
     					}
     				}
     			}
@@ -73,6 +100,28 @@ new Vue({
     	let seri = JSON.stringify(this.products)
     	this.$ls.set('products',seri)
     	this.productsSynced = true
+    	this.$bus.$emit('load-products', this.products)
+    },
+    updatePath () {
+      let hash = window.location.hash
+
+      if (hash.length > 1) {
+        if (hash.indexOf('#/!/') === 0) {
+          this.showStore = true
+          if (hash.indexOf('/offset=') < 0) {
+            document.body.classList.add('show-store')
+          } else {
+            document.body.classList.remove('show-store')
+          }
+          if (hash.indexOf('/cart') > 0) {
+            let lbl = document.querySelector('.ecwid-minicart-link span')
+            console.log(lbl)
+            if (lbl) {
+              lbl.click()
+            }
+          }
+        }
+      }
     }
   }
 })
