@@ -1,7 +1,11 @@
 <template>
-  <div id="app" :class="{'store-loaded': hasStore}">
+  <div id="app" :class="{'store-loaded': hasStore,'show-menu': showMenu}">
     <nav class="store-nav">
-      <div class="menu-toggle icon-menu"></div>
+      <div class="menu-toggle icon-menu" v-on:click.stop="toggleMenu()"></div>
+      <ul class="menu">
+        <li v-for="item in menu"><a :href="item.link">{{item.label}}</a></li>
+      </ul>
+      
       <div class="show-cart">{{numInCart}}</div>
       <div id="main-logo"></div>
       <div class="back-to back-to-main" v-on:click="backToMain()">Back</div>
@@ -25,6 +29,8 @@ export default {
   },
   data () {
     return {
+      menu: [],
+      showMenu: false,
       products: [],
       numInCart: 0,
       hasStore: false
@@ -35,6 +41,7 @@ export default {
   },
   mounted () {
     let comp = this
+    this.loadMenu()
     this.$bus.$on('store-loaded', (data) => {
       comp.updateCounter()
       comp.hasStore = true
@@ -42,19 +49,43 @@ export default {
     })
   },
   methods: {
+    loadMenu () {
+      this.menu = [
+        {
+          link: "/",
+          label: "Home"
+        },
+        {
+          link: "/about",
+          label: "About"
+        },
+        {
+          link: "/terms",
+          label: "Terms and conditions"
+        },
+        {
+          link: "/blog",
+          label: "Blog"
+        }
+      ]
+    },
+    toggleMenu () {
+      this.showMenu = !this.showMenu
+    },
     backToMain () {
       this.updateCounter()
       let el = document.querySelector('#ecwid-store-container .ec-breadcrumbs a')
       if (el) {
         el.click()
-        document.body.classList.remove('show-store')
+        removeBodyClass('show-store')
       } else {
-        document.body.classList.remove('show-store').add('cart-loaded')
+        swapBodyClass('show-store', 'cart-loaded')
       }
       window.location = '#'
     },
     backToCart () {
-      document.body.classList.remove('cart-loaded').add('show-store')
+      removeBodyClass('cart-loaded')
+      addBodyClass('show-store')
     },
     updateCounter () {
       let sb = document.querySelector('div.ecwid-minicart .ecwid-minicart-counter')
@@ -74,7 +105,7 @@ export default {
       let el = document.querySelector(tg)
       if (el) {
         el.click()
-        document.body.classList.add('show-store')
+        addBodyClass('show-store')
       }
     }
   }
@@ -110,9 +141,18 @@ export default {
 }
 
 .menu-toggle {
-  font-size: 4em;
+  position: absolute;
+  left: 2.5%;
+  top: 0.0625em;
+  font-size: 5em;
   opacity: 0.5;
-  transition: opacity .5s ease-in-out;
+  transition: all .5s ease-in-out;
+  z-index: 30;
+  cursor: pointer;
+}
+
+.show-menu .menu-toggle {
+  transform: rotate(90deg) scale(0.8,1.25);
 }
 
 .menu-toggle:hover {
@@ -123,8 +163,84 @@ export default {
 
 }
 
+#app nav ul.menu,
+#app nav ul.menu li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  width: 100%;
+}
+
+#app nav ul.menu {
+  position: absolute;
+  top: 6em;
+  left: 0;
+  opacity: 0;
+  z-index: -1;
+  pointer-events: none;
+  transition: opacity .5s ease-in-out, max-height 1s ease-in-out;
+  background-color: white;
+  max-height: 1em;
+  overflow: hidden;
+}
+
+#app.show-menu ul.menu {
+  opacity: 1;
+  pointer-events: all;
+  z-index: 10;
+  max-height: 20em;
+}
+
+#app.show-menu nav.store-nav {
+  background-color: rgba(255,255,255,1)
+}
+
+nav ul.menu > li {
+  font-size: 1.25em;
+}
+
+@media screen and (min-width: 40em) {
+  #app nav ul.menu > li {
+    font-size: 1.33em;
+  }
+}
+
+@media screen and (min-width: 50em) {
+  #app nav ul.menu > li {
+    font-size: 1.5em;
+  }
+}
+
+@media screen and (min-width: 60em) {
+  #app nav ul.menu > li {
+    font-size: 1.667em;
+  }
+}
+
+@media screen and (min-width: 80em) {
+  #app nav ul.menu > li {
+    font-size: 1.875em;
+  }
+}
+
+@media screen and (min-width: 90em) {
+  #app nav ul.menu > li {
+    font-size: 2em;
+  }
+}
+
+#app nav ul.menu > li a {
+  width: 95%;
+  display: block;
+  padding: 0.5em 2.5%;
+}
+
+#app ol.dot-nav,
 #app ol.arrow-nav {
   position: absolute;
+}
+
+#app ol.arrow-nav {
   top: 0;
   left: 0;
   right: 0;
@@ -132,6 +248,38 @@ export default {
   padding: 0;
   height: 100vh;
   pointer-events: none;
+}
+
+#app ol.dot-nav {
+  top: calc(90vh - 8em);
+  right: 2.5vw;
+}
+
+#app ol.dot-nav li {
+  cursor: pointer;
+  font-size: 1.5em;
+  opacity: 0.667;
+  width: 1em;
+  height: 1.25em;
+  overflow: hidden;
+  margin-left: 0.5em;
+  transition: all .5s ease-in-out;
+}
+
+#app ol.dot-nav li:hover {
+  opacity: 1;
+}
+
+#app ol.dot-nav li:before {
+  font-family: icomoon;
+  content: "\e601";
+}
+#app ol.dot-nav li.active {
+  transform: scale(1.2);
+}
+
+#app ol.dot-nav li.active:before {
+  content: "\e602";
 }
 
 #app ol.arrow-nav > li {
@@ -228,24 +376,7 @@ export default {
   -webkit-margin-end: 0;
 }
 
-html#ecwid_html #ecwid-store-container {
-  position: fixed;
-  left: 0;
-  right: 0;
-  width: 100%;
-  opacity: 0;
-  z-index: -1;
-  pointer-events: none;
-  z-index: 2;
-  transition: opacity 0.75s ease-in-out;
-}
 
-html#ecwid_html body.show-store #ecwid-store-container {
-  position: relative;
-  opacity: 1;
-  pointer-events: all;
-  z-index: 20;
-}
 
 .back-to {
   position: absolute;
@@ -265,6 +396,7 @@ html#ecwid_html body.show-store #ecwid-store-container {
 
 #app .main {
   transition: opacity 0.5s ease-in-out;
+  margin-top: 5em;
 }
 
 body.show-store #app .main {
@@ -273,49 +405,6 @@ body.show-store #app .main {
   opacity: 0;
   height: 0;
   overflow: hidden;
-}
-
-html#ecwid_html body#ecwid_body.show-store .ec-size .ec-store .likely__widget,
-html#ecwid_html body#ecwid_body.show-store .ec-size .ec-store .likely__widget:hover {
-  background: none;
-}
-
-html#ecwid_html body#ecwid_body.show-store .ec-size .ec-store .likely__widget .likely__button {
-  display: none;
-}
-
-html#ecwid_html body#ecwid_body.show-store .ec-size .ec-store .likely__widget {
-  transition: transform 0.5s ease-in-out;
-}
-html#ecwid_html body#ecwid_body.show-store .ec-size .ec-store .likely__widget:hover {
-  transform: scale(1.25);
-}
-
-html#ecwid_html body#ecwid_body.show-store .ec-size.ec-size--xl .ec-store .form-control--large .form-control__button {
-  background:none;
-  min-height: 4em;
-}
-
-html#ecwid_html body#ecwid_body.show-store .ec-size .ec-store .likely svg {
-  height: 3em;
-  width: 3em;
-  left: 0;
-  top: 0;
-}
-
-html#ecwid_html body#ecwid_body.show-store .ec-size .ec-store .likely .likely__icon {
-  width: 4em;
-  height: 5em;
-}
-
-html#ecwid_html body#ecwid_body.show-store .ec-size .ec-store .likely__wrapper {
-  margin: 0.5em 0;
-  overflow: visible;
-}
-
-html#ecwid_html body#ecwid_body div.ecwid-minicart {
-  z-index: 200;
-  opacity: 1;
 }
 
 </style>

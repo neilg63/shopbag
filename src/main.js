@@ -28,7 +28,8 @@ new Vue({
   	products: [],
   	productsSynced: false,
     hasStore: false,
-  	showStore: false
+  	showStore: false,
+    readInterval: null
   },
   created () {
     this.updatePath()
@@ -49,9 +50,11 @@ new Vue({
 	    	}
 	    }
     }
-  	setTimeout(() => {
-  		comp.readStore()
-  	}, 8000)
+  	this.readInterval = setInterval(() => {
+  		if (!comp.hasStore) {
+        comp.readStore()
+      }
+  	}, 3000)
   },
   methods: {
     readStore () {
@@ -62,6 +65,9 @@ new Vue({
       	}
       	this.hasStore = true
         this.$bus.$emit('store-loaded', true)
+        if (this.readInterval) {
+          clearInterval(this.readInterval)
+        }
       }
     },
     updateStoreRefs (elems) {
@@ -109,13 +115,12 @@ new Vue({
         if (hash.indexOf('#/!/') === 0) {
           this.showStore = true
           if (hash.indexOf('/offset=') < 0) {
-            document.body.classList.add('show-store')
+            addBodyClass('show-store')
           } else {
-            document.body.classList.remove('show-store')
+            removeBodyClass('show-store')
           }
           if (hash.indexOf('/cart') > 0) {
             let lbl = document.querySelector('.ecwid-minicart-link span')
-            console.log(lbl)
             if (lbl) {
               lbl.click()
             }

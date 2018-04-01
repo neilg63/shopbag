@@ -8,6 +8,9 @@
         </figure>
       </li>
     </ul>
+    <ol class="dot-nav">
+      <li v-for="(product, i) in products" v-on:click="showIndex(i)" :class="{'active': i == index}"></li>
+    </ol>
     <ol class="arrow-nav">
       <li class="prev icon-chevron-thin-left" v-on:click="showPrev()"></li>
       <li class="next icon-chevron-thin-right" v-on:click="showNext()"></li>
@@ -53,6 +56,11 @@ export default {
     },
     showPrev () {
       this.showNext(false)
+    },
+    showIndex (index) {
+      if (index >= 0 && index < this.products.length) {
+        this.index = index  
+      }
     }
   }
 }
