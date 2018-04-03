@@ -31,7 +31,7 @@ html#ecwid_html body#ecwid_body.show-store {
   top: 0;
   left: 0;
   right: 0;
-  height: 6em;
+  height: 3em;
   z-index: 50;
   display: flex;
   flex-flow: nowrap row;
@@ -46,15 +46,85 @@ html#ecwid_html body#ecwid_body.show-store {
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center center;
-  height: 6em;
+  height: 3.2em;
   width: 50%;
   opacity: 0.6667;
+  transform: scale(1, 1) skew(0deg);
   transition: all 0.5s ease-in-out;
 }
 
+.show-menu #main-logo,
 #main-logo:hover {
-  transform: scale(1.2, 1) skew(-7.5deg);
+  transform: scale(1.25, 1) skew(0deg);
   opacity: 1;
+}
+
+#main-logo:hover {
+  transform: scale(1.25, 1) skew(-7.5deg);
+}
+
+.menu-toggle {
+  position: absolute;
+  left: 2.5%;
+  top: 0.0625em;
+  font-size: 2.5em;
+  opacity: 0.5;
+  transition: all .5s ease-in-out;
+  z-index: 30;
+  cursor: pointer;
+}
+
+@media screen and (min-width: 50em) {
+  #app .menu-toggle {
+    font-size: 3em;
+  }
+  #app #main-logo {
+    height: 3.6em;
+  }
+}
+
+@media screen and (min-width: 60em) {
+  #app .menu-toggle {
+    font-size: 4em;
+  }
+  #app > nav.store-nav {
+    height: 5em;
+  }
+  #main-logo {
+    height: 4em;
+  }
+}
+
+@media screen and (min-width: 80em) {
+  #app .menu-toggle {
+    font-size: 4.5em;
+  }
+  #app > nav.store-nav {
+    height: 5.5em;
+  }
+  #main-logo {
+    height: 4.5em;
+  }
+}
+
+@media screen and (min-width: 90em) {
+  #app .menu-toggle {
+    font-size: 5em;
+  }
+  #app > nav.store-nav {
+    height: 6em;
+  }
+  #main-logo {
+    height: 5em;
+  }
+}
+
+.show-menu .menu-toggle {
+  transform: rotate(90deg) scale(0.8,1.25);
+}
+
+.menu-toggle:hover {
+  opacity: 0.75;
 }
 
 
@@ -187,6 +257,16 @@ html#ecwid_html body.show-store #ecwid-store-container {
 html#ecwid_html body.show-store #ecwid-store-container > div.ecwid {
   max-width: 80em;
   margin: 0 auto;
+}
+
+#app ul,
+#app li,
+#app ol,
+#app figure {
+  -webkit-margin-before: 0;
+  -webkit-margin-after: 0;
+  -webkit-margin-start: 0;
+  -webkit-margin-end: 0;
 }
 
 html#ecwid_html body#ecwid_body.show-store .ec-size .ec-store .likely__widget,

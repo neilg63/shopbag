@@ -12,6 +12,7 @@
       <div class="back-to back-to-cart" v-on:click="backToCart()">Back</div>
     </nav>
     <div class="main">
+      <slides/>
       <router-view/>
       <products/>
     </div>
@@ -21,11 +22,13 @@
 <script>
 
 import Products from '@/components/Products'
+import Slides from '@/components/Slides'
 
 export default {
   name: 'App',
   components: {
-    Products
+    Products,
+    Slides
   },
   data () {
     return {
@@ -38,6 +41,10 @@ export default {
   },
   created () {
     this.products = this.$parent.products
+    let comp = this
+    this.$bus.$on('hide-menu', () => {
+      comp.showMenu = false
+    })
   },
   mounted () {
     let comp = this
@@ -81,6 +88,7 @@ export default {
       } else {
         swapBodyClass('show-store', 'cart-loaded')
       }
+      this.showMenu = false
       window.location = '#'
     },
     backToCart () {
@@ -133,34 +141,12 @@ export default {
   position: relative;
   display: flex;
   margin: 0;
+  padding: 0;
   flex-flow: nowrap row;
   width: 30000vw;
   top: 0;
   left: 0;
   transition: left 1s ease-in-out;
-}
-
-.menu-toggle {
-  position: absolute;
-  left: 2.5%;
-  top: 0.0625em;
-  font-size: 5em;
-  opacity: 0.5;
-  transition: all .5s ease-in-out;
-  z-index: 30;
-  cursor: pointer;
-}
-
-.show-menu .menu-toggle {
-  transform: rotate(90deg) scale(0.8,1.25);
-}
-
-.menu-toggle:hover {
-  opacity: 0.75;
-}
-
-.menu-toggle: before {
-
 }
 
 #app nav ul.menu,
@@ -264,6 +250,7 @@ nav ul.menu > li {
   overflow: hidden;
   margin-left: 0.5em;
   transition: all .5s ease-in-out;
+  display: inline-block;
 }
 
 #app ol.dot-nav li:hover {
@@ -318,6 +305,99 @@ nav ul.menu > li {
   left: 0;
 }
 
+#app .top-slides ul.flex-slides {
+  position: flex;
+  max-height: 100vh;
+  overflow: hidden;
+}
+
+#app .top-slides {
+  height: 100vh;
+  overflow: hidden;
+}
+
+#app .top-slides,
+#app .top-slides ul.flex-slides li figure {
+  max-height: 100vw;
+}
+
+#app .products ul.flex-slides li figure {
+  max-height: 100vh;
+  max-width: 100vw;
+  overflow: hidden;
+}
+
+#app .top-slides {
+  position: relative;
+  margin-top: -4.5em;
+}
+
+@media screen and (min-width: 50em) {
+  #app .top-slides,
+  #app .top-slides ul.flex-slides li figure {
+    max-height: 90vw;
+  }
+}
+
+@media screen and (min-width: 60em) {
+  #app .top-slides,
+  #app .top-slides ul.flex-slides li figure {
+    max-height: 80vw;
+  }
+}
+
+@media screen and (min-width: 70em) {
+  #app .top-slides,
+  #app .top-slides ul.flex-slides li figure {
+    max-height: 75vw;
+  }
+}
+
+@media screen and (min-width: 75em) {
+  #app .top-slides,
+  #app .top-slides ul.flex-slides li figure {
+    max-height: 70vw;
+  }
+}
+
+@media screen and (min-width: 80em) {
+  #app .top-slides,
+  #app .top-slides ul.flex-slides li figure {
+    max-height: 66vw;
+  }
+}
+
+@media screen and (min-width: 40em) and (max-height: 40em) {
+  #app .top-slides ul.flex-slides li figure img {
+    max-width: 75%;
+  }
+}
+
+
+@media screen and (min-width: 50em) and (max-height: 50em){
+  #app .top-slides ul.flex-slides li figure img {
+    max-width: 72%;
+  }
+}
+
+@media screen and (min-width: 60em) and (max-height: 60em){
+  #app .top-slides ul.flex-slides li figure img {
+    max-width: 69%;
+  }
+}
+
+@media screen and (min-width: 80em) and (max-height: 80em){
+  #app .top-slides ul.flex-slides li figure img {
+    max-width: 66%;
+  }
+}
+
+@media screen and (min-width: 100em) (max-height: 100em){
+  #app .top-slides ul.flex-slides li figure img {
+    max-width: 62%;
+  }
+}
+
 #app ul.flex-slides.item-1 {
   left: -100vw;
 }
@@ -368,15 +448,6 @@ nav ul.menu > li {
 #app ul.flex-slides li figure img {
   width: 100%;
 }
-
-#app figure {
-  -webkit-margin-before: 0;
-  -webkit-margin-after: 0;
-  -webkit-margin-start: 0;
-  -webkit-margin-end: 0;
-}
-
-
 
 .back-to {
   position: absolute;

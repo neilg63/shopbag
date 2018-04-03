@@ -1,6 +1,7 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
+import axios from 'axios'
 import App from './App'
 import router from './router'
 import VueLocalStorage from 'vue-localstorage'
@@ -25,7 +26,9 @@ new Vue({
   template: '<App/>',
   data: {
     bus,
+    cmsApi: '/jsonstyles/',
   	products: [],
+    homeData: {},
   	productsSynced: false,
     hasStore: false,
   	showStore: false,
@@ -50,6 +53,7 @@ new Vue({
 	    	}
 	    }
     }
+    this.loadHome()
   	this.readInterval = setInterval(() => {
   		if (!comp.hasStore) {
         comp.readStore()
@@ -68,6 +72,42 @@ new Vue({
         if (this.readInterval) {
           clearInterval(this.readInterval)
         }
+      }
+    },
+    loadHome () {
+      this.fetchData('page-path/home')
+    },
+    fetchData (subPath) {
+      let dataKey = subPath.replace(/\//g,'__')
+      let stored = this.$ls.get(dataKey),
+        storedData
+      if (typeof stored == 'string' && stored.indexOf('{') >= 0) {
+        storedData = JSON.parse(stored)
+        switch (dataKey) {
+          case 'page-path__home':
+            this.homeData = storedData
+            break;
+        }
+      }
+      let hasData = storedData !== null && typeof storedData == 'object'
+
+      if (hasData) {
+        hasData = storedData.valid === true
+      }
+      if (hasData) {
+        this.$bus.$emit(dataKey, storedData)
+      } else {
+        let comp = this
+        axios.get(this.cmsApi + subPath)
+        .then( (response) => {
+        if (response.data) {
+            comp.$bus.$emit(dataKey, response.data)
+            this.$ls.set(dataKey, JSON.stringify(response.data)) 
+          }
+        })
+        .catch(e => {
+          console.log(e)
+        })
       }
     },
     updateStoreRefs (elems) {
@@ -110,7 +150,7 @@ new Vue({
     },
     updatePath () {
       let hash = window.location.hash
-
+      this.$bus.$emit('hide-menu', true)
       if (hash.length > 1) {
         if (hash.indexOf('#/!/') === 0) {
           this.showStore = true
