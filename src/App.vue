@@ -332,6 +332,13 @@ nav ul.menu > li {
   margin-top: -4.5em;
 }
 
+#app .show-cart {
+  font-size: 1.5em;
+  border: solid 1px black;
+  border-radius: 1em;
+  padding: 0 0.5em;
+}
+
 @media screen and (min-width: 50em) {
   #app .top-slides,
   #app .top-slides ul.flex-slides li figure {
