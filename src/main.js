@@ -27,7 +27,7 @@ new Vue({
   data: {
     bus,
     cmsApi: '/jsonstyles/',
-  	products: [],
+    products: [],
     homeData: {},
   	productsSynced: false,
     hasStore: false,

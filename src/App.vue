@@ -6,7 +6,7 @@
         <li v-for="item in menu"><a :href="item.link">{{item.label}}</a></li>
       </ul>
       
-      <div class="show-cart">{{numInCart}}</div>
+      <div class="show-cart" :class="{'has-items': numInCart > 0}" v-on:click="showCheckout()">{{numInCart}}</div>
       <div id="main-logo"></div>
       <div class="back-to back-to-main" v-on:click="backToMain()">Back</div>
       <div class="back-to back-to-cart" v-on:click="backToCart()">Back</div>
@@ -95,11 +95,17 @@ export default {
       removeBodyClass('cart-loaded')
       addBodyClass('show-store')
     },
+    showCheckout () {
+      let el = document.querySelector('.ecwid-minicart .gwt-InlineLabel');
+      if (el) {
+        el.click()
+        addBodyClass('show-store')
+      }
+    },
     updateCounter () {
       let sb = document.querySelector('div.ecwid-minicart .ecwid-minicart-counter')
       if (sb) {
         let txt = sb.textContent
-        console.log(txt)
         if (txt.length > 0) {
           let num = parseInt(txt)
           if (!isNaN(num)) {
@@ -316,11 +322,27 @@ nav ul.menu > li {
   overflow: hidden;
 }
 
-#app .top-slides,
 #app .top-slides ul.flex-slides li figure {
-  max-height: 100vw;
+  display: flex;
+  flex-flow: nowrap row;
+  overflow:  hidden;
+  justify-content: center;
+  position: relative;
+  max-height: 100%;
 }
 
+#app .top-slides ul.flex-slides li figure img {
+  max-height:  100vh;
+  width:  auto;
+}
+
+#app .top-slides ul.flex-slides li figure.left {
+  justify-content: flex-start;
+}
+
+#app .top-slides ul.flex-slides li figure.right {
+  justify-content: flex-end;
+}
 #app .products ul.flex-slides li figure {
   max-height: 100vh;
   max-width: 100vw;
@@ -329,7 +351,7 @@ nav ul.menu > li {
 
 #app .top-slides {
   position: relative;
-  margin-top: -4.5em;
+  margin-top: -6em;
 }
 
 #app .show-cart {
@@ -337,9 +359,18 @@ nav ul.menu > li {
   border: solid 1px black;
   border-radius: 1em;
   padding: 0 0.5em;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
 }
 
-@media screen and (min-width: 50em) {
+#app .show-cart.has-items {
+  position: relative;
+  cursor: pointer;
+  opacity: 1;
+  z-index: 100;
+}
+
+/*@media screen and (min-width: 50em) {
   #app .top-slides,
   #app .top-slides ul.flex-slides li figure {
     max-height: 90vw;
@@ -372,38 +403,7 @@ nav ul.menu > li {
   #app .top-slides ul.flex-slides li figure {
     max-height: 66vw;
   }
-}
-
-@media screen and (min-width: 40em) and (max-height: 40em) {
-  #app .top-slides ul.flex-slides li figure img {
-    max-width: 75%;
-  }
-}
-
-
-@media screen and (min-width: 50em) and (max-height: 50em){
-  #app .top-slides ul.flex-slides li figure img {
-    max-width: 72%;
-  }
-}
-
-@media screen and (min-width: 60em) and (max-height: 60em){
-  #app .top-slides ul.flex-slides li figure img {
-    max-width: 69%;
-  }
-}
-
-@media screen and (min-width: 80em) and (max-height: 80em){
-  #app .top-slides ul.flex-slides li figure img {
-    max-width: 66%;
-  }
-}
-
-@media screen and (min-width: 100em) (max-height: 100em){
-  #app .top-slides ul.flex-slides li figure img {
-    max-width: 62%;
-  }
-}
+}*/
 
 #app ul.flex-slides.item-1 {
   left: -100vw;
@@ -451,8 +451,7 @@ nav ul.menu > li {
   width: 100vw;
 }
 
-#app ul.flex-slides li figure,
-#app ul.flex-slides li figure img {
+#app ul.flex-slides li figure {
   width: 100%;
 }
 

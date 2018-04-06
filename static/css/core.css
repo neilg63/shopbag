@@ -20,6 +20,12 @@ a:hover {
   text-decoration: underline;
 }
 
+body {
+  margin: 0 auto;
+  padding: 0;
+  background-color:  rgb(222,222,222);
+}
+
 #app,
 html#ecwid_html body#ecwid_body.show-store .ec-size .ec-store,
 html#ecwid_html body#ecwid_body.show-store {
@@ -172,10 +178,12 @@ html#ecwid_html body#ecwid_body.front div.ecwid-minicart {
   transition: opacity 1s ease-in-out;
   width: 8em;
   height: 8em;
+  pointer-events: none;
 }
 
-html#ecwid_html body#ecwid_body.store-loaded div.ecwid-minicart {
+html#ecwid_html body#ecwid_body.show-cart-widget div.ecwid-minicart {
   opacity: 1;
+  pointer-events: all;
 }
 
 html#ecwid_html body#ecwid_body.front div.ecwid-minicart-link,
