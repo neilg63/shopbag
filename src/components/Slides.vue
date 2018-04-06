@@ -74,7 +74,7 @@ export default {
       this.showNext(false)
     },
     showIndex (index) {
-      if (index >= 0 && index < this.products.length) {
+      if (index >= 0 && index < this.numImages) {
         this.index = index
       }
     }

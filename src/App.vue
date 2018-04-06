@@ -243,8 +243,9 @@ nav ul.menu > li {
 }
 
 #app ol.dot-nav {
-  top: calc(90vh - 8em);
+  bottom: 8vh;
   right: 2.5vw;
+  z-index: 90;
 }
 
 #app ol.dot-nav li {
@@ -311,15 +312,21 @@ nav ul.menu > li {
   left: 0;
 }
 
+
 #app .top-slides ul.flex-slides {
-  position: flex;
-  max-height: 100vh;
+  display: flex;
+  margin-top: 10vh;
+}
+
+#app .top-slides ul.flex-slides,
+#app .top-slides {
   overflow: hidden;
 }
 
+#app .top-slides ul.flex-slides li figure img,
+#app .top-slides ul.flex-slides,
 #app .top-slides {
-  height: 100vh;
-  overflow: hidden;
+  height: 90vh;
 }
 
 #app .top-slides ul.flex-slides li figure {
@@ -332,7 +339,6 @@ nav ul.menu > li {
 }
 
 #app .top-slides ul.flex-slides li figure img {
-  max-height:  100vh;
   width:  auto;
 }
 
@@ -368,6 +374,15 @@ nav ul.menu > li {
   cursor: pointer;
   opacity: 1;
   z-index: 100;
+}
+
+@media screen and (orientation: portrait) {
+  #app .top-slides ul.flex-slides li figure img,
+  #app .top-slides ul.flex-slides,
+  #app .top-slides {
+    height: 75vh;
+    max-height: 100vw;
+  }
 }
 
 /*@media screen and (min-width: 50em) {
