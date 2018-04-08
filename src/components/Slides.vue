@@ -1,9 +1,9 @@
 <template>
   <section class="slides-container top-slides" :class="{'loading': !loaded}">
     <ul v-if="numImages > 0" class="flex-slides" :class="itemClass">
-      <li v-for="image in images">
+      <li v-for="(image,i) in images" :key="i">
         <figure :class="image.align">
-          <img :src="image.sizes.max_2600x2600"/>
+          <vue-picture :imgset="image" group="wide" className="wide"></vue-picture>
         </figure>
       </li>
     </ul>
@@ -18,8 +18,13 @@
 </template>
 
 <script>
+import VuePicture from './VuePicture'
+
 export default {
   name: 'Slides',
+  components: {
+    VuePicture
+  },
   data () {
     return {
       images: [],

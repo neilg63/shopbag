@@ -1,13 +1,15 @@
 <template>
   <div id="app" :class="{'store-loaded': hasStore,'show-menu': showMenu}">
     <nav class="store-nav">
+      <div class="bg-solid bg-element"></div>
+      <div class="bg-transition bg-element"></div>
+      <div class="bg-menu bg-element"></div>
       <div class="menu-toggle icon-menu" v-on:click.stop="toggleMenu()"></div>
       <ul class="menu">
         <li v-for="item in menu"><a :href="item.link">{{item.label}}</a></li>
       </ul>
-      
-      <div class="show-cart" :class="{'has-items': numInCart > 0}" v-on:click="showCheckout()">{{numInCart}}</div>
-      <div id="main-logo"></div>
+      <div class="show-cart" :class="{'has-items': numInCart > 0}" v-on:click="showCheckout()"><span class="num">{{numInCart}}</span></div>
+      <div id="main-logo" @click="backToMain()"></div>
       <div class="back-to back-to-main" v-on:click="backToMain()">Back</div>
       <div class="back-to back-to-cart" v-on:click="backToCart()">Back</div>
     </nav>
@@ -59,20 +61,20 @@ export default {
     loadMenu () {
       this.menu = [
         {
-          link: "/",
-          label: "Home"
+          link: '/',
+          label: 'Home'
         },
         {
-          link: "/about",
-          label: "About"
+          link: '/about',
+          label: 'About'
         },
         {
-          link: "/terms",
-          label: "Terms and conditions"
+          link: '/terms',
+          label: 'Terms and conditions'
         },
         {
-          link: "/blog",
-          label: "Blog"
+          link: '/blog',
+          label: 'Blog'
         }
       ]
     },
@@ -155,78 +157,6 @@ export default {
   transition: left 1s ease-in-out;
 }
 
-#app nav ul.menu,
-#app nav ul.menu li {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  width: 100%;
-}
-
-#app nav ul.menu {
-  position: absolute;
-  top: 6em;
-  left: 0;
-  opacity: 0;
-  z-index: -1;
-  pointer-events: none;
-  transition: opacity .5s ease-in-out, max-height 1s ease-in-out;
-  background-color: white;
-  max-height: 1em;
-  overflow: hidden;
-}
-
-#app.show-menu ul.menu {
-  opacity: 1;
-  pointer-events: all;
-  z-index: 10;
-  max-height: 20em;
-}
-
-#app.show-menu nav.store-nav {
-  background-color: rgba(255,255,255,1)
-}
-
-nav ul.menu > li {
-  font-size: 1.25em;
-}
-
-@media screen and (min-width: 40em) {
-  #app nav ul.menu > li {
-    font-size: 1.33em;
-  }
-}
-
-@media screen and (min-width: 50em) {
-  #app nav ul.menu > li {
-    font-size: 1.5em;
-  }
-}
-
-@media screen and (min-width: 60em) {
-  #app nav ul.menu > li {
-    font-size: 1.667em;
-  }
-}
-
-@media screen and (min-width: 80em) {
-  #app nav ul.menu > li {
-    font-size: 1.875em;
-  }
-}
-
-@media screen and (min-width: 90em) {
-  #app nav ul.menu > li {
-    font-size: 2em;
-  }
-}
-
-#app nav ul.menu > li a {
-  width: 95%;
-  display: block;
-  padding: 0.5em 2.5%;
-}
-
 #app ol.dot-nav,
 #app ol.arrow-nav {
   position: absolute;
@@ -238,8 +168,13 @@ nav ul.menu > li {
   right: 0;
   margin: 0;
   padding: 0;
-  height: 100vh;
+  height: 100%;
   pointer-events: none;
+}
+
+#app .top-slides ol.arrow-nav {
+  height: 100vh;
+  max-height: 100vw;
 }
 
 #app ol.dot-nav {
@@ -266,14 +201,14 @@ nav ul.menu > li {
 
 #app ol.dot-nav li:before {
   font-family: icomoon;
-  content: "\e601";
+  content: '\e601';
 }
 #app ol.dot-nav li.active {
   transform: scale(1.2);
 }
 
 #app ol.dot-nav li.active:before {
-  content: "\e602";
+  content: '\e602';
 }
 
 #app ol.arrow-nav > li {
@@ -349,31 +284,34 @@ nav ul.menu > li {
 #app .top-slides ul.flex-slides li figure.right {
   justify-content: flex-end;
 }
-#app .products ul.flex-slides li figure {
+#app .page-section ul.flex-slides li figure {
   max-height: 100vh;
-  max-width: 100vw;
   overflow: hidden;
+}
+
+#app .page-section ul.flex-slides > li img {
+  max-width: 100%;
+}
+
+@media screen and (min-width: 48em) {
+  #app .per-row-2 ul.flex-slides li figure,
+  #app .per-row-2 ul.flex-slides > li {
+    max-width: 50vw;
+  }
+
+  #app .per-row-2 .arrow-nav li {
+    max-height: 40vw;
+    height: 40vw;
+  }
+
+  #app .per-row-2 .dot-nav li.extra {
+    display: none;
+  }
 }
 
 #app .top-slides {
   position: relative;
   margin-top: -6em;
-}
-
-#app .show-cart {
-  font-size: 1.5em;
-  border: solid 1px black;
-  border-radius: 1em;
-  padding: 0 0.5em;
-  opacity: 0;
-  transition: opacity 0.5s ease-in-out;
-}
-
-#app .show-cart.has-items {
-  position: relative;
-  cursor: pointer;
-  opacity: 1;
-  z-index: 100;
 }
 
 @media screen and (orientation: portrait) {
@@ -458,6 +396,54 @@ nav ul.menu > li {
 }
 #app ul.flex-slides.item-12 {
   left: -1200vw;
+}
+
+#app ul.flex-slides.item-13 {
+  left: -1300vw;
+}
+
+#app ul.flex-slides.item-14 {
+  left: -1400vw;
+}
+
+#app ul.flex-slides.item-15 {
+  left: -1500vw;
+}
+
+#app ul.flex-slides.item-16 {
+  left: -1600vw;
+}
+
+#app ul.flex-slides.item-17 {
+  left: -1700vw;
+}
+
+#app ul.flex-slides.item-18 {
+  left: -1800vw;
+}
+
+#app ul.flex-slides.item-19 {
+  left: -1900vw;
+}
+
+#app ul.flex-slides.item-20 {
+  left: -2000vw;
+}
+
+#app ul.flex-slides.item-21 {
+  left: -2100vw;
+}
+
+#app ul.flex-slides.item-22 {
+  left: -2200vw;
+}
+
+#app ul.flex-slides.item-23 {
+  left: -2300vw;
+}
+
+#app ul.flex-slides.item-24 {
+  left: -2400vw;
 }
 
 #app ul.flex-slides > li {

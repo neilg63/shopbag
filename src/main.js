@@ -5,19 +5,13 @@ import axios from 'axios'
 import App from './App'
 import router from './router'
 import VueLocalStorage from 'vue-localstorage'
- 
 Vue.use(VueLocalStorage, {
   name: 'ls',
   bind: true //created computed members from your variable declarations
 })
-
-const bus = new Vue();
-
-Object.defineProperty(Vue.prototype,'$bus', { get() { return this.$root.bus } });
-
-
+const bus = new Vue()
+Object.defineProperty(Vue.prototype,'$bus', { get () { return this.$root.bus } })
 Vue.config.productionTip = false
-
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -29,29 +23,28 @@ new Vue({
     cmsApi: '/jsonstyles/',
     products: [],
     homeData: {},
+    lang: 'en',
   	productsSynced: false,
     hasStore: false,
   	showStore: false,
     readInterval: null
   },
   created () {
+    this.detectLanguage()
     this.updatePath()
     window.addEventListener('hashchange',this.updatePath)
     let comp = this
     let matchedProducts = false
-    let storedProductsData = this.$ls.get('products');
-    
+    let storedProductsData = this.$ls.get('products')
     if (typeof storedProductsData == 'string') {
-
     	let storedProducts = JSON.parse(storedProductsData)
-    	
       if (storedProducts instanceof Array) {
 	    	if (storedProducts.length > 0) {
 	    		this.products = storedProducts
 	    		this.productsSynced = true
 	    		this.$bus.$emit('load-products', this.products)
-	    	}
-	    }
+        }
+      }
     }
     this.loadHome()
   	this.readInterval = setInterval(() => {
@@ -65,7 +58,7 @@ new Vue({
       let elems = document.querySelectorAll('.grid-product')
       if (elems.length > 0) {
       	if (!this.productsSynced) {
-      		this.updateStoreRefs(elems);	
+      		this.updateStoreRefs(elems)
       	}
       	this.hasStore = true
         this.$bus.$emit('store-loaded', true)
@@ -86,11 +79,10 @@ new Vue({
         switch (dataKey) {
           case 'page-path__home':
             this.homeData = storedData
-            break;
+            break
         }
       }
       let hasData = storedData !== null && typeof storedData == 'object'
-
       if (hasData) {
         hasData = storedData.valid === true
       }
@@ -102,7 +94,7 @@ new Vue({
         .then( (response) => {
         if (response.data) {
             comp.$bus.$emit(dataKey, response.data)
-            this.$ls.set(dataKey, JSON.stringify(response.data)) 
+            this.$ls.set(dataKey, JSON.stringify(response.data))
           }
         })
         .catch(e => {
@@ -123,7 +115,7 @@ new Vue({
     					if (img) {
     						srcSet = img.getAttribute('srcset')
     						if (srcSet) {
-    							prod.img = srcSet.split(',').pop().replace(/\s*\dx/,'');		
+    							prod.img = srcSet.split(',').pop().replace(/\s*\dx/,'');
     						}
     					}
     					pr = elem.querySelector('.grid-product__price-amount');
@@ -136,6 +128,13 @@ new Vue({
     							}
     						}
     					}
+              pr = elem.querySelector('.grid-product__title');
+              if (pr) {
+                prTxt = pr.textContent
+                if (typeof prTxt == 'string') {
+                  prod.title = prTxt
+                }
+              }
     					if (img) {
     						this.products.push(prod)
     					}
@@ -166,6 +165,17 @@ new Vue({
             }
           }
         }
+      }
+    },
+    detectLanguage () {
+      if (window.navigator.language) {
+        let bl = window.navigator.language.toLowerCase().split('-').shift()
+        switch (bl) {
+          case 'it':
+            this.lang = bl
+            break
+        }
+        console.log(bl)
       }
     }
   }

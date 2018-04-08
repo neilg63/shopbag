@@ -23,7 +23,46 @@ a:hover {
 body {
   margin: 0 auto;
   padding: 0;
-  background-color:  rgb(222,222,222);
+}
+
+#app .store-nav .bg-solid,
+body {
+  background-color:  rgb(228,228,228);
+}
+
+#app .store-nav .bg-element {
+  position: absolute;
+  right: 0;
+  left: 0;
+  transition: background-color .5s ease-in-out;
+  pointer-events: none;
+}
+
+#app .store-nav > .bg-menu {
+  transition: opacity .125s ease-in-out;
+}
+
+.dot-nav > li,
+.arrow-nav > li,
+.flex-slides > li {
+  list-style: none;
+}
+
+#app .store-nav .bg-solid {
+  height: 92%;
+  top: 0;
+}
+
+#app .store-nav .bg-menu {
+  height: 100%;
+  top: 0;
+  opacity: 0;
+}
+
+#app .store-nav .bg-transition {
+  bottom: 0;
+  height: 8%;
+  background-image: linear-gradient(to bottom,rgba(228,228,228,1), rgba(228,228,228,0));
 }
 
 #app,
@@ -43,8 +82,6 @@ html#ecwid_html body#ecwid_body.show-store {
   flex-flow: nowrap row;
   align-items: center;
   justify-content: center;
-  transition: background-color .5s ease-in-out;
-  background-color: rgba(255,255,255,0);
 }
 
 #main-logo {
@@ -73,56 +110,11 @@ html#ecwid_html body#ecwid_body.show-store {
   position: absolute;
   left: 2.5%;
   top: 0.0625em;
-  font-size: 2.5em;
+  font-size: 2em;
   opacity: 0.5;
   transition: all .5s ease-in-out;
   z-index: 30;
   cursor: pointer;
-}
-
-@media screen and (min-width: 50em) {
-  #app .menu-toggle {
-    font-size: 3em;
-  }
-  t#main-logo {
-    height: 3.6em;
-  }
-}
-
-@media screen and (min-width: 60em) {
-  #app .menu-toggle {
-    font-size: 4em;
-  }
-  #app > nav.store-nav {
-    height: 5em;
-  }
-  #main-logo {
-    height: 4em;
-  }
-}
-
-@media screen and (min-width: 80em) {
-  #app .menu-toggle {
-    font-size: 4.5em;
-  }
-  #app > nav.store-nav {
-    height: 5.5em;
-  }
-  #main-logo {
-    height: 4.5em;
-  }
-}
-
-@media screen and (min-width: 90em) {
-  #app .menu-toggle {
-    font-size: 5em;
-  }
-  #app > nav.store-nav {
-    height: 6em;
-  }
-  #main-logo {
-    height: 5em;
-  }
 }
 
 .show-menu .menu-toggle {
@@ -131,6 +123,187 @@ html#ecwid_html body#ecwid_body.show-store {
 
 .menu-toggle:hover {
   opacity: 0.75;
+}
+
+#app nav ul.menu,
+#app nav ul.menu li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  width: 100%;
+}
+
+#app nav ul.menu {
+  position: absolute;
+  top: 3em;
+  left: 0;
+  opacity: 0;
+  z-index: -1;
+  pointer-events: none;
+  transition: opacity .5s ease-in-out, max-height 1s ease-in-out;
+  background-color: white;
+  max-height: 1em;
+  overflow: hidden;
+}
+
+#app.show-menu ul.menu {
+  opacity: 1;
+  pointer-events: all;
+  z-index: 10;
+  max-height: 20em;
+}
+
+#app.show-menu nav.store-nav .bg-menu {
+  background-color: white;
+  opacity: 1;
+}
+
+#app.show-menu nav.store-nav .bg-solid,
+#app.show-menu nav.store-nav .bg-transition {
+  opacity: 0;
+}
+
+nav ul.menu > li {
+  font-size: 1.25em;
+}
+
+#app nav ul.menu > li a {
+  width: 95%;
+  display: block;
+  padding: 0.5em 2.5%;
+}
+
+#app .show-cart {
+  position: absolute;
+  top: 0.625em;
+  left: 10em;
+  width: 5em;
+  height: 100%;
+  background-image: url(/static/images/shopping-cart.svg);
+  background-repeat: no-repeat;
+  background-position: top left;
+  background-size: 3em 100%;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+#app .show-cart .num {
+  display: inline-block;
+  font-size: 1em;
+  margin-left: 3em;
+  padding: 0.125em;
+
+}
+
+#app .show-cart.has-items {
+  cursor: pointer;
+  opacity: 1;
+  z-index: 100;
+}
+
+@media screen and (min-width: 40em) {
+  #app nav ul.menu > li {
+    font-size: 1.33em;
+  }
+}
+
+@media screen and (min-width: 50em) {
+  #app nav ul.menu > li {
+    font-size: 1.5em;
+  }
+}
+
+@media screen and (min-width: 60em) {
+  #app nav ul.menu > li {
+    font-size: 1.667em;
+  }
+}
+
+@media screen and (min-width: 80em) {
+  #app nav ul.menu > li {
+    font-size: 1.875em;
+  }
+}
+
+@media screen and (min-width: 90em) {
+  #app nav ul.menu > li {
+    font-size: 2em;
+  }
+}
+
+@media screen and (min-width: 40em) {
+  #app .show-cart {
+    height: 2em;
+  }
+  #app .menu-toggle {
+    font-size: 2.5em;
+  }
+}
+
+@media screen and (min-width: 50em) {
+  #app .show-cart {
+    height: 2.25em;
+  }
+  #app .menu-toggle {
+    font-size: 2.75em;
+  }
+  #main-logo {
+    height: 3.6em;
+  }
+}
+
+@media screen and (min-width: 60em) {
+   #app .show-cart {
+    height: 2.667em;
+  }
+  #app .menu-toggle {
+    font-size: 3.25em;
+  }
+  #app > nav.store-nav {
+    height: 4.5em;
+  }
+  #app nav ul.menu {
+    top: 4.25em;
+  }
+  #main-logo {
+    height: 4em;
+  }
+}
+
+@media screen and (min-width: 80em) {
+   #app .show-cart {
+    height: 3em;
+  }
+  #app .menu-toggle {
+    font-size: 3.667em;
+  }
+  #app > nav.store-nav {
+    height: 5em;
+  }
+  #app nav ul.menu {
+    top: 4.75em;
+  }
+  #main-logo {
+    height: 4.5em;
+  }
+}
+
+@media screen and (min-width: 90em) {
+   #app .show-cart {
+    height: 3.333em;
+  }
+  #app .menu-toggle {
+    font-size: 4em;
+  }
+  #app > nav.store-nav {
+    height: 5.4em;
+  }
+  #app nav ul.menu {
+    top: 5em;
+  }
+  #main-logo {
+    height: 5em;
+  }
 }
 
 
@@ -171,6 +344,11 @@ html#ecwid_html body#ecwid_body.show-store .ec-size.ec-size--xl .ec-store .ec-br
 
 section#ecwid-store-container {
   top: 6em;
+}
+
+section#ecwid-store-container,
+#app .bg-white {
+    background-color: white;
 }
 
 html#ecwid_html body#ecwid_body.front div.ecwid-minicart {
