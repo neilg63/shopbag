@@ -9,7 +9,7 @@
       </li>
     </ul>
     <ol class="dot-nav">
-      <li v-for="(pane, i) in panes" v-on:click="showIndex(i)" :class="{'active': i == index,'extra': pane.extra}"></li>
+      <li v-for="(pane, i) in panes" v-on:click="showIndex(i)" :class="{'active': i == index, 'extra': pane.extra}"></li>
     </ol>
     <ol class="arrow-nav">
       <li class="prev icon-chevron-thin-left" v-on:click="showPrev()"></li>
@@ -34,7 +34,7 @@ export default {
       let cls = ['item-' + this.index]
       if (this.index === 0) {
         cls.push('first')
-      } else if (this.index == (this.products.length - 1)) {
+      } else if (this.index === (this.products.length - 1)) {
         cls.push('last')
       }
       return cls

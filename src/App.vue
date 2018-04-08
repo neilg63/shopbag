@@ -47,6 +47,7 @@ export default {
     this.$bus.$on('hide-menu', () => {
       comp.showMenu = false
     })
+    console.log(typeof addBodyClass)
   },
   mounted () {
     let comp = this
@@ -178,7 +179,7 @@ export default {
 }
 
 #app ol.dot-nav {
-  bottom: 8vh;
+  bottom: 8%;
   right: 2.5vw;
   z-index: 90;
 }
@@ -229,7 +230,7 @@ export default {
 
 #app ol.arrow-nav li:before {
   position: absolute;
-  top: 40vh;
+  top: 40%;
   width: 1.5em;
 }
 

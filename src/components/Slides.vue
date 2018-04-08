@@ -2,7 +2,7 @@
   <section class="slides-container top-slides" :class="{'loading': !loaded}">
     <ul v-if="numImages > 0" class="flex-slides" :class="itemClass">
       <li v-for="(image,i) in images" :key="i">
-        <figure :class="image.align">
+        <figure :class="image.alignment" :style="image.styles">
           <vue-picture :imgset="image" group="wide" className="wide"></vue-picture>
         </figure>
       </li>
@@ -55,8 +55,15 @@ export default {
       let d = data
       if (d.valid && d.images) {
         d.images = d.images.map(img => {
-          if (!img.align) {
-            img.align = 'center'
+          if (!img.alignment) {
+            img.alignment = 'center'
+          }
+          if (!img.styles) {
+            img.styles = ''
+          }
+          img.has_styles = img.styles.length > 5
+          if (!img.has_styles) {
+            img.styles = ''
           }
           return img
         })
