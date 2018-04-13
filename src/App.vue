@@ -1,12 +1,12 @@
 <template>
-  <div id="app" :class="{'store-loaded': hasStore,'show-menu': showMenu}">
+  <div id="app" :class="{'store-loaded': hasStore,'show-menu': showMenu,'show-detail': showDetail,'show-home': !showDetail}">
     <nav class="store-nav">
       <div class="bg-solid bg-element"></div>
       <div class="bg-transition bg-element"></div>
       <div class="bg-menu bg-element"></div>
       <div class="menu-toggle icon-menu" v-on:click.stop="toggleMenu()"></div>
       <ul class="menu">
-        <li v-for="item in menu"><a :href="item.link">{{item.label}}</a></li>
+        <li v-for="item in menu" :key="item.link"><a :href="item.link">{{item.label}}</a></li>
       </ul>
       <div class="show-cart" :class="{'has-items': numInCart > 0}" v-on:click="showCheckout()"><span class="num">{{numInCart}}</span></div>
       <div id="main-logo" @click="backToMain()"></div>
@@ -14,10 +14,16 @@
       <div class="back-to back-to-cart" v-on:click="backToCart()">Back</div>
     </nav>
     <div class="main">
-      <slides/>
-      <router-view/>
-      <products/>
+      <div class="home-pane">
+        <slides/>
+        <twin-images v-if="sections.length > 0" :section="sections[0]"></twin-images>
+        <products/>
+      </div>
+      <div class="detail-pane">
+        <router-view/>
+      </div>
     </div>
+
   </div>
 </template>
 
@@ -25,17 +31,23 @@
 
 import Products from '@/components/Products'
 import Slides from '@/components/Slides'
+import TwinImages from '@/components/TwinImages'
+import utils from './utils/utils'
 
 export default {
   name: 'App',
   components: {
     Products,
-    Slides
+    Slides,
+    TwinImages
   },
   data () {
     return {
       menu: [],
       showMenu: false,
+      showDetail: false,
+      sections: [],
+      numSections: 0,
       products: [],
       numInCart: 0,
       hasStore: false
@@ -47,7 +59,12 @@ export default {
     this.$bus.$on('hide-menu', () => {
       comp.showMenu = false
     })
-    console.log(typeof addBodyClass)
+    if (this.$parent.homeData) {
+      if (this.$parent.homeData.sections instanceof Array) {
+        this.sections = this.$parent.homeData.sections
+        this.numSections = this.sections.length 
+      }
+    }
   },
   mounted () {
     let comp = this
@@ -87,22 +104,22 @@ export default {
       let el = document.querySelector('#ecwid-store-container .ec-breadcrumbs a')
       if (el) {
         el.click()
-        removeBodyClass('show-store')
+        utils.removeBodyClass('show-store')
       } else {
-        swapBodyClass('show-store', 'cart-loaded')
+        utils.swapBodyClass('show-store', 'cart-loaded')
       }
       this.showMenu = false
       window.location = '#'
     },
     backToCart () {
-      removeBodyClass('cart-loaded')
-      addBodyClass('show-store')
+      utils.removeBodyClass('cart-loaded')
+      utils.addBodyClass('show-store')
     },
     showCheckout () {
-      let el = document.querySelector('.ecwid-minicart .gwt-InlineLabel');
+      let el = document.querySelector('.ecwid-minicart .gwt-InlineLabel')
       if (el) {
         el.click()
-        addBodyClass('show-store')
+        utils.addBodyClass('show-store')
       }
     },
     updateCounter () {
@@ -113,7 +130,7 @@ export default {
           let num = parseInt(txt)
           if (!isNaN(num)) {
             this.numInCart = num
-          }  
+          }
         }
       }
     },
@@ -122,7 +139,7 @@ export default {
       let el = document.querySelector(tg)
       if (el) {
         el.click()
-        addBodyClass('show-store')
+        utils.addBodyClass('show-store')
       }
     }
   }
@@ -144,6 +161,26 @@ export default {
   position: relative;
   width: 100vw;
   overflow: hidden;
+}
+
+#app .twin-images {
+  display:  flex;
+  flex-flow: nowrap row;
+}
+
+#app .twin-images figure {
+  max-width:  100%;
+}
+
+#app .twin-images figure img {
+  width:  100%;
+  height:  auto;
+}
+
+@media screen and (min-width: 650px) {
+  #app .twin-images figure {
+    width:  50%;
+  }
 }
 
 #app ul.flex-slides {
@@ -247,7 +284,6 @@ export default {
 #app ol.arrow-nav li.prev {
   left: 0;
 }
-
 
 #app .top-slides ul.flex-slides {
   display: flex;

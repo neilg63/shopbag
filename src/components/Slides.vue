@@ -30,7 +30,8 @@ export default {
       images: [],
       numImages: 0,
       index: 0,
-      loaded: false
+      loaded: false,
+      imgUrl: 'http://cms8.indypedia.agency'
     }
   },
   computed: {
@@ -65,6 +66,7 @@ export default {
           if (!img.has_styles) {
             img.styles = ''
           }
+          img.sizes = this.mapSizes(img.sizes)
           return img
         })
         this.images = d.images
@@ -89,6 +91,19 @@ export default {
       if (index >= 0 && index < this.numImages) {
         this.index = index
       }
+    },
+    mapSizes (sizes) {
+      let ks = Object.keys(sizes), nk = ks.length, i = 0, k, pre
+      let map = {}
+      for (; i < nk; i++) {
+        k = ks[i]
+        pre = ''
+        if (sizes[k].indexOf('://') < 0) {
+          pre = this.imgUrl
+        }
+        map[k] = pre + sizes[k] 
+      }
+      return map
     }
   }
 }

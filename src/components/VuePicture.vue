@@ -1,7 +1,7 @@
 <template>
 <picture :class="className">
   <template v-for="(img,key) in imgset.sizes">
-    <source v-if="sizes[key]" :srcset="img" :media="sizes[key]" @key="key">
+    <source v-if="sizes[key]" :srcset="img" :media="sizes[key]" :key="key">
   </template>
   <img :src="imgset.sizes.max_650x650" :width="imgset.attributes.width" :height="imgset.attributes.height" />
 </picture>
@@ -13,7 +13,7 @@ export default {
     imgset: {
       type: Object,
       required: true,
-      default: {}
+      default: null
     },
     group: {
       type: String,
@@ -31,6 +31,10 @@ export default {
           'max_1300x1300': '(min-width: 651px) and (max-width: 1300px)',
           'max_1920x1920': '(min-width: 1301px) and (max-width: 1920px)',
           'max_2600x2600': '(min-width: 1921px)'
+        },
+        half: {
+          'max_650x650': '(max-width: 1300px)',
+          'max_1300x1300': '(min-width: 1301px)'
         }
       }
     }

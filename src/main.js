@@ -5,6 +5,9 @@ import axios from 'axios'
 import App from './App'
 import router from './router'
 import VueLocalStorage from 'vue-localstorage'
+
+import utils from './utils/utils'
+
 Vue.use(VueLocalStorage, {
   name: 'ls',
   bind: true //created computed members from your variable declarations
@@ -22,6 +25,7 @@ new Vue({
     bus,
     cmsApi: '/jsonstyles/',
     products: [],
+    ecwidProducts: [],
     homeData: {},
     lang: 'en',
     productsSynced: false,
@@ -52,6 +56,11 @@ new Vue({
         comp.readStore()
       }
     }, 3000)
+    this.$bus.$on('siteinfo', (data) => {
+      if (data.ecwid_products) {
+        this.ecwidProducts = data.ecwid_products
+      }
+    })
   },
   methods: {
     readStore () {
@@ -68,13 +77,14 @@ new Vue({
       }
     },
     loadHome () {
+      this.fetchData('siteinfo')
       this.fetchData('page-path/home')
     },
     fetchData (subPath) {
-      let dataKey = subPath.replace(/\//g,'__')
+      let dataKey = subPath.replace(/\//g, '__')
       let stored = this.$ls.get(dataKey),
         storedData
-      if (typeof stored == 'string' && stored.indexOf('{') >= 0) {
+      if (typeof stored === 'string' && stored.indexOf('{') >= 0) {
         storedData = JSON.parse(stored)
         switch (dataKey) {
           case 'page-path__home':
@@ -82,7 +92,7 @@ new Vue({
             break
         }
       }
-      let hasData = storedData !== null && typeof storedData == 'object'
+      let hasData = storedData !== null && typeof storedData === 'object'
       if (hasData) {
         hasData = storedData.valid === true
       }
@@ -94,59 +104,46 @@ new Vue({
           subPath += '?lang=' + this.lang
         }
         axios.get(this.cmsApi + subPath)
-        .then( (response) => {
-        if (response.data) {
-            comp.$bus.$emit(dataKey, response.data)
-            this.$ls.set(dataKey, JSON.stringify(response.data))
-          }
-        })
-        .catch(e => {
-          console.log(e)
-        })
+          .then(response => {
+            if (response.data) {
+              comp.$bus.$emit(dataKey, response.data)
+              this.$ls.set(dataKey, JSON.stringify(response.data))
+            }
+          })
+          .catch(e => {
+            console.log(e)
+          })
       }
     },
     updateStoreRefs (elems) {
       this.products = []
-      for (let i = 0, elem, cls, prod, img, srcSet, pr, prTxt; i < elems.length; i++) {
+      for (let i = 0, elem, cls, prod, img, srcSet,ep; i < elems.length; i++) {
         elem = elems.item(i)
         cls = elem.classList
         if (cls.length > 1) {
           for (let j = 0; j < cls.length; j++) {
             if (cls.item(j).indexOf('grid-product--id') === 0) {
               prod = { id: cls.item(j).split('-').pop(), price: 0.00 }
-              img = elem.querySelector('.grid-product__image-wrap img');
+              img = elem.querySelector('.grid-product__image-wrap img')
               if (img) {
                 srcSet = img.getAttribute('srcset')
                 if (srcSet) {
-                  prod.img = srcSet.split(',').pop().replace(/\s*\dx/,'');
-                }
-              }
-              pr = elem.querySelector('.grid-product__price-amount');
-              if (pr) {
-                prTxt = pr.textContent
-                if (typeof prTxt == 'string') {
-                  prTxt = prTxt.replace(/[^0-9,.]/g,'').replace(/(\d+)\.,(\d\d\d)/,"$1$2").replace(/,(\d\d)\b/g,'.');
-                  if (prTxt.length > 0) {
-                    prod.price = parseFloat(prTxt)
+                  prod.img = srcSet.split(',').pop().replace(/\s*\dx/, '')
+                  ep = this.ecwidProducts.find(p => p.id === prod.id)
+                  if (ep) {
+                    prod.title = ep.title
+                    prod.price = ep.price
+                    prod.price_formatted = ep.price_formatted
                   }
+                  this.products.push(prod)
                 }
-              }
-              pr = elem.querySelector('.grid-product__title');
-              if (pr) {
-                prTxt = pr.textContent
-                if (typeof prTxt == 'string') {
-                  prod.title = prTxt
-                }
-              }
-              if (img) {
-                this.products.push(prod)
               }
             }
           }
         }
       }
       let seri = JSON.stringify(this.products)
-      this.$ls.set('products',seri)
+      this.$ls.set('products', seri)
       this.productsSynced = true
       this.$bus.$emit('load-products', this.products)
     },
@@ -154,13 +151,13 @@ new Vue({
       let hash = window.location.hash
       this.$bus.$emit('hide-menu', true)
       if (hash.length > 1) {
-        if (addBodyClass) {
+        if (utils.addBodyClass) {
           if (hash.indexOf('#/!/') === 0) {
             this.showStore = true
             if (hash.indexOf('/offset=') < 0) {
-              addBodyClass('show-store')
+              utils.addBodyClass('show-store')
             } else {
-              removeBodyClass('show-store')
+              utils.removeBodyClass('show-store')
             }
             if (hash.indexOf('/cart') > 0) {
               let lbl = document.querySelector('.ecwid-minicart-link span')

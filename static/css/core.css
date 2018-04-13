@@ -180,6 +180,28 @@ nav ul.menu > li {
   font-size: 1.25em;
 }
 
+#app .home-pane,
+#app .detail-pane {
+  transition: opacity 0.5s ease-in-out;
+}
+
+#app.show-home .home-pane,
+#app.show-detail .detail-pane {
+  position: relative;
+  pointer-events: all;
+  z-index: 2;
+  opacity: 1;
+}
+
+#app.show-home .detail-pane,
+#app.show-detail .home-pane {
+  position: absolute;
+  top:  0;
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
 #app nav ul.menu > li a {
   width: 95%;
   display: block;
