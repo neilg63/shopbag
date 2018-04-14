@@ -16,30 +16,33 @@
     <div class="main">
       <div class="home-pane">
         <slides/>
-        <twin-images v-if="sections.length > 0" :section="sections[0]"></twin-images>
+        <template v-for="(section,index) in sections">
+          <template v-if="section.type == 'image_set'">
+             <image-set :key="index" :section="section"></image-set>
+          </template>
+        </template>
         <products/>
+        <footer id="page-footer">
+          <p>{{footer.copyright}}</p>
+        </footer>
       </div>
       <div class="detail-pane">
         <router-view/>
       </div>
     </div>
-
   </div>
 </template>
-
 <script>
-
 import Products from '@/components/Products'
 import Slides from '@/components/Slides'
-import TwinImages from '@/components/TwinImages'
+import ImageSet from '@/components/ImageSet'
 import utils from './utils/utils'
-
 export default {
   name: 'App',
   components: {
     Products,
     Slides,
-    TwinImages
+    ImageSet
   },
   data () {
     return {
@@ -50,7 +53,10 @@ export default {
       numSections: 0,
       products: [],
       numInCart: 0,
-      hasStore: false
+      hasStore: false,
+      footer: {
+        copyright: ''
+      }
     }
   },
   created () {
@@ -62,7 +68,12 @@ export default {
     if (this.$parent.homeData) {
       if (this.$parent.homeData.sections instanceof Array) {
         this.sections = this.$parent.homeData.sections
-        this.numSections = this.sections.length 
+        this.numSections = this.sections.length
+      }
+    }
+    if (this.$parent.info) {
+      if (this.$parent.info.footer) {
+        this.footer = this.$parent.info.footer
       }
     }
   },
@@ -145,9 +156,7 @@ export default {
   }
 }
 </script>
-
 <style>
-
 #app {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -156,33 +165,11 @@ export default {
   z-index: 1;
   overflow-x: hidden;
 }
-
 #app .slides-container {
   position: relative;
   width: 100vw;
   overflow: hidden;
 }
-
-#app .twin-images {
-  display:  flex;
-  flex-flow: nowrap row;
-}
-
-#app .twin-images figure {
-  max-width:  100%;
-}
-
-#app .twin-images figure img {
-  width:  100%;
-  height:  auto;
-}
-
-@media screen and (min-width: 650px) {
-  #app .twin-images figure {
-    width:  50%;
-  }
-}
-
 #app ul.flex-slides {
   position: relative;
   display: flex;
@@ -194,12 +181,10 @@ export default {
   left: 0;
   transition: left 1s ease-in-out;
 }
-
 #app ol.dot-nav,
 #app ol.arrow-nav {
   position: absolute;
 }
-
 #app ol.arrow-nav {
   top: 0;
   left: 0;
@@ -209,18 +194,15 @@ export default {
   height: 100%;
   pointer-events: none;
 }
-
 #app .top-slides ol.arrow-nav {
   height: 100vh;
   max-height: 100vw;
 }
-
 #app ol.dot-nav {
   bottom: 8%;
   right: 2.5vw;
   z-index: 90;
 }
-
 #app ol.dot-nav li {
   cursor: pointer;
   font-size: 1.5em;
@@ -232,11 +214,9 @@ export default {
   transition: all .5s ease-in-out;
   display: inline-block;
 }
-
 #app ol.dot-nav li:hover {
   opacity: 1;
 }
-
 #app ol.dot-nav li:before {
   font-family: icomoon;
   content: '\e601';
@@ -244,11 +224,9 @@ export default {
 #app ol.dot-nav li.active {
   transform: scale(1.2);
 }
-
 #app ol.dot-nav li.active:before {
   content: '\e602';
 }
-
 #app ol.arrow-nav > li {
   pointer-events: all;
   width: 10vw;
@@ -264,18 +242,15 @@ export default {
   font-size: 6vw;
   transform: scale(0.8);
 }
-
 #app ol.arrow-nav li:before {
   position: absolute;
   top: 40%;
   width: 1.5em;
 }
-
 #app ol.arrow-nav li:hover {
   opacity: 0.75;
   transform: scale(1);
 }
-
 #app ol.arrow-nav li.next:before,
 #app ol.arrow-nav li.next {
   right: 0;
@@ -284,23 +259,19 @@ export default {
 #app ol.arrow-nav li.prev {
   left: 0;
 }
-
 #app .top-slides ul.flex-slides {
   display: flex;
   margin-top: 10vh;
 }
-
 #app .top-slides ul.flex-slides,
 #app .top-slides {
   overflow: hidden;
 }
-
 #app .top-slides ul.flex-slides li figure img,
 #app .top-slides ul.flex-slides,
 #app .top-slides {
   height: 90vh;
 }
-
 #app .top-slides ul.flex-slides li figure {
   display: flex;
   flex-flow: nowrap row;
@@ -309,15 +280,12 @@ export default {
   position: relative;
   max-height: 100%;
 }
-
 #app .top-slides ul.flex-slides li figure img {
   width:  auto;
 }
-
 #app .top-slides ul.flex-slides li figure.left {
   justify-content: flex-start;
 }
-
 #app .top-slides ul.flex-slides li figure.right {
   justify-content: flex-end;
 }
@@ -325,32 +293,26 @@ export default {
   max-height: 100vh;
   overflow: hidden;
 }
-
 #app .page-section ul.flex-slides > li img {
   max-width: 100%;
 }
-
 @media screen and (min-width: 48em) {
   #app .per-row-2 ul.flex-slides li figure,
   #app .per-row-2 ul.flex-slides > li {
     max-width: 50vw;
   }
-
   #app .per-row-2 .arrow-nav li {
     max-height: 40vw;
     height: 40vw;
   }
-
   #app .per-row-2 .dot-nav li.extra {
     display: none;
   }
 }
-
 #app .top-slides {
   position: relative;
   margin-top: -6em;
 }
-
 @media screen and (orientation: portrait) {
   #app .top-slides ul.flex-slides li figure img,
   #app .top-slides ul.flex-slides,
@@ -359,50 +321,42 @@ export default {
     max-height: 100vw;
   }
 }
-
 /*@media screen and (min-width: 50em) {
   #app .top-slides,
   #app .top-slides ul.flex-slides li figure {
     max-height: 90vw;
   }
 }
-
 @media screen and (min-width: 60em) {
   #app .top-slides,
   #app .top-slides ul.flex-slides li figure {
     max-height: 80vw;
   }
 }
-
 @media screen and (min-width: 70em) {
   #app .top-slides,
   #app .top-slides ul.flex-slides li figure {
     max-height: 75vw;
   }
 }
-
 @media screen and (min-width: 75em) {
   #app .top-slides,
   #app .top-slides ul.flex-slides li figure {
     max-height: 70vw;
   }
 }
-
 @media screen and (min-width: 80em) {
   #app .top-slides,
   #app .top-slides ul.flex-slides li figure {
     max-height: 66vw;
   }
 }*/
-
 #app ul.flex-slides.item-1 {
   left: -100vw;
 }
-
 #app ul.flex-slides.item-2 {
   left: -200vw;
 }
-
 #app ul.flex-slides.item-3 {
   left: -300vw;
 }
@@ -421,7 +375,6 @@ export default {
 #app ul.flex-slides.item-8 {
   left: -800vw;
 }
-
 #app ul.flex-slides.item-9 {
   left: -900vw;
 }
@@ -434,65 +387,50 @@ export default {
 #app ul.flex-slides.item-12 {
   left: -1200vw;
 }
-
 #app ul.flex-slides.item-13 {
   left: -1300vw;
 }
-
 #app ul.flex-slides.item-14 {
   left: -1400vw;
 }
-
 #app ul.flex-slides.item-15 {
   left: -1500vw;
 }
-
 #app ul.flex-slides.item-16 {
   left: -1600vw;
 }
-
 #app ul.flex-slides.item-17 {
   left: -1700vw;
 }
-
 #app ul.flex-slides.item-18 {
   left: -1800vw;
 }
-
 #app ul.flex-slides.item-19 {
   left: -1900vw;
 }
-
 #app ul.flex-slides.item-20 {
   left: -2000vw;
 }
-
 #app ul.flex-slides.item-21 {
   left: -2100vw;
 }
-
 #app ul.flex-slides.item-22 {
   left: -2200vw;
 }
-
 #app ul.flex-slides.item-23 {
   left: -2300vw;
 }
-
 #app ul.flex-slides.item-24 {
   left: -2400vw;
 }
-
 #app ul.flex-slides > li {
   margin: 0;
   padding: 0 0 1em 0;
   width: 100vw;
 }
-
 #app ul.flex-slides li figure {
   width: 100%;
 }
-
 .back-to {
   position: absolute;
   top: 0.25em;
@@ -501,19 +439,16 @@ export default {
   opacity: 0;
   pointer-events: none;
 }
-
 .cart-loaded .back-to-cart,
 .show-store .back-to-main {
   opacity: 1;
   pointer-events: all;
   cursor: pointer;
 }
-
 #app .main {
   transition: opacity 0.5s ease-in-out;
   margin-top: 5em;
 }
-
 body.show-store #app .main {
   position: fixed;
   z-index: -1;
@@ -521,5 +456,4 @@ body.show-store #app .main {
   height: 0;
   overflow: hidden;
 }
-
 </style>

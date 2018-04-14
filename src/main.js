@@ -27,6 +27,7 @@ new Vue({
     products: [],
     ecwidProducts: [],
     homeData: {},
+    info: {},
     lang: 'en',
     productsSynced: false,
     hasStore: false,
@@ -59,6 +60,7 @@ new Vue({
     this.$bus.$on('siteinfo', (data) => {
       if (data.ecwid_products) {
         this.ecwidProducts = data.ecwid_products
+        this.info = data
       }
     })
   },
