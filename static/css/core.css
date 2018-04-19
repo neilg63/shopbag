@@ -38,14 +38,28 @@ body {
   animation: loader 2s 1;
 }
 
-#loading-overlay .logo,
-#loading-overlay .lucia {
+#loading-overlay .element {
   position: absolute;
+}
+
+#loading-overlay .bg {
   left: 10%;
   right: 10%;
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center center;
+}
+
+#loading-overlay .progress {
+  top: 5%;
+  left: 5%;
+  width: 25%;
+  height: 25%;
+}
+
+#loading-overlay .progress img {
+  width: 100%;
+  height: 100%;
 }
 
 #loading-overlay .lucia {
@@ -56,9 +70,10 @@ body {
 }
 
 #loading-overlay .logo {
-  bottom: 2.5%;
-  height: 12vh;
+  bottom: 1%;
+  height: 10vh;
   background-image: url(/static/images/logo-font-black.svg);
+  transform: scale(1.5,0.6667) skew(-5deg);
   animation: loading-logo 2s 1;
 }
 
@@ -73,22 +88,23 @@ body {
 
 @keyframes lucia {
   0% {
-    transform: scale(0.8) translate(0,0);
-    
+    transform: scale(0.75);
+    opacity: 0.5;
   }
   100% {
-    transform: scale(1) translate(0,-10%);
+    transform: scale(1);
+    opacity: 1;
   }
 }
 
 @keyframes loading-logo {
   0% {
     opacity: 0;
-    transform: scale(1,1) skew(-10deg);
+    transform: scale(1,1) skew(0deg);
   }
   100% {
     opacity: 0.75;
-    transform: scale(1.25,0.75) skew(0deg);
+    transform: scale(1.5,0.6667) skew(-5deg);
   }
 }
 

@@ -39,6 +39,7 @@ new Vue({
   template: '<App/>',
   data: {
     bus,
+    version: 0.1,
     cmsApi: '/jsonstyles/',
     products: [],
     ecwidProducts: [],
@@ -126,12 +127,15 @@ new Vue({
           storedData = JSON.parse(stored)
         }
         let hasData = storedData !== null && typeof storedData === 'object'
+        
+      
         if (hasData) {
-          hasData = storedData.valid === true
+          hasData = storedData.valid === true && storedData.hasOwnProperty('version')
+          if (hasData) {
+            hasData = storedData.version === this.version
+          }          
         }
-
         if (hasData) {
-          this.$bus.$emit(pageKey, storedData)
           if (pageKey == 'page') {
               this.$bus.$emit('show-detail', true)
               setTimeout(() => {
@@ -139,7 +143,15 @@ new Vue({
               },250)
           }
           if (subPath == 'siteinfo') {
-            comp.homeLoaded = true
+            this.homeLoaded = true
+            setTimeout(() => {
+              comp.$bus.$emit('siteinfo', storedData)
+              setTimeout(() => {
+                utils.removeBodyClass('show-loading')
+              },1800);
+            },600)
+          } else {
+            this.$bus.$emit(pageKey, storedData)
           }
         } else {
           if (this.lang !== 'en') {
@@ -148,6 +160,7 @@ new Vue({
           axios.get(this.cmsApi + subPath)
             .then(response => {
               if (response.data) {
+                response.data.version = comp.version
                 comp.$bus.$emit(pageKey, response.data)
                 this.$ls.set(dataKey, JSON.stringify(response.data))
                 if (pageKey == 'page') {

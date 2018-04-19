@@ -25,6 +25,34 @@ var utils = {
   swapBodyClass: function(classNameRem,classNameAdd) {
     utils.removeBodyClass(classNameRem);
     return utils.addBodyClass(classNameAdd);
+  },
+
+  expandImagePath: function(src, key) {
+    if (src.indexOf('/files/') < 0) {
+      switch (key) {
+        case 'orig':
+          return '/files/' + src
+         default:
+          return '/files/styles/'+key+'/public/' + src
+      }
+    }
+    return src
+  },
+
+  expandFilePath: function(path) {
+    return utils.expandImagePath(src,'orig')
+  },
+
+  expandImageSize: function(sizes, key) {
+    if (sizes instanceof Object && sizes !== null) {
+      if (sizes.hasOwnProperty(key)) {
+        return utils.expandImagePath(sizes[key], key);
+      }
+    }
+  },
+
+  expandImageOrig: function(sizes, key) {
+    return utils.expandImageSize(sizes, 'orig');
   }
 };
 
