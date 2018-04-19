@@ -25,6 +25,78 @@ body {
   padding: 0;
 }
 
+#loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  z-index: -1;
+  background-color:  rgb(228,228,228);
+  transition: opacity 1s ease-in-out, z-index 0s linear 1s;
+  animation: loader 2s 1;
+}
+
+#loading-overlay .logo,
+#loading-overlay .lucia {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center center;
+}
+
+#loading-overlay .lucia {
+  top: 10%;
+  bottom: 10%;
+  background-image: url(/static/images/santa-lucia-di-siracusa.svg);
+  animation: lucia 2s 1;
+}
+
+#loading-overlay .logo {
+  bottom: 2.5%;
+  height: 12vh;
+  background-image: url(/static/images/logo-font-black.svg);
+  animation: loading-logo 2s 1;
+}
+
+@keyframes loader {
+  0% {
+    background-color: rgb(255,255,255);
+  }
+  100% {
+    background-color: rgb(228,228,228);
+  }
+}
+
+@keyframes lucia {
+  0% {
+    transform: scale(0.8) translate(0,0);
+    
+  }
+  100% {
+    transform: scale(1) translate(0,-10%);
+  }
+}
+
+@keyframes loading-logo {
+  0% {
+    opacity: 0;
+    transform: scale(1,1) skew(-10deg);
+  }
+  100% {
+    opacity: 0.75;
+    transform: scale(1.25,0.75) skew(0deg);
+  }
+}
+
+body.show-loading #loading-overlay {
+  z-index: 100;
+  opacity: 1;
+}
+
 #app .store-nav .bg-solid,
 body {
   background-color:  rgb(228,228,228);
@@ -134,8 +206,13 @@ html#ecwid_html body#ecwid_body.show-store {
   transform: rotate(90deg) scale(0.8,1.25);
 }
 
+.show-menu .menu-toggle:hover {
+  transform: rotate(90deg) scale(0.8,1.25) skew(7.5deg);
+}
+
 .menu-toggle:hover {
   opacity: 0.75;
+  transform: skew(-7.5deg);
 }
 
 #app nav ul.menu,
@@ -153,7 +230,7 @@ html#ecwid_html body#ecwid_body.show-store {
   opacity: 0;
   z-index: -1;
   pointer-events: none;
-  transition: opacity .5s ease-in-out, max-height 1s ease-in-out;
+  transition: opacity .6667s ease-in-out, max-height 1s ease-in-out;
   background-color: white;
   max-height: 1em;
   overflow: hidden;
@@ -163,7 +240,7 @@ html#ecwid_html body#ecwid_body.show-store {
   opacity: 1;
   pointer-events: all;
   z-index: 10;
-  max-height: 20em;
+  max-height: 30em;
 }
 
 #app.show-menu nav.store-nav .bg-menu {
@@ -185,6 +262,10 @@ nav ul.menu > li {
   transition: opacity 0.5s ease-in-out;
 }
 
+#app .detail-pane {
+  padding: 0 2.5%;
+}
+
 #app.show-home .home-pane,
 #app.show-detail .detail-pane {
   position: relative;
@@ -200,6 +281,8 @@ nav ul.menu > li {
   opacity: 0;
   pointer-events: none;
   z-index: -1;
+  height: 0;
+  overflow: hidden;
 }
 
 #app nav ul.menu > li a {
@@ -227,7 +310,6 @@ nav ul.menu > li {
   font-size: 1em;
   margin-left: 3em;
   padding: 0.125em;
-
 }
 
 #app .show-cart.has-items {

@@ -114,6 +114,8 @@ export default {
 #app .image-set .flex-row {
   display:  flex;
   flex-flow: wrap row;
+  justify-content: center;
+  align-items: center;
 }
 #app section.image-set .slide-nav {
   position: absolute;
@@ -130,13 +132,13 @@ export default {
 }
 #app .image-set {
   max-width:  100%;
+  background-color: white;
 }
 #app section.image-set .slides-2 {
   position: relative;
   flex-flow: nowrap row;
   width: 1000%;
   overflow: hidden;
-  background-color: white;
 }
 #app section.image-set.anim .slides-2 {
   animation: twinslides 10s infinite;
@@ -264,8 +266,36 @@ export default {
     left: 0;
   }
 }
+
+#app .image-set .row-6,
+#app .image-set .row-5 {
+  overflow: hidden;
+}
+
+
+#app .image-set .row-6 figure {
+  width:  50%;
+  max-width: 50vw;
+}
+
+#app .image-set .row-6 figure img,
+#app .image-set .row-5 figure img {
+  position: relative;
+  transition: transform 0.75s ease-in-out;
+  transform: scale(1);
+  z-index: 3;
+  padding: 1.5vw 3vw;
+  cursor: pointer;
+}
+
+#app .image-set .row-6 figure:hover img,
+#app .image-set .row-5 figure:hover img {
+  transform: scale(1.5);
+  z-index: 20;
+}
+
+
 @media screen and (min-width: 650px) {
-  #app .image-set .row-6 figure,
   #app .image-set .row-5 figure,
   #app .image-set .row-4 figure,
   #app .image-set .row-2 figure {
@@ -291,6 +321,10 @@ export default {
   }
   #app .image-set .row-4 figure {
     width:  25%;
+  }
+  #app .image-set .row-6 figure:hover img,
+  #app .image-set .row-5 figure:hover img {
+    transform: scale(2);
   }
 }
 </style>

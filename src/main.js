@@ -4,9 +4,25 @@ import Vue from 'vue'
 import axios from 'axios'
 import App from './App'
 import router from './router'
+import utils from './utils/utils'
 import VueLocalStorage from 'vue-localstorage'
 
-import utils from './utils/utils'
+var VueScrollTo = require('vue-scrollto');
+
+// You can also pass in the default options
+Vue.use(VueScrollTo, {
+  container: "body",
+  duration: 500,
+  easing: "ease",
+  offset: 0,
+  cancelable: true,
+  onStart: false,
+  onDone: false,
+  onCancel: false,
+  x: false,
+  y: true
+})
+
 
 Vue.use(VueLocalStorage, {
   name: 'ls',
@@ -26,19 +42,20 @@ new Vue({
     cmsApi: '/jsonstyles/',
     products: [],
     ecwidProducts: [],
-    homeData: {},
-    info: {},
     lang: 'en',
     productsSynced: false,
     hasStore: false,
     showStore: false,
-    readInterval: null
+    readInterval: null,
+    fetching: false,
+    homeLoaded: false,
+    pages: {}
   },
   created () {
     this.detectLanguage()
     this.updatePath()
-    window.addEventListener('hashchange',this.updatePath)
     let comp = this
+
     let matchedProducts = false
     let storedProductsData = this.$ls.get('products')
     if (typeof storedProductsData === 'string') {
@@ -51,18 +68,25 @@ new Vue({
         }
       }
     }
+
     this.loadHome()
+    
     this.readInterval = setInterval(() => {
       if (!comp.hasStore) {
         comp.readStore()
       }
     }, 3000)
-    this.$bus.$on('siteinfo', (data) => {
-      if (data.ecwid_products) {
-        this.ecwidProducts = data.ecwid_products
-        this.info = data
+    setTimeout(() => {
+      this.updateDetail(comp.$route.path)
+    }, 1000)
+  },
+  watch:{
+    $route (to, from){
+      if (to.path) {
+        this.$bus.$emit('hide-menu', true)
+        this.updateDetail(to.path)
       }
-    })
+    }
   },
   methods: {
     readStore () {
@@ -80,41 +104,83 @@ new Vue({
     },
     loadHome () {
       this.fetchData('siteinfo')
-      this.fetchData('page-path/home')
+      let comp = this
+      setTimeout(() => {
+        if (!comp.homeLoaded) {
+          comp.loadHome()
+        }
+      },500)
     },
-    fetchData (subPath) {
+    fetchData (subPath, pageKey) {
       let dataKey = subPath.replace(/\//g, '__')
-      let stored = this.$ls.get(dataKey),
-        storedData
-      if (typeof stored === 'string' && stored.indexOf('{') >= 0) {
-        storedData = JSON.parse(stored)
-        switch (dataKey) {
-          case 'page-path__home':
-            this.homeData = storedData
-            break
+      //subPath = subPath.replace('page-path/','')
+      let comp = this
+      if (!this.fetching) {
+        this.fetching = true
+        if (!pageKey) {
+          pageKey = dataKey
+        }
+        let stored = this.$ls.get(dataKey),
+          storedData
+        if (typeof stored === 'string' && stored.indexOf('{') >= 0) {
+          storedData = JSON.parse(stored)
+        }
+        let hasData = storedData !== null && typeof storedData === 'object'
+        if (hasData) {
+          hasData = storedData.valid === true
+        }
+
+        if (hasData) {
+          this.$bus.$emit(pageKey, storedData)
+          if (pageKey == 'page') {
+              this.$bus.$emit('show-detail', true)
+              setTimeout(() => {
+                comp.fetching = false
+              },250)
+          }
+          if (subPath == 'siteinfo') {
+            comp.homeLoaded = true
+          }
+        } else {
+          if (this.lang !== 'en') {
+            subPath += '?lang=' + this.lang
+          }
+          axios.get(this.cmsApi + subPath)
+            .then(response => {
+              if (response.data) {
+                comp.$bus.$emit(pageKey, response.data)
+                this.$ls.set(dataKey, JSON.stringify(response.data))
+                if (pageKey == 'page') {
+                  this.$bus.$emit('show-detail', true)
+                }
+                if (subPath == 'siteinfo') {
+                  comp.homeLoaded = true
+                }
+                setTimeout(() => {
+                  comp.fetching = false
+                },125)
+              }
+            })
+            .catch(e => {
+              console.log(e)
+            })
         }
       }
-      let hasData = storedData !== null && typeof storedData === 'object'
-      if (hasData) {
-        hasData = storedData.valid === true
-      }
-      if (hasData) {
-        this.$bus.$emit(dataKey, storedData)
-      } else {
-        let comp = this
-        if (this.lang !== 'en') {
-          subPath += '?lang=' + this.lang
+      setTimeout(() => {
+        comp.fetching = false
+      },1000)
+    },
+    fetchPage (path) {
+      let pk = '/' + path, matched = false
+      if (this.pages.hasOwnProperty(pk)) {
+        if (this.pages[pk].valid) {
+          matched = true 
+          this.$bus.$emit('show-detail', true)
+          this.$bus.$emit('page', this.pages[pk])
         }
-        axios.get(this.cmsApi + subPath)
-          .then(response => {
-            if (response.data) {
-              comp.$bus.$emit(dataKey, response.data)
-              this.$ls.set(dataKey, JSON.stringify(response.data))
-            }
-          })
-          .catch(e => {
-            console.log(e)
-          })
+      }
+      if (!matched) {
+        this.fetchData('page-path/' + path,'page')
       }
     },
     updateStoreRefs (elems) {
@@ -149,6 +215,18 @@ new Vue({
       this.productsSynced = true
       this.$bus.$emit('load-products', this.products)
     },
+    updateDetail (path) {
+      path = path.replace(/^\//,'')
+        switch (path) {
+          case '':
+          case 'home':
+            this.$bus.$emit('show-detail', false)
+            break
+          default:
+            this.fetchPage(path)
+            break
+        }
+    },
     updatePath () {
       let hash = window.location.hash
       this.$bus.$emit('hide-menu', true)
@@ -170,6 +248,8 @@ new Vue({
           }
         }
       }
+      this.$scrollTo('#top', 500)
+      this.updateDetail(this.$route.path)
     },
     detectLanguage () {
       if (window.navigator.language) {

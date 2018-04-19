@@ -1,9 +1,14 @@
 <template>
 <picture :class="className">
+  <template v-if="imgset.picture">
   <template v-for="(img,key) in imgset.sizes">
-    <source v-if="sizes[key]" :srcset="img" :media="sizes[key]" :key="key">
+      <source v-if="sizes[key]" :srcset="img" :media="sizes[key]" :key="key">
+    </template>
+    <img :src="imgset.sizes.max_650x650" :width="imgset.attributes.width" :height="imgset.attributes.height" />
   </template>
-  <img :src="imgset.sizes.max_650x650" :width="imgset.attributes.width" :height="imgset.attributes.height" />
+  <template v-if="!imgset.picture">
+    <img :src="imgset.sizes.orig" :width="imgset.attributes.width" :height="imgset.attributes.height" />
+  </template>
 </picture>
 </template>
 <script type="text/javascript">
@@ -42,6 +47,26 @@ export default {
   created () {
     if (this.sizeGroups[this.group]) {
       this.sizes = this.sizeGroups[this.group]
+      let srcs = {}, keys = Object.keys(this.imgset.sizes), i = 0, key, src
+      for (; i < keys.length; i++) {
+        key = keys[i]
+        src = this.imgset.sizes[key]
+        srcs[key] = this.translateFilePath(src, key)
+      }
+      this.imgset.sizes = srcs
+    }
+  },
+  methods: {
+    translateFilePath (src, key) {
+      if (src.indexOf('/files/') < 0) {
+        switch (key) {
+          case 'orig':
+            return '/files/' + src
+           default:
+            return '/files/styles/'+key+'/public/' + src
+        }
+      }
+      return src
     }
   }
 }

@@ -6,10 +6,10 @@
       <div class="bg-menu bg-element"></div>
       <div class="menu-toggle icon-menu" v-on:click.stop="toggleMenu()"></div>
       <ul class="menu">
-        <li v-for="item in menu" :key="item.link"><a :href="item.link">{{item.label}}</a></li>
+        <li v-for="item in menu" :key="item.link"><router-link v-bind:to="item.link">{{item.title}}</router-link></li>
       </ul>
       <div class="show-cart" :class="{'has-items': numInCart > 0}" v-on:click="showCheckout()"><span class="num">{{numInCart}}</span></div>
-      <div id="main-logo" @click="backToMain()"></div>
+      <div id="main-logo" @click="logoAction()"></div>
       <div class="back-to back-to-main" v-on:click="backToMain()">Back</div>
       <div class="back-to back-to-cart" v-on:click="backToCart()">Back</div>
     </nav>
@@ -27,7 +27,9 @@
         </footer>
       </div>
       <div class="detail-pane">
-        <router-view/>
+         <keep-alive>
+          <router-view/>
+        </keep-alive>
       </div>
     </div>
   </div>
@@ -65,21 +67,50 @@ export default {
     this.$bus.$on('hide-menu', () => {
       comp.showMenu = false
     })
-    if (this.$parent.homeData) {
-      if (this.$parent.homeData.sections instanceof Array) {
-        this.sections = this.$parent.homeData.sections
-        this.numSections = this.sections.length
-      }
+    let path = this.$route.path.replace(/^\//, '')
+    if (path.length < 2) {
+      path = 'home'
     }
-    if (this.$parent.info) {
-      if (this.$parent.info.footer) {
-        this.footer = this.$parent.info.footer
-      }
+    switch (path) {
+      case 'home':
+        this.showDetail = false
+        break
+      default:
+        this.showDetail = true
+        break
     }
+    this.$bus.$on('siteinfo', (data) => {
+      if (data.home) {
+        if (data.home.images instanceof Array) {
+          this.$bus.$emit('load-slides', data.home.images)
+        }
+        if (data.home.sections instanceof Array) {
+          comp.sections = data.home.sections
+          comp.numSections = comp.sections.length
+        }
+      }
+      if (data.ecwid_products) {
+        comp.ecwidProducts = data.ecwid_products
+      }
+      if (data.pages) {
+        comp.$parent.pages = data.pages
+      }
+      if (data.menu) {
+        comp.loadMenu(data.menu)
+      }
+      if (data.footer) {
+        comp.footer = data.footer
+      }
+      setTimeout(() => {
+        utils.removeBodyClass('show-loading')
+      },1000)
+    })
+    this.$bus.$on('show-detail', (status) => {
+      comp.showDetail = status === true
+    })
   },
   mounted () {
     let comp = this
-    this.loadMenu()
     this.$bus.$on('store-loaded', (data) => {
       comp.updateCounter()
       comp.hasStore = true
@@ -87,28 +118,20 @@ export default {
     })
   },
   methods: {
-    loadMenu () {
-      this.menu = [
-        {
-          link: '/',
-          label: 'Home'
-        },
-        {
-          link: '/about',
-          label: 'About'
-        },
-        {
-          link: '/terms',
-          label: 'Terms and conditions'
-        },
-        {
-          link: '/blog',
-          label: 'Blog'
-        }
-      ]
+    loadMenu (data) {
+      if (data instanceof Array) {
+        this.menu = data
+      }
     },
     toggleMenu () {
       this.showMenu = !this.showMenu
+    },
+    logoAction () {
+      if (this.$parent.showStore) {
+        this.backToMain()
+      } else {
+        this.toggleMenu()
+      }
     },
     backToMain () {
       this.updateCounter()
@@ -116,9 +139,11 @@ export default {
       if (el) {
         el.click()
         utils.removeBodyClass('show-store')
+
       } else {
         utils.swapBodyClass('show-store', 'cart-loaded')
       }
+      this.$parent.showStore = false
       this.showMenu = false
       window.location = '#'
     },

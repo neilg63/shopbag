@@ -41,21 +41,14 @@ export default {
   },
   created () {
     let comp = this
-    let hd = this.$parent.$parent.homeData
-    if (hd) {
-      if (hd.images) {
-        this.readData(hd)
-      }
-    }
-    this.$bus.$on('page-path__home', (data) => {
-      comp.readData(data)
-    })
+    this.$bus.$on('load-slides', (images) => {
+      comp.readData(images)
+    });
   },
   methods: {
-    readData (data) {
-      let d = data
-      if (d.valid && d.images) {
-        d.images = d.images.map(img => {
+    readData (images) {
+      if (images instanceof Array) {
+        this.images = images.map(img => {
           if (!img.alignment) {
             img.alignment = 'center'
           }
@@ -66,11 +59,9 @@ export default {
           if (!img.has_styles) {
             img.styles = ''
           }
-          img.sizes = this.mapSizes(img.sizes)
           return img
         })
-        this.images = d.images
-        this.numImages = d.images.length
+        this.numImages = this.images.length
       }
     },
     showNext (forward) {
@@ -91,19 +82,6 @@ export default {
       if (index >= 0 && index < this.numImages) {
         this.index = index
       }
-    },
-    mapSizes (sizes) {
-      let ks = Object.keys(sizes), nk = ks.length, i = 0, k, pre
-      let map = {}
-      for (; i < nk; i++) {
-        k = ks[i]
-        pre = ''
-        if (sizes[k].indexOf('://') < 0) {
-          pre = this.imgUrl
-        }
-        map[k] = pre + sizes[k] 
-      }
-      return map
     }
   }
 }
