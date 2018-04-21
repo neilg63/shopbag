@@ -108,6 +108,10 @@ export default {
     this.$bus.$on('show-detail', (status) => {
       comp.showDetail = status === true
     })
+    this.$bus.$on('show-ecwid-product', (id) => {
+      let prod = {id: id}
+      comp.showEcwidProduct(prod)
+    })
   },
   mounted () {
     let comp = this
@@ -127,7 +131,9 @@ export default {
       this.showMenu = !this.showMenu
     },
     logoAction () {
-      if (this.$parent.showStore) {
+      if (this.showDetail && !this.$parent.showStore) {
+        this.$router.push({ name: "Home"})
+      } else if (this.$parent.showStore) {
         this.backToMain()
       } else {
         this.toggleMenu()
@@ -152,20 +158,23 @@ export default {
       utils.addBodyClass('show-store')
     },
     showCheckout () {
-      let el = document.querySelector('.ecwid-minicart .gwt-InlineLabel')
+      let el = document.querySelector('.footer__link--shopping-cart')
       if (el) {
         el.click()
         utils.addBodyClass('show-store')
       }
     },
     updateCounter () {
-      let sb = document.querySelector('div.ecwid-minicart .ecwid-minicart-counter')
+      let sb = document.querySelector('.footer__link--shopping-cart')
       if (sb) {
         let txt = sb.textContent
         if (txt.length > 0) {
-          let num = parseInt(txt)
-          if (!isNaN(num)) {
-            this.numInCart = num
+          let m = txt.match(/\((\d+)\)/)
+          if (m) {
+            let num = parseInt(m[1])
+            if (!isNaN(num)) {
+              this.numInCart = num
+            }
           }
         }
       }

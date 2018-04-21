@@ -51,10 +51,18 @@ body {
 }
 
 #loading-overlay .progress {
-  top: 5%;
-  left: 5%;
   width: 25%;
   height: 25%;
+}
+
+#loading-overlay .progress-left {
+  top: 5%;
+  left: 5%;
+}
+
+#loading-overlay .progress-right {
+  top: 35%;
+  right: 5%;
 }
 
 #loading-overlay .progress img {
@@ -63,8 +71,8 @@ body {
 }
 
 #loading-overlay .lucia {
-  top: 10%;
-  bottom: 10%;
+  top: 15%;
+  bottom: 15%;
   background-image: url(/static/images/santa-lucia-di-siracusa.svg);
   animation: lucia 2s 1;
 }
@@ -130,10 +138,18 @@ body {
   transition: opacity .125s ease-in-out;
 }
 
+.plain,
+.plain > li,
 .dot-nav > li,
 .arrow-nav > li,
 .flex-slides > li {
   list-style: none;
+}
+
+.plain,
+.plain > li {
+  padding: 0;
+  margin: 0;
 }
 
 .flex-slides li figure {
@@ -318,7 +334,11 @@ nav ul.menu > li {
   background-position: top left;
   background-size: 3em 100%;
   opacity: 0;
-  transition: opacity 0.5s ease-in-out;
+  transform: skew(0deg);
+  transition: all 0.5s ease-in-out;
+}
+#app .show-cart:hover {
+  transform: skew(-5deg);
 }
 
 #app .show-cart .num {
@@ -471,10 +491,6 @@ html#ecwid_html body#ecwid_body.show-store .ec-size.ec-size--s .ec-store .detail
   max-width: 100%;
 }
 
-html#ecwid_html body#ecwid_body.show-store .ec-size.ec-size--xl .ec-store .ec-breadcrumbs {
-  display: none;
-}
-
 section#ecwid-store-container {
   top: 6em;
 }
@@ -482,14 +498,6 @@ section#ecwid-store-container {
 section#ecwid-store-container,
 #app .bg-white {
     background-color: white;
-}
-
-html#ecwid_html body#ecwid_body.front div.ecwid-minicart {
-  opacity: 0;
-  transition: opacity 1s ease-in-out;
-  width: 8em;
-  height: 8em;
-  pointer-events: none;
 }
 
 html#ecwid_html body#ecwid_body.show-cart-widget div.ecwid-minicart {
@@ -594,6 +602,8 @@ html#ecwid_html body#ecwid_body.show-store .ec-size .ec-store .likely__widget:ho
   background: none;
 }
 
+html#ecwid_html body#ecwid_body.front div.ecwid-minicart,
+html#ecwid_html body#ecwid_body.show-store .ec-size.ec-size--xl .ec-store .ec-breadcrumbs,
 html#ecwid_html body#ecwid_body.show-store .ec-size .ec-store .likely__widget .likely__button {
   display: none;
 }
