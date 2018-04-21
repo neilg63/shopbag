@@ -39,7 +39,7 @@ new Vue({
   template: '<App/>',
   data: {
     bus,
-    version: 0.2,
+    version: 0.21,
     cmsApi: '/jsonstyles/',
     products: [],
     ecwidProducts: [],
@@ -56,7 +56,6 @@ new Vue({
     this.detectLanguage()
     this.updatePath()
     let comp = this
-
     let matchedProducts = false
     let storedProductsData = this.$ls.get('products')
     if (typeof storedProductsData === 'string') {
@@ -87,6 +86,15 @@ new Vue({
         this.$bus.$emit('hide-menu', true)
         this.updateDetail(to.path)
       }
+    },
+    homeLoaded (newVal) {
+      if (newVal) {
+        let hash = window.location.hash
+        if (/^#\/!/.test(hash)) {
+          this.$router.push('/')
+          this.$bus.$emit('back-to-home', true)
+        }
+      }
     }
   },
   methods: {
@@ -114,9 +122,8 @@ new Vue({
     },
     fetchData (subPath, pageKey) {
       let dataKey = subPath.replace(/\//g, '__')
-      //subPath = subPath.replace('page-path/','')
       let comp = this
-      if (!this.fetching) {
+      if (!this.fetching && dataKey.indexOf('!') < 0) {
         this.fetching = true
         if (!pageKey) {
           pageKey = dataKey

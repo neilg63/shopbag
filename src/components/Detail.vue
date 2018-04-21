@@ -190,7 +190,6 @@ export default {
       let el = document.querySelector('article.content-container')
       if (el) {
         let elInner = document.querySelector('.product-overlay')
-        console.log(elInner)
         if (elInner) {
           let style = window.getComputedStyle(elInner)
           el.style.minHeight = style.height

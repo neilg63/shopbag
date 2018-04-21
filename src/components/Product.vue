@@ -15,7 +15,7 @@
         <li class="variant" :class="{'active':variant.active}" v-on:click="setActive(variant)" :data-index="variant.imgIndex">{{variant.title}}</li>
       </template>
     </ul>
-      <div class="buy-now" v-if="selectedVariant" v-on:click="showEcwidSelector(selectedVariant)">
+      <div class="buy-now" v-if="selectedVariant" v-on:click="showEcwidSelector()">
         <p>{{selectedVariant.price_formatted}}</p>
       </div>
       <div class="catalog-body" v-html="product.intro"></div>
@@ -120,9 +120,9 @@ export default {
     close () {
       this.$parent.hasActiveProduct = false
     },
-    showEcwidSelector (variant) {
-      if (variant.id) {
-        this.$bus.$emit('show-ecwid-product', variant.id)
+    showEcwidSelector () {
+      if (this.selectedVariant.id) {
+        this.$bus.$emit('show-ecwid-product', this.selectedVariant)
       }
     }
   }

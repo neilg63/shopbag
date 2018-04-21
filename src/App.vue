@@ -108,9 +108,13 @@ export default {
     this.$bus.$on('show-detail', (status) => {
       comp.showDetail = status === true
     })
-    this.$bus.$on('show-ecwid-product', (id) => {
-      let prod = {id: id}
-      comp.showEcwidProduct(prod)
+    this.$bus.$on('show-ecwid-product', (variant) => {
+      if (variant) {
+        comp.showEcwidProduct(variant)
+      }
+    })
+    this.$bus.$on('back-to-home', (status) => {
+      comp.backToMain()
     })
   },
   mounted () {
@@ -141,6 +145,7 @@ export default {
     },
     backToMain () {
       this.updateCounter()
+      this.$router.push(this.$route.path)
       let el = document.querySelector('#ecwid-store-container .ec-breadcrumbs a')
       if (el) {
         el.click()
@@ -355,36 +360,7 @@ export default {
     max-height: 100vw;
   }
 }
-/*@media screen and (min-width: 50em) {
-  #app .top-slides,
-  #app .top-slides ul.flex-slides li figure {
-    max-height: 90vw;
-  }
-}
-@media screen and (min-width: 60em) {
-  #app .top-slides,
-  #app .top-slides ul.flex-slides li figure {
-    max-height: 80vw;
-  }
-}
-@media screen and (min-width: 70em) {
-  #app .top-slides,
-  #app .top-slides ul.flex-slides li figure {
-    max-height: 75vw;
-  }
-}
-@media screen and (min-width: 75em) {
-  #app .top-slides,
-  #app .top-slides ul.flex-slides li figure {
-    max-height: 70vw;
-  }
-}
-@media screen and (min-width: 80em) {
-  #app .top-slides,
-  #app .top-slides ul.flex-slides li figure {
-    max-height: 66vw;
-  }
-}*/
+
 #app ul.flex-slides.item-1 {
   left: -100vw;
 }
