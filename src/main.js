@@ -39,7 +39,7 @@ new Vue({
   template: '<App/>',
   data: {
     bus,
-    version: 0.21,
+    version: 0.22,
     cmsApi: '/jsonstyles/',
     products: [],
     ecwidProducts: [],
@@ -139,6 +139,7 @@ new Vue({
         if (hasData) {
           hasData = storedData.valid === true && storedData.hasOwnProperty('version')
           if (hasData) {
+            console.log(storedData.home.images)
             hasData = storedData.version === this.version
           }          
         }

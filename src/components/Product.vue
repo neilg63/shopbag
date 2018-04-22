@@ -71,7 +71,7 @@ export default {
         if (v.active) {
           comp.selectedVariant = v
         }
-        if (v.title) {
+        if (/^[A-Z]+\s*-\s*\w+/.test(v.title)) {
           v.title = v.title.replace(/^\w+\s*-/, '')
         }
         return v
@@ -178,7 +178,45 @@ export default {
   transform: scale(1.2);
 }
 
+.buy-now {
+  position: absolute;
+  top: 0;
+  right: 5%;
+  display: flex;
+  flex-flow: nowrap row;
+  cursor: pointer;
+}
+
+.buy-now .icon-sunglasses {
+  margin-left: 3em;
+  transform: scale(4) skew(0deg);
+  opacity: 0.75;
+  transition: all .33s ease-in-out;
+  width: 1em;
+  overflow: hidden;
+}
+
+.buy-now .icon-sunglasses:before {
+  position: absolute;
+  top: 0.125em;
+  right: 0;
+}
+
+.buy-now:hover .icon-sunglasses {
+  transform: scale(5) skew(-5deg);
+  opacity: 1;
+}
+
+.buy-now:hover {
+  font-style: italic;
+}
+
 @media screen and (min-width: 60em) {
+
+  #app .buy-now {
+    position: relative;
+    margin: 1em 0 1em 1em;
+  }
 
   #app .variant-selector .plain li {
     padding: 0 0 0.5em 0;
@@ -251,9 +289,10 @@ export default {
 }
 
 #app .product-overlay .close {
-  position: absolute;
-  top: 2%;
-  right: 2%;
+  position: fixed;
+  top: 3em;
+  margin-top: 2vh;
+  right: 1%;
   font-size: 1.5em;
   z-index: 50;
   cursor: pointer;
@@ -271,10 +310,15 @@ export default {
   opacity: 1;
 }
 
-.buy-now {
-  margin: 1em 0;
-  display: flex;
-  flex-flow: nowrap row;
+
+#app .product-body h2 {
+  font-size: 1.1em;
 }
+
+#app .product-body h2:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
 
 </style>

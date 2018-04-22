@@ -109,8 +109,17 @@ export default {
         this.$parent.showDetail = false
       }
       let comp = this
+      window.scrollTo(0, 0)
       window.addEventListener('resize', () => {
         comp.setHeight()
+      })
+      window.addEventListener('keyup', (e) => {
+        console.log(e.keyCode)
+        switch (e.keyCode) {
+          case 27:
+            comp.toggleActiveProduct(false)
+            break;
+        }
       })
     })
   },
@@ -201,19 +210,13 @@ export default {
 </script>
 <style>
 
-
-
 #app .detail-pane .body {
-  padding: 2em 5%;
+  padding: .5em 5% 1em 5%;
   text-align: left;
   margin: 0 auto;
 }
 
-@media screen and (min-width: 60em) {
-  #app .detail-pane .body {
-    padding: 2em;
-  }
-}
+
 
 #app .detail-pane .flex-row .body {
   max-width: 100%;
@@ -221,11 +224,24 @@ export default {
 
 #app .detail-pane .products {
   max-width: 100vw;
-  display: flex;
-  flex-flow: nowrap row;
   padding: 3% 3vw;
   margin: 0 -3%;
   background-color: white;
+}
+
+@media screen and (min-width: 40em) {
+
+  #app .detail-pane .products {
+    display: flex;
+    flex-flow: nowrap row;
+    background-color: white;
+  }
+}
+
+@media screen and (min-width: 60em) {
+  #app .detail-pane .body {
+    padding: .5em 2em 1em 2em;
+  }
 }
 
 #app .detail-pane .products figure img {
@@ -269,6 +285,14 @@ export default {
 
 #app .detail-pane .show-product .products {
   opacity: 0;
+}
+
+#app .subpanel h2 {
+  padding-top: 1em;
+}
+
+#app .detail-pane .flex-row figure.subpanel {
+  margin-top: 2em;
 }
 
 @media screen and (min-width: 650px) {

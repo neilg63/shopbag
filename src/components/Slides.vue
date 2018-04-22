@@ -63,10 +63,11 @@ export default {
     readData (images) {
       if (images instanceof Array) {
         this.numImages = images.length
+        let imgs = _.clone(images)
         let lastIndex = this.numImages - 1
-        images.push(_.clone(images[0]))
-        images.unshift(_.clone(images[lastIndex]))
-        this.images = images.map((img, index) => {
+        imgs.push(_.clone(images[0]))
+        imgs.unshift(_.clone(images[lastIndex]))
+        this.images = imgs.map((img, index) => {
           img.imgClasses = ['index-' + (index-1)]
           if (index === 0) {
             img.imgClasses.push('first')
@@ -85,7 +86,7 @@ export default {
           }
           return img
         })
-        this.navItems = images.splice(0, this.numImages)
+        this.navItems = _.clone(images)
         this.loaded = true
       }
     },

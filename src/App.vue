@@ -10,8 +10,8 @@
       </ul>
       <div class="show-cart" :class="{'has-items': numInCart > 0}" v-on:click="showCheckout()"><span class="num">{{numInCart}}</span></div>
       <div id="main-logo" @click="logoAction()"></div>
-      <div class="back-to back-to-main" v-on:click="backToMain()">Back</div>
-      <div class="back-to back-to-cart" v-on:click="backToCart()">Back</div>
+      <div class="back-to back-to-main" v-on:click="backToMain()"><span class="text">Back</span></div>
+      <div class="back-to back-to-cart" v-on:click="backToCart()"><span class="text">Back</span></div>
     </nav>
     <div class="main">
       <div class="home-pane">
@@ -21,15 +21,13 @@
              <image-set :key="index" :section="section"></image-set>
           </template>
         </template>
-        
-        <footer id="page-footer">
-          <p>{{footer.copyright}}</p>
-        </footer>
+        <vue-footer :menu="menu" :footer="footer"></vue-footer>        
       </div>
       <div class="detail-pane">
          <keep-alive>
           <router-view/>
         </keep-alive>
+        <vue-footer :menu="menu" :footer="footer" :id="inner-page-footer"></vue-footer>
       </div>
     </div>
   </div>
@@ -38,12 +36,14 @@
 /*import Products from '@/components/Products'*/
 import Slides from '@/components/Slides'
 import ImageSet from '@/components/ImageSet'
+import VueFooter from '@/components/VueFooter'
 import utils from './utils/utils'
 export default {
   name: 'App',
   components: {
     Slides,
-    ImageSet
+    ImageSet,
+    VueFooter
   },
   data () {
     return {
@@ -102,6 +102,7 @@ export default {
       }
       setTimeout(() => {
         utils.removeBodyClass('show-loading')
+        window.scrollTo(0, 0)
       },750)
     })
     this.$bus.$on('show-detail', (status) => {
@@ -335,25 +336,32 @@ export default {
   position: absolute;
   top: 0.25em;
   right: 2.5%;
-  font-size: 1.5em;
+  font-size: 2em;
   opacity: 0;
   pointer-events: none;
+  transform: scale(1.5,1);
 }
-.cart-loaded .back-to-cart,
-.show-store .back-to-main {
-  opacity: 1;
-  pointer-events: all;
-  cursor: pointer;
+
+.back-to:before {
+  font-family: icomoon;
+  content: "\e609";
 }
-#app .main {
-  transition: opacity 0.5s ease-in-out;
-  margin-top: 5em;
+
+.back-to span.text {
+  position: absolute;
+  left: -9999em;
 }
-body.show-store #app .main {
-  position: fixed;
-  z-index: -1;
-  opacity: 0;
-  height: 0;
-  overflow: hidden;
+
+footer .footer-menu {
+  display: flex;
+  flex-flow: wrap row;
+  justify-content: center;
+  align-items: center;
 }
+
+footer .footer-menu li {
+  margin: 1em;
+  padding: 0 1em;
+}
+
 </style>

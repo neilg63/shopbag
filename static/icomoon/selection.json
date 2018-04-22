@@ -4,6 +4,35 @@
     {
       "icon": {
         "paths": [
+          "M761.86 1024c113.728-206.032 132.89-520.304-313.86-509.824v253.824l-384-384 384-384v248.372c534.96-13.942 594.572 472.214 313.86 775.628z"
+        ],
+        "attrs": [
+          {}
+        ],
+        "isMulticolor": false,
+        "isMulticolor2": false,
+        "grid": 0,
+        "tags": [
+          "forward"
+        ]
+      },
+      "attrs": [
+        {}
+      ],
+      "properties": {
+        "order": 22,
+        "id": 0,
+        "name": "backward",
+        "prevSize": 32,
+        "code": 59652
+      },
+      "setIdx": 0,
+      "setId": 9,
+      "iconIdx": 0
+    },
+    {
+      "icon": {
+        "paths": [
           "M512 439.603l-362.035-362.035-72.397 72.397 362.035 362.035-362.035 362.035 72.397 72.397 362.035-362.035 362.035 362.035 72.397-72.397-362.035-362.035 362.035-362.035-72.397-72.397-362.035 362.035z"
         ],
         "attrs": [
@@ -26,7 +55,7 @@
         "prevSize": 20,
         "code": 59651
       },
-      "setIdx": 0,
+      "setIdx": 1,
       "setId": 8,
       "iconIdx": 0
     },
@@ -55,7 +84,7 @@
         "code": 59648,
         "name": "chevron-thin-right"
       },
-      "setIdx": 2,
+      "setIdx": 3,
       "setId": 6,
       "iconIdx": 0
     },
@@ -84,7 +113,7 @@
         "code": 59649,
         "name": "chevron-thin-left"
       },
-      "setIdx": 2,
+      "setIdx": 3,
       "setId": 6,
       "iconIdx": 1
     },
@@ -113,7 +142,7 @@
         "prevSize": 32,
         "code": 59650
       },
-      "setIdx": 1,
+      "setIdx": 2,
       "setId": 7,
       "iconIdx": 0
     },
@@ -135,17 +164,17 @@
         "id": 0,
         "prevSize": 28,
         "code": 58882,
-        "name": "uniE602",
+        "name": "radio-checked",
         "ligatures": ""
       },
-      "setIdx": 4,
+      "setIdx": 5,
       "setId": 4,
       "iconIdx": 0
     },
     {
       "icon": {
         "paths": [
-          "M262.14 0c-113.728 206.032-132.89 520.304 313.86 509.824v-253.824l384 384-384 384v-248.372c-534.96 13.942-594.572-472.214-313.86-775.628z"
+          "M262.14 1024c-113.728-206.032-132.89-520.304 313.86-509.824v253.824l384-384-384-384v248.372c-534.96-13.942-594.572 472.214-313.86 775.628z"
         ],
         "tags": [
           "forward",
@@ -163,7 +192,7 @@
         "code": 59653,
         "name": "forward"
       },
-      "setIdx": 5,
+      "setIdx": 6,
       "setId": 3,
       "iconIdx": 104
     },
@@ -190,9 +219,9 @@
         "name": "search",
         "ligatures": ""
       },
-      "setIdx": 5,
+      "setIdx": 6,
       "setId": 3,
-      "iconIdx": 127
+      "iconIdx": 131
     },
     {
       "icon": {
@@ -218,9 +247,9 @@
         "name": "menu",
         "ligatures": ""
       },
-      "setIdx": 5,
+      "setIdx": 6,
       "setId": 3,
-      "iconIdx": 184
+      "iconIdx": 188
     },
     {
       "icon": {
@@ -246,9 +275,9 @@
         "name": "close2",
         "ligatures": ""
       },
-      "setIdx": 5,
+      "setIdx": 6,
       "setId": 3,
-      "iconIdx": 253
+      "iconIdx": 257
     },
     {
       "icon": {
@@ -271,9 +300,9 @@
         "code": 58886,
         "name": "arrow-right"
       },
-      "setIdx": 5,
+      "setIdx": 6,
       "setId": 3,
-      "iconIdx": 290
+      "iconIdx": 294
     },
     {
       "icon": {
@@ -296,9 +325,9 @@
         "code": 58889,
         "name": "arrow-left"
       },
-      "setIdx": 5,
+      "setIdx": 6,
       "setId": 3,
-      "iconIdx": 294
+      "iconIdx": 298
     },
     {
       "icon": {
@@ -321,9 +350,9 @@
         "name": "radio-unchecked",
         "ligatures": ""
       },
-      "setIdx": 5,
+      "setIdx": 6,
       "setId": 3,
-      "iconIdx": 316
+      "iconIdx": 320
     },
     {
       "icon": {
@@ -345,9 +374,9 @@
         "code": 58891,
         "name": "facebook"
       },
-      "setIdx": 5,
+      "setIdx": 6,
       "setId": 3,
-      "iconIdx": 362
+      "iconIdx": 366
     },
     {
       "icon": {
@@ -370,9 +399,9 @@
         "code": 58892,
         "name": "twitter"
       },
-      "setIdx": 5,
+      "setIdx": 6,
       "setId": 3,
-      "iconIdx": 365
+      "iconIdx": 369
     },
     {
       "icon": {
@@ -395,9 +424,9 @@
         "code": 58890,
         "name": "feed"
       },
-      "setIdx": 5,
+      "setIdx": 6,
       "setId": 3,
-      "iconIdx": 368
+      "iconIdx": 372
     },
     {
       "icon": {
@@ -419,9 +448,9 @@
         "code": 58893,
         "name": "youtube"
       },
-      "setIdx": 5,
+      "setIdx": 6,
       "setId": 3,
-      "iconIdx": 371
+      "iconIdx": 375
     }
   ],
   "height": 1024,

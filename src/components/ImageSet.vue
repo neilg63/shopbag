@@ -6,8 +6,8 @@
     </figure>
   </div>
   <template v-if="showNav">
-    <div class="slide-nav left-nav icon-arrow-left" v-on:click.stop="prev()"></div>
-    <div class="slide-nav right-nav icon-arrow-right" v-on:click.stop="next()"></div>
+    <div class="slide-nav left-nav" v-on:click.stop="prev()"></div>
+    <div class="slide-nav right-nav" v-on:click.stop="next()"></div>
   </template>
 </section>
 </template>
@@ -163,12 +163,17 @@ export default {
   transform: skew(-5deg);
 }
 
+#app section.image-set .slide-nav:before {
+  font-family: icomoon;
+}
+
 #app section.image-set .left-nav {
   left:  0;
 }
 
 #app section.image-set .left-nav:before {
   left: 5%;
+  content: "\e904";
 }
 
 #app section.image-set .right-nav {
@@ -177,6 +182,7 @@ export default {
 
 #app section.image-set .right-nav:before {
   right: 5%;
+  content: "\e905";
 }
 
 #app .image-set {
@@ -243,18 +249,12 @@ export default {
   transition: transform .5s ease-in-out;
 }
 
-#app section.image-set .slides-2 figure:hover {
-  transform: scale(1.5);
+#app section.image-set .slides-2 figure.active img {
+  transform: scale(1,1) translateX(-7.5vw);
 }
 
-#app section.image-set .slides-2.offset-0 .num-0 img,
-#app section.image-set .slides-2.offset-1 .num-1 img,
-#app section.image-set .slides-2.offset-2 .num-2 img,
-#app section.image-set .slides-2.offset-3 .num-3 img,
-#app section.image-set .slides-2.offset-4 .num-4 img,
-#app section.image-set .slides-2.offset-5 .num-5 img,
-#app section.image-set .slides-2.offset-6 .num-6 img {
-  transform: scale(1,1) translateX(0);
+#app section.image-set .slides-2 figure.active:hover {
+  transform: scale(1.5) translateX(-2.5vw);
 }
 
 #app section.image-set .slides-2 figure picture,
@@ -265,7 +265,6 @@ export default {
 #app section.image-set .slides-2.offset-1 {
   left:  -100vw;
 }
-
 
 #app section.image-set .slides-2.offset-2 {
   left:  -200vw;
