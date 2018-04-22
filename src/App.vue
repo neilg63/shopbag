@@ -201,7 +201,7 @@ export default {
       if (!el) {
         let contEl = document.querySelector('button.ecwid-btn--continueShopping')
         if (!contEl) {
-          contEl = document.querySelector('.product-details__sidebar .ec-breadcrumbs a.breadcrumbs__link--last')
+          contEl = document.querySelector('.ec-breadcrumbs a.breadcrumbs__link--last')
           console.log(contEl)
         }
         if (contEl) {

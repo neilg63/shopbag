@@ -216,7 +216,10 @@ export default {
         }, 500)
       } else {
         if (ai >= 0) {
-          this.contClasses.splice(ai, 1) 
+          this.contClasses.splice(ai, 1)
+          if (this.$route.params.sub) {
+            this.$router.push('/' + this.$route.params.name)
+          }
         }
       }
     }
@@ -242,6 +245,10 @@ export default {
   padding: 3% 3vw;
   margin: 0 -3%;
   background-color: white;
+}
+
+#app .detail-pane .products figure {
+  cursor: pointer;
 }
 
 @media screen and (min-width: 40em) {
