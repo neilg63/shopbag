@@ -197,9 +197,13 @@ export default {
     showEcwidProduct (product) {
       let tg = '.grid-product--id-' + product.id + ' a.grid-product__title'
       let el = document.querySelector(tg)
+      let comp = this
       if (!el) {
         let contEl = document.querySelector('button.ecwid-btn--continueShopping')
-        let comp = this
+        if (!contEl) {
+          contEl = document.querySelector('.product-details__sidebar .ec-breadcrumbs a.breadcrumbs__link--last')
+          console.log(contEl)
+        }
         if (contEl) {
           contEl.click()
           setTimeout(() => {
@@ -208,7 +212,15 @@ export default {
         }
       } else {
         el.click()
-        utils.addBodyClass('show-store')
+        setTimeout(()=> {
+          let btEl = document.querySelector('.details-product-purchase__add-to-bag button.form-control__button')
+          if (btEl) {
+            btEl.click()
+            setTimeout(()=> {
+              comp.updateCounter()
+            }, 500);
+          }
+        }, 500)
       }
     }
   }
@@ -270,42 +282,7 @@ export default {
 #app ol.dot-nav li.active:before {
   content: '\e602';
 }
-#app ol.arrow-nav > li {
-  pointer-events: all;
-  width: 20vw;
-  height: 100vh;
-  position: absolute;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  opacity: 0;
-  transition: all 0.5s ease-in-out;
-  cursor: pointer;
-  overflow: hidden;
-  font-size: 6vw;
-  transform: scale(0.8);
-}
-#app ol.arrow-nav li:before {
-  position: absolute;
-  top: 40%;
-  width: 1.5em;
-}
-#app ol.arrow-nav li:hover {
-  opacity: 0.75;
-  transform: scale(1);
-}
-#app ol.arrow-nav li.next:before,
-#app ol.arrow-nav li.next {
-  right: 0;
-}
-#app ol.arrow-nav li.prev:before,
-#app ol.arrow-nav li.prev {
-  left: 0;
-}
 
-#app .top-slides ul.flex-slides li figure.right {
-  justify-content: flex-end;
-}
 #app .page-section ul.flex-slides li figure {
   max-height: 100vh;
   overflow: hidden;

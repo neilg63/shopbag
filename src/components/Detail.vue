@@ -59,6 +59,19 @@ export default {
     }
   },
   created () {
+    if (this.$router.params) {
+      if (this.$router.params.sub) {
+        let sub = this.$router.params.sub
+        let prod = this.products.find(p => {
+          let slug = this.product.title.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-')
+          return slug === p.title
+        })
+        if (prod) {
+          this.product = prod
+          this.toggleActiveProduct(true)
+        }
+      }
+    }
     this.$bus.$on('page', (data) => {
       this.contClasses = []
       if (data.valid) {
@@ -173,6 +186,8 @@ export default {
             if (this.product.nid) {
               this.product.intro = this.body
               this.toggleActiveProduct(true)
+              let newPath = '/' + this.$route.params.name + '/' + this.product.title.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-')
+              this.$router.push(newPath)
             }
           }
         }

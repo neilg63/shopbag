@@ -241,6 +241,9 @@ new Vue({
             this.$bus.$emit('show-detail', false)
             break
           default:
+            if (/\w+\/\w+/.test(path)) {
+              path = path.split('/').shift()
+            }
             this.fetchPage(path)
             break
         }

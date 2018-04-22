@@ -15,6 +15,11 @@ export default new Router({
       path: '/:name',
       name: 'Detail',
       component: Detail
+    },
+    {
+      path: '/:name/:sub',
+      name: 'Detail',
+      component: Detail
     }
   ]
 });

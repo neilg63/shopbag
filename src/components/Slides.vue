@@ -1,12 +1,13 @@
 <template>
   <section class="slides-container top-slides" :class="sectionClasses">
     <ul v-if="numImages > 0" class="flex-slides" :class="itemClass">
-      <li v-for="(image,i) in images" :key="i" :class="image.imgClasses" v-on:click.stop="selectLink()">
+      <li v-for="(image,i) in images" :key="i" :class="image.imgClasses" v-on:click.stop="selectLink()" v-on:mouseenter="addHover(true)" v-on:mouseleave="addHover(false)">
         <figure :class="image.alignment" :style="image.styles">
           <vue-picture :imgset="image" group="wide" className="wide"></vue-picture>
         </figure>
       </li>
     </ul>
+    <img src="/static/images/rings.svg" class="enter-main" />
     <ol v-if="numImages > 0" class="dot-nav">
       <li v-for="(item, i) in navItems" v-on:click="showIndex(i)" :key="i" :class="{'active': i == index}"></li>
     </ol>
@@ -142,6 +143,16 @@ export default {
     },
     selectLink() {
       this.$router.push(this.defaultLink)
+    },
+    addHover(add) {
+      let hi = this.sectionClasses.indexOf('hover')
+      if (add !== true && hi >= 0) {
+        this.sectionClasses.splice(hi,1)
+      } else {
+        if (hi < 0) {
+          this.sectionClasses.push('hover')
+        }
+      }
     }
   }
 }
@@ -255,6 +266,64 @@ export default {
 }
 #app ul.flex-slides li figure {
   width: 100%;
+}
+
+#app .enter-main {
+  position: absolute;
+  top: 50vh;
+  left: 50vw;
+  height: 20vw;
+  width: 20vw;
+  margin-left: -10vw;
+  margin-top: -10vw;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  pointer-events: none;
+}
+
+#app .top-slides li {
+  cursor: pointer;
+}
+
+#app .top-slides.hover .enter-main {
+  opacity: 0.75;
+}
+
+#app ol.arrow-nav > li {
+  pointer-events: all;
+  width: 25vw;
+  height: 100vh;
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  opacity: 0;
+  transition: all 0.5s ease-in-out;
+  cursor: pointer;
+  overflow: hidden;
+  font-size: 6vw;
+  transform: scale(0.8);
+}
+#app ol.arrow-nav li:before {
+  position: absolute;
+  top: 40%;
+  width: 1.5em;
+}
+#app ol.arrow-nav li:hover {
+  opacity: 0.75;
+  transform: scale(1);
+}
+#app ol.arrow-nav li.next:before,
+#app ol.arrow-nav li.next {
+  right: 0;
+}
+#app ol.arrow-nav li.prev:before,
+#app ol.arrow-nav li.prev {
+  left: 0;
+}
+
+#app .top-slides ul.flex-slides li figure.right {
+  justify-content: flex-end;
 }
 
 </style>
