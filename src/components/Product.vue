@@ -12,16 +12,17 @@
     <div class="variant-selector" v-if="variants.length > 0">
       <ul class="plain">
       <template v-for="(variant, index) in product.variants">
-        <li class="variant" :class="{'active':variant.active}" v-on:click="setActive(variant)" :data-index="variant.imgIndex">{{variant.title}}</li>
+        <li class="variant" :class="{'active':variant.active}" v-on:click="setActive(variant)" :data-index="variant.imgIndex"><span class="text">{{variant.title}}</span></li>
       </template>
     </ul>
       <div class="buy-now" v-if="selectedVariant" v-on:click="showEcwidSelector()">
-        <p>{{selectedVariant.price_formatted}}</p>
+        <div class="price">{{selectedVariant.price_formatted}}</div>
+        <div class="icon-sunglasses"></div>
       </div>
+      <h3 class="selected-variant">{{selectedVariant.title}}</h3>
       <div class="catalog-body" v-html="product.intro"></div>
     </div>
     <div class="body">
-      
       <div class="product-body" v-html="product.body"></div>
     </div>
   </div>
@@ -118,7 +119,7 @@ export default {
       }
     },
     close () {
-      this.$parent.hasActiveProduct = false
+      this.$parent.toggleActiveProduct(false)
     },
     showEcwidSelector () {
       if (this.selectedVariant.id) {
@@ -137,28 +138,85 @@ export default {
 }
 
 #app .image-selector {
-  width: 80%;
+  width: 100%;
 }
 
 #app .variant-selector {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 20em;
-  padding-top: 2em;
+  position: relative;
+  width: 90%;
+  padding: .5em 5% 1em 5%;
   text-align: left;
 }
 
-#app .variant-selector .plain li {
-  padding-bottom: 0.5em;
-  white-space: nowrap;
-  cursor: pointer;
-  opacity: 0.8;
+#app .variant-selector li span.text {
+  display: none;
 }
 
-#app .variant-selector .plain li.active {
-  font-style: italic;
-  opacity: 1;
+#app .variant-selector .plain li {
+  width: 1.33em;
+  height: 1.33em;
+  padding: 0.125em 1em 0.125em 0.125em;
+  overflow: hidden;
+}
+
+#app .variant-selector .plain li:before {
+  display: inline-block;
+  font-family: icomoon;
+  content: "\e601";
+  margin-right: .25em;
+  transition: all .33s ease-in-out;
+}
+
+#app .variant-selector .plain {
+  display: flex;
+  flex-flow: nowrap row;
+}
+
+
+#app .variant-selector .plain li.active:before {
+  content: "\e602";  
+  transform: scale(1.2);
+}
+
+@media screen and (min-width: 60em) {
+
+  #app .variant-selector .plain li {
+    padding: 0 0 0.5em 0;
+    white-space: nowrap;
+    cursor: pointer;
+    opacity: 0.8;
+    width: auto;
+    height: auto;
+  }
+
+  #app .variant-selector .plain {
+    flex-flow: nowrap column;
+  }
+
+  #app h3.selected-variant {
+    display: none;
+  }
+  #app .variant-selector {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20em;
+    padding-top: 2em;
+    text-align: left;
+  }
+
+  #app .variant-selector li span.text {
+    display: inline-block;
+  }
+
+  #app .variant-selector .plain li.active {
+    font-style: italic;
+    opacity: 1;
+  }
+
+  #app .image-selector {
+    width: 80%;
+  }
 }
 
 #app .image-selector {
@@ -211,6 +269,12 @@ export default {
 
 #app .image-selector > .set-container.active {
   opacity: 1;
+}
+
+.buy-now {
+  margin: 1em 0;
+  display: flex;
+  flex-flow: nowrap row;
 }
 
 </style>

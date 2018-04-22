@@ -1,4 +1,9 @@
 var utils = {
+  hasBodyClass: function(className) {
+    var cl = document.body.classList;
+    return cl.contains(className);
+  },
+
   addRemBodyClass: function(className, remove) {
     var cl = document.body.classList,
     hasClass = cl.contains(className);

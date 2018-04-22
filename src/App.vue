@@ -21,7 +21,7 @@
              <image-set :key="index" :section="section"></image-set>
           </template>
         </template>
-        <products/>
+        
         <footer id="page-footer">
           <p>{{footer.copyright}}</p>
         </footer>
@@ -35,14 +35,13 @@
   </div>
 </template>
 <script>
-import Products from '@/components/Products'
+/*import Products from '@/components/Products'*/
 import Slides from '@/components/Slides'
 import ImageSet from '@/components/ImageSet'
 import utils from './utils/utils'
 export default {
   name: 'App',
   components: {
-    Products,
     Slides,
     ImageSet
   },
@@ -103,7 +102,7 @@ export default {
       }
       setTimeout(() => {
         utils.removeBodyClass('show-loading')
-      },1000)
+      },750)
     })
     this.$bus.$on('show-detail', (status) => {
       comp.showDetail = status === true
@@ -122,7 +121,7 @@ export default {
     this.$bus.$on('store-loaded', (data) => {
       comp.updateCounter()
       comp.hasStore = true
-      document.body.classList.add('store-loaded')
+      utils.addBodyClass('store-loaded')
     })
   },
   methods: {
@@ -135,7 +134,9 @@ export default {
       this.showMenu = !this.showMenu
     },
     logoAction () {
-      if (this.showDetail && !this.$parent.showStore) {
+      if (utils.hasBodyClass('show-store')) {
+        utils.removeBodyClass('show-store')
+      } else if (this.showDetail && !this.$parent.showStore) {
         this.$router.push({ name: "Home"})
       } else if (this.$parent.showStore) {
         this.backToMain()
@@ -187,7 +188,16 @@ export default {
     showEcwidProduct (product) {
       let tg = '.grid-product--id-' + product.id + ' a.grid-product__title'
       let el = document.querySelector(tg)
-      if (el) {
+      if (!el) {
+        let contEl = document.querySelector('button.ecwid-btn--continueShopping')
+        let comp = this
+        if (contEl) {
+          contEl.click()
+          setTimeout(() => {
+            comp.showEcwidProduct(product)
+          }, 500)
+        }
+      } else {
         el.click()
         utils.addBodyClass('show-store')
       }
@@ -204,22 +214,7 @@ export default {
   z-index: 1;
   overflow-x: hidden;
 }
-#app .slides-container {
-  position: relative;
-  width: 100vw;
-  overflow: hidden;
-}
-#app ul.flex-slides {
-  position: relative;
-  display: flex;
-  margin: 0;
-  padding: 0;
-  flex-flow: nowrap row;
-  width: 30000vw;
-  top: 0;
-  left: 0;
-  transition: left 1s ease-in-out;
-}
+
 #app ol.dot-nav,
 #app ol.arrow-nav {
   position: absolute;
@@ -298,33 +293,7 @@ export default {
 #app ol.arrow-nav li.prev {
   left: 0;
 }
-#app .top-slides ul.flex-slides {
-  display: flex;
-  margin-top: 10vh;
-}
-#app .top-slides ul.flex-slides,
-#app .top-slides {
-  overflow: hidden;
-}
-#app .top-slides ul.flex-slides li figure img,
-#app .top-slides ul.flex-slides,
-#app .top-slides {
-  height: 90vh;
-}
-#app .top-slides ul.flex-slides li figure {
-  display: flex;
-  flex-flow: nowrap row;
-  overflow:  hidden;
-  justify-content: center;
-  position: relative;
-  max-height: 100%;
-}
-#app .top-slides ul.flex-slides li figure img {
-  width:  auto;
-}
-#app .top-slides ul.flex-slides li figure.left {
-  justify-content: flex-start;
-}
+
 #app .top-slides ul.flex-slides li figure.right {
   justify-content: flex-end;
 }
@@ -361,86 +330,7 @@ export default {
   }
 }
 
-#app ul.flex-slides.item-1 {
-  left: -100vw;
-}
-#app ul.flex-slides.item-2 {
-  left: -200vw;
-}
-#app ul.flex-slides.item-3 {
-  left: -300vw;
-}
-#app ul.flex-slides.item-4 {
-  left: -400vw;
-}
-#app ul.flex-slides.item-5 {
-  left: -500vw;
-}
-#app ul.flex-slides.item-6 {
-  left: -600vw;
-}
-#app ul.flex-slides.item-7 {
-  left: -700vw;
-}
-#app ul.flex-slides.item-8 {
-  left: -800vw;
-}
-#app ul.flex-slides.item-9 {
-  left: -900vw;
-}
-#app ul.flex-slides.item-10 {
-  left: -1000vw;
-}
-#app ul.flex-slides.item-11 {
-  left: -1100vw;
-}
-#app ul.flex-slides.item-12 {
-  left: -1200vw;
-}
-#app ul.flex-slides.item-13 {
-  left: -1300vw;
-}
-#app ul.flex-slides.item-14 {
-  left: -1400vw;
-}
-#app ul.flex-slides.item-15 {
-  left: -1500vw;
-}
-#app ul.flex-slides.item-16 {
-  left: -1600vw;
-}
-#app ul.flex-slides.item-17 {
-  left: -1700vw;
-}
-#app ul.flex-slides.item-18 {
-  left: -1800vw;
-}
-#app ul.flex-slides.item-19 {
-  left: -1900vw;
-}
-#app ul.flex-slides.item-20 {
-  left: -2000vw;
-}
-#app ul.flex-slides.item-21 {
-  left: -2100vw;
-}
-#app ul.flex-slides.item-22 {
-  left: -2200vw;
-}
-#app ul.flex-slides.item-23 {
-  left: -2300vw;
-}
-#app ul.flex-slides.item-24 {
-  left: -2400vw;
-}
-#app ul.flex-slides > li {
-  margin: 0;
-  padding: 0 0 1em 0;
-  width: 100vw;
-}
-#app ul.flex-slides li figure {
-  width: 100%;
-}
+
 .back-to {
   position: absolute;
   top: 0.25em;

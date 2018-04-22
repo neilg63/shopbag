@@ -239,7 +239,7 @@ export default {
   max-height: 25vw;
   width: auto;
   height: auto;
-  transform: scale(-.5,.5) translateX(125vw);
+  transform: scale(-.333,.333) translateX(200vw);
   transition: transform .5s ease-in-out;
 }
 

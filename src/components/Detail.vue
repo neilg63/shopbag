@@ -12,7 +12,7 @@
         <figure :class="image.prodClasses" :key="image.nid" v-on:click="showActive(image, index)">
           <vue-picture :imgset="image" :group="image.group" :className="image.type.replace('/','-')"></vue-picture>
           <figcaption v-if="image.hasVariant">
-            <p class="product-name">{{image.variant.title}}</p> 
+            <p class="product-name">{{image.title}}</p> 
             <p class="price">{{image.variant.price_formatted}}</p>
           </figcaption>
         </figure>
@@ -114,24 +114,6 @@ export default {
       })
     })
   },
-  watch: {
-    hasActiveProduct (newVal) {
-      let cl = 'show-product'
-      let ai = this.contClasses.indexOf(cl)
-      if (newVal) {
-        if (ai < 0) {
-          this.contClasses.push(cl)
-        }
-        setTimeout(() => {
-          this.setHeight()
-        }, 500)
-      } else {
-        if (ai >= 0) {
-          this.contClasses.splice(ai, 1) 
-        }
-      }
-    }
-  },
   methods: {
     preProcessCatalog (data) {
       if (data.products) {
@@ -157,6 +139,7 @@ export default {
             img.prodClasses = []
             if (prod.variants) {
               variant = prod.variants.find(vr => vr.ecwid == prod.ecwid)
+              img.title = prod.title
               if (variant) {
                 if (variant.price) {
                   img.hasVariant = true
@@ -173,14 +156,14 @@ export default {
       this.hasProductImages = this.numImages > 0
     },
     showActive (image,index) {
-      this.hasActiveProduct = false
+      this.toggleActiveProduct(false)
       if (image.hasVariant) {
         if (image.nid) {
           this.product = this.products.find(p => p.nid == image.nid)
           if (this.product) {
             if (this.product.nid) {
               this.product.intro = this.body
-              this.hasActiveProduct = true
+              this.toggleActiveProduct(true)
             }
           }
         }
@@ -195,6 +178,23 @@ export default {
           el.style.minHeight = style.height
         }
       }
+    },
+    toggleActiveProduct (newVal) {
+      this.hasActiveProduct = newVal
+      let cl = 'show-product'
+      let ai = this.contClasses.indexOf(cl)
+      if (newVal) {
+        if (ai < 0) {
+          this.contClasses.push(cl)
+        }
+        setTimeout(() => {
+          this.setHeight()
+        }, 500)
+      } else {
+        if (ai >= 0) {
+          this.contClasses.splice(ai, 1) 
+        }
+      }
     }
   }
 }
@@ -204,9 +204,15 @@ export default {
 
 
 #app .detail-pane .body {
-  padding: 2em;
+  padding: 2em 5%;
   text-align: left;
   margin: 0 auto;
+}
+
+@media screen and (min-width: 60em) {
+  #app .detail-pane .body {
+    padding: 2em;
+  }
 }
 
 #app .detail-pane .flex-row .body {
