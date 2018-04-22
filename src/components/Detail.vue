@@ -108,13 +108,13 @@ export default {
       } else {
         this.$parent.showDetail = false
       }
+      this.$parent.updateCounter()
       let comp = this
       window.scrollTo(0, 0)
       window.addEventListener('resize', () => {
         comp.setHeight()
       })
       window.addEventListener('keyup', (e) => {
-        console.log(e.keyCode)
         switch (e.keyCode) {
           case 27:
             comp.toggleActiveProduct(false)

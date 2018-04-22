@@ -134,12 +134,9 @@ new Vue({
           storedData = JSON.parse(stored)
         }
         let hasData = storedData !== null && typeof storedData === 'object'
-        
-      
         if (hasData) {
           hasData = storedData.valid === true && storedData.hasOwnProperty('version')
           if (hasData) {
-            console.log(storedData.home.images)
             hasData = storedData.version === this.version
           }          
         }

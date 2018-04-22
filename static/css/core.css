@@ -354,7 +354,7 @@ body.show-store #app .main {
 #app .show-cart {
   position: absolute;
   left: 3em;
-  top: 0.25em;
+  top: 0.375em;
   width: 3em;
   height: 1.75em;
   background-image: url(/static/images/shopping-cart.svg);
@@ -438,6 +438,7 @@ body.show-store #app .main {
 @media screen and (min-width: 40em) {
   #app .show-cart {
     height: 2em;
+    left: 5em;
   }
   #app .menu-toggle {
     font-size: 2.5em;
@@ -699,4 +700,8 @@ html#ecwid_html body#ecwid_body.show-store .ec-size .ec-store .likely__wrapper {
 html#ecwid_html body#ecwid_body div.ecwid-minicart {
   z-index: 200;
   opacity: 1;
+}
+
+html#ecwid_html body#ecwid_body button.ecwid-btn--continueShopping {
+  opacity: 0;
 }

@@ -172,7 +172,8 @@ export default {
       }
     },
     updateCounter () {
-      let sb = document.querySelector('.footer__link--shopping-cart')
+      let sb = document.querySelector('.footer__link--shopping-cart'),
+        matched = false
       if (sb) {
         let txt = sb.textContent
         if (txt.length > 0) {
@@ -181,10 +182,17 @@ export default {
             let num = parseInt(m[1])
             if (!isNaN(num)) {
               this.numInCart = num
+              matched = true
             }
           }
         }
       }
+      let comp = this
+      setTimeout(() => {
+        if (!matched) {
+          comp.numInCart = 0
+        }
+      },333)
     },
     showEcwidProduct (product) {
       let tg = '.grid-product--id-' + product.id + ' a.grid-product__title'
