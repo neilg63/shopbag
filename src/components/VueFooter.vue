@@ -6,6 +6,9 @@
 		<div class="info">
   		<p>{{footer.copyright}}</p>
   	</div>
+  	<div class="admin">
+  		<a href="/user" target="_blank">Admin</a>
+  	</div>
 </footer>
 </template>
 <script>

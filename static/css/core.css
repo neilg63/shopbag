@@ -330,6 +330,10 @@ body.show-store #app .main {
   opacity: 1;
 }
 
+#app.show-home .home-pane {
+  margin-top: 1em;
+}
+
 #app.show-home .detail-pane,
 #app.show-detail .home-pane {
   position: absolute;
@@ -370,6 +374,25 @@ body.show-store #app .main {
   font-size: 1em;
   margin-left: 3em;
   padding: 0.125em;
+}
+
+#app footer .admin {
+  position: absolute;
+  bottom: 2em;
+  padding: 1em 2.5vw;
+  right: 0;
+}
+
+#app footer .admin a {
+  opacity: 0;
+  display: block;
+  transform: rotate(180deg);
+  transition: all .5s ease-in-out;
+}
+
+#app footer .admin:hover a {
+  opacity: 1;
+  transform: rotate(0deg);
 }
 
 @media screen and (min-width: 60em) {

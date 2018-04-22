@@ -21,13 +21,13 @@
              <image-set :key="index" :section="section"></image-set>
           </template>
         </template>
-        <vue-footer :menu="menu" :footer="footer"></vue-footer>        
+        <vue-footer :menu="menu" :footer="footer" id="page-footer"></vue-footer>        
       </div>
       <div class="detail-pane">
          <keep-alive>
           <router-view/>
         </keep-alive>
-        <vue-footer :menu="menu" :footer="footer" :id="inner-page-footer"></vue-footer>
+        <vue-footer :menu="menu" :footer="footer" id="inner-page-footer"></vue-footer>
       </div>
     </div>
   </div>
@@ -264,7 +264,7 @@ export default {
 }
 #app ol.arrow-nav > li {
   pointer-events: all;
-  width: 10vw;
+  width: 20vw;
   height: 100vh;
   position: absolute;
   margin: 0;

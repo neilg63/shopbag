@@ -1,7 +1,7 @@
 <template>
   <section class="slides-container top-slides" :class="sectionClasses">
     <ul v-if="numImages > 0" class="flex-slides" :class="itemClass">
-      <li v-for="(image,i) in images" :key="i" :class="image.imgClasses">
+      <li v-for="(image,i) in images" :key="i" :class="image.imgClasses" v-on:click.stop="selectLink()">
         <figure :class="image.alignment" :style="image.styles">
           <vue-picture :imgset="image" group="wide" className="wide"></vue-picture>
         </figure>
@@ -35,7 +35,8 @@ export default {
       index: 0,
       crossover: false,
       loaded: false,
-      sectionClasses: ['loading']
+      sectionClasses: ['loading'],
+      defaultLink: '/sunglasses'
     }
   },
   computed: {
@@ -58,6 +59,16 @@ export default {
     this.$bus.$on('load-slides', (images) => {
       comp.readData(images)
     });
+    window.addEventListener('keyup', (e) => {
+      switch (e.keyCode) {
+        case 39:
+          comp.showNext()
+          break;
+        case 37:
+          comp.showPrev()
+          break;
+      }
+    })
   },
   methods: {
     readData (images) {
@@ -128,6 +139,9 @@ export default {
           comp.sectionClasses = []
         }, 100)
       }, 900)
+    },
+    selectLink() {
+      this.$router.push(this.defaultLink)
     }
   }
 }
