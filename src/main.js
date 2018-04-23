@@ -39,7 +39,7 @@ new Vue({
   template: '<App/>',
   data: {
     bus,
-    version: 0.22,
+    version: 0.23,
     cmsApi: '/jsonstyles/',
     products: [],
     ecwidProducts: [],

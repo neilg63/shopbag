@@ -1,8 +1,11 @@
  <template>
  <section class="image-set" :class="sectionClasses">
   <div :class="contClasses">
-    <figure v-for="(image,index) in images" class="image" :class="image.figClass" v-on:click.stop="handleSelect(image,index)">
+    <figure v-for="(image,index) in images" class="image" :class="image.figClasses" v-on:click.stop="handleSelect(image,index)">
       <vue-picture :imgset="image" :group="image.groupName" :className="image.classNames.join(' ')"></vue-picture>
+      <figcaption v-if="image.hasLink">
+        {{image.link.title}}
+      </figcaption>
     </figure>
   </div>
   <template v-if="showNav">
@@ -52,7 +55,14 @@ export default {
             let oddClass = index % 2 === 0 ? 'odd' : 'even'
             img.classNames = ['num-' + index, oddClass]
             img.groupName = 'half'
-            img.figClass = index > 0?'' : 'active'
+            img.figClasses = index > 0? [] : ['active']
+            img.hasLink = false
+            if (img.link) {
+              if (img.link.url) {
+                img.hasLink = true
+                img.figClasses.push('has-link')
+              }
+            }
             return img
           })
           this.numImages = this.images.length
@@ -81,6 +91,9 @@ export default {
         case 'aspect':
           this.handleAspect()
           break
+      }
+      if (image.hasLink) {
+        this.$router.push(image.link.url)
       }
     },
     handleAspect () {
@@ -115,7 +128,14 @@ export default {
       this.contClasses.push('offset-' + ni)
       this.currIndex = ni
       this.images = this.images.map((img,index) => {
-        img.figClass = index === ni? 'active' : ''
+        let ai = img.figClasses.indexOf('active')
+        if (index === ni) {
+          if (ai < 0) {
+            img.figClasses.push('active')
+          }
+        } else if (ai >= 0) {
+          img.figClasses.splice(ai, 1)
+        }
         return img
       })
     },
@@ -257,6 +277,41 @@ export default {
   transform: scale(1.5) translateX(-2.5vw);
 }
 
+#app section.image-set figure {
+  position: relative;
+}
+
+#app section.image-set figure.has-link {
+  cursor: pointer;
+}
+
+#app section.image-set figure figcaption {
+  position: absolute;
+  z-index: 8;
+  top: 75%;
+  bottom: 10%;
+  left: 10%;
+  right: 10%;
+  display: flex;
+  flex-flow: wrap column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+#app section.image-set .column figure figcaption {
+  font-size: 2.5em;
+}
+
+#app section.image-set .row-2 figure figcaption {
+  font-size: 2em;
+}
+
+#app section.image-set .row-3 figure figcaption,
+#app section.image-set .row-4 figure figcaption {
+  font-size: 1.5em;
+}
+
 #app section.image-set .slides-2 figure picture,
 #app section.image-set .slides-2 figure {
   transition: transform 1s ease-in-out;
@@ -362,7 +417,10 @@ export default {
   transform: scale(1, 1);
 }
 
-#app .image-set .row-4 figure {
+#app .image-set .row-2 figure,
+#app .image-set .row-3 figure,
+#app .image-set .row-4 figure,
+#app .image-set .row-5 figure {
   margin-bottom: -0.5em;
 }
 
