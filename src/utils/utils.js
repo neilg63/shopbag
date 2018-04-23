@@ -58,6 +58,10 @@ var utils = {
 
   expandImageOrig: function(sizes, key) {
     return utils.expandImageSize(sizes, 'orig');
+  },
+
+  cleanString: function(str) {
+    return str.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-')
   }
 };
 

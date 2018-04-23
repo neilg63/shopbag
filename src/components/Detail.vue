@@ -26,6 +26,7 @@
 
 import Product from './Product'
 import VuePicture from './VuePicture'
+import utils from '../utils/utils'
 
 export default {
   name: 'Detail',
@@ -59,19 +60,6 @@ export default {
     }
   },
   created () {
-    if (this.$router.params) {
-      if (this.$router.params.sub) {
-        let sub = this.$router.params.sub
-        let prod = this.products.find(p => {
-          let slug = this.product.title.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-')
-          return slug === p.title
-        })
-        if (prod) {
-          this.product = prod
-          this.toggleActiveProduct(true)
-        }
-      }
-    }
     this.$bus.$on('page', (data) => {
       this.contClasses = []
       if (data.valid) {
@@ -121,7 +109,7 @@ export default {
       } else {
         this.$parent.showDetail = false
       }
-      this.$parent.updateCounter()
+      this.$parent.syncCart()
       let comp = this
       window.scrollTo(0, 0)
       window.addEventListener('resize', () => {
@@ -134,6 +122,9 @@ export default {
             break;
         }
       })
+      setTimeout(() => {
+        comp.updateAdded()
+      }, 3000)
     })
   },
   methods: {
@@ -152,6 +143,7 @@ export default {
       this.images = []
       for (let i = 0, prod, img, variant; i < this.numProducts; i++) {
         prod = this.products[i]
+        this.mapAdded(prod)
         if (prod.images) {
           if (prod.images instanceof Array && prod.images.length > 0) {
             img = prod.images[0]
@@ -176,6 +168,41 @@ export default {
       }
       this.numImages = this.images.length
       this.hasProductImages = this.numImages > 0
+      if (this.hasProductImages) {
+        this.processSub();
+      }
+    },
+    updateAdded () {
+      for (let i = 0, prod; i < this.numProducts; i++) {
+        this.mapAdded(this.products[i])
+      }
+    },
+    mapAdded (prod) {
+      if (prod.variants) {
+        if (prod.variants instanceof Array) {
+          prod.variants = prod.variants.map(v => {
+            v.added = this.$parent.orderedItems.findIndex(oi => oi.productId.toString() === v.id.toString()) >= 0
+            return v
+          })
+        }
+      }
+    },
+    processSub () {
+      if (this.$route.params) {
+        if (this.$route.params.sub) {
+          let sub = this.$route.params.sub
+
+          let prod = this.products.find(p => {
+            let slug = utils.cleanString(p.title)
+
+            return slug === sub
+          })
+          if (prod) {
+            this.product = prod
+            this.toggleActiveProduct(true)
+          }
+        }
+      }
     },
     showActive (image,index) {
       this.toggleActiveProduct(false)
@@ -186,7 +213,7 @@ export default {
             if (this.product.nid) {
               this.product.intro = this.body
               this.toggleActiveProduct(true)
-              let newPath = '/' + this.$route.params.name + '/' + this.product.title.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-')
+              let newPath = '/' + this.$route.params.name + '/' + utils.cleanString(this.product.title)
               this.$router.push(newPath)
             }
           }

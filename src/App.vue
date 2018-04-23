@@ -8,7 +8,18 @@
       <ul class="menu">
         <li v-for="item in menu" :key="item.link"><router-link v-bind:to="item.link">{{item.title}}</router-link></li>
       </ul>
-      <div class="show-cart" :class="{'has-items': numInCart > 0}" v-on:click="showCheckout()"><span class="num">{{numInCart}}</span></div>
+      <div class="show-cart" :class="{'has-items': numInCart > 0}" v-on:click="showCheckout()"><span class="num">{{numInCart}}</span>
+        <div class="micro-cart">
+          <ul v-if="numInCart > 0" class="ordered-items plain">
+          <li v-for="(item,oi) in orderedItems">
+            <span class="quantity">{{item.quantity}}</span>
+            <em>x</em>
+            <span class="title">{{item.name}}</span>
+          </li>
+        </ul>
+          <p class="subtotal">{{subtotalFormatted}}</p>
+        </div>
+      </div>
       <div id="main-logo" @click="logoAction()"></div>
       <div class="back-to back-to-main" v-on:click="backToMain()"><span class="text">Back</span></div>
       <div class="back-to back-to-cart" v-on:click="backToCart()"><span class="text">Back</span></div>
@@ -53,11 +64,16 @@ export default {
       sections: [],
       numSections: 0,
       products: [],
-      numInCart: 0,
       hasStore: false,
       footer: {
         copyright: ''
-      }
+      },
+      storeKey: '',
+      numInCart: 0,
+      orderedItems: [],
+      subtotal: 0,
+      subtotalFormatted: '',
+      syncing: false
     }
   },
   created () {
@@ -100,6 +116,12 @@ export default {
       if (data.footer) {
         comp.footer = data.footer
       }
+      if (data.ecwid_store_key) {
+        comp.storeKey = data.ecwid_store_key
+        if (comp.storeKey) {
+          comp.syncCart()
+        }
+      }
       setTimeout(() => {
         utils.removeBodyClass('show-loading')
         window.scrollTo(0, 0)
@@ -116,11 +138,17 @@ export default {
     this.$bus.$on('back-to-home', (status) => {
       comp.backToMain()
     })
+    setInterval(() => {
+      if (comp.$route.params) {
+        if (comp.$route.params.sub) {
+          comp.syncCart()
+        }
+      }
+    }, 10000)
   },
   mounted () {
     let comp = this
     this.$bus.$on('store-loaded', (data) => {
-      comp.updateCounter()
       comp.hasStore = true
       utils.addBodyClass('store-loaded')
     })
@@ -146,7 +174,7 @@ export default {
       }
     },
     backToMain () {
-      this.updateCounter()
+      this.syncCart()
       this.$router.push(this.$route.path)
       let el = document.querySelector('#ecwid-store-container .ec-breadcrumbs a')
       if (el) {
@@ -171,7 +199,7 @@ export default {
         utils.addBodyClass('show-store')
       }
     },
-    updateCounter () {
+    /*updateCounter () {
       let sb = document.querySelector('.footer__link--shopping-cart'),
         matched = false
       if (sb) {
@@ -193,6 +221,34 @@ export default {
           comp.numInCart = 0
         }
       },333)
+    },*/
+    syncCart () {
+      if (!this.syncing) {
+        this.syncing = true
+        let ct = this.$ls.get(this.storeKey)
+        this.numInCart = 0
+        if (typeof ct == 'string') {
+          let cart = JSON.parse(ct)
+          if (cart instanceof Object && cart !== null) {
+            if (cart.order) {
+              if (cart.order.items instanceof Array) {
+                this.numInCart = cart.order.items.length
+                this.orderedItems = cart.order.items;
+                this.subtotal = parseFloat(cart.order.subtotal)
+                this.subtotalFormatted = '€ ' + this.subtotal.toFixed(2)
+              }
+            }
+          }
+        }
+        let comp = this
+        setTimeout(() => {
+          if (comp.numInCart < 1) {
+            comp.orderedItems = []
+            comp.subtotal = 0
+          }
+          comp.syncing = false
+        },500)
+      }
     },
     showEcwidProduct (product) {
       let tg = '.grid-product--id-' + product.id + ' a.grid-product__title'
@@ -202,7 +258,6 @@ export default {
         let contEl = document.querySelector('button.ecwid-btn--continueShopping')
         if (!contEl) {
           contEl = document.querySelector('.ec-breadcrumbs a.breadcrumbs__link--last')
-          console.log(contEl)
         }
         if (contEl) {
           contEl.click()
@@ -217,7 +272,7 @@ export default {
           if (btEl) {
             btEl.click()
             setTimeout(()=> {
-              comp.updateCounter()
+              comp.syncCart()
             }, 500);
           }
         }, 500)

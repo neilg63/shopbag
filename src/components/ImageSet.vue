@@ -294,6 +294,7 @@ export default {
 
 #app .image-set figure {
   max-width:  100%;
+  width: 100%;
 }
 #app .image-set figure img {
   width:  100%;
@@ -359,6 +360,10 @@ export default {
 #app .image-set .aspect figure.active {
   opacity: 1;
   transform: scale(1, 1);
+}
+
+#app .image-set .row-4 figure {
+  margin-bottom: -0.5em;
 }
 
 

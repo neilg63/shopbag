@@ -15,9 +15,10 @@
         <li class="variant" :class="{'active':variant.active}" v-on:click="setActive(variant)" :data-index="variant.imgIndex"><span class="text">{{variant.title}}</span></li>
       </template>
     </ul>
-      <div class="buy-now" v-if="selectedVariant" v-on:click="showEcwidSelector()">
+      <div class="buy-now" :class="{'added':selectedVariant.added}" v-if="selectedVariant" v-on:click="showEcwidSelector()">
         <div class="price">{{selectedVariant.price_formatted}}</div>
-        <div class="icon-sunglasses"></div>
+        <div class="icon icon-add-cart"></div>
+        <div class="icon icon-check"></div>
       </div>
       <h3 class="selected-variant">{{selectedVariant.title}}</h3>
       <div class="catalog-body" v-html="product.intro"></div>
@@ -64,6 +65,7 @@ export default {
   methods: {
     assignImageSets () {
       let comp = this
+      this.$parent.updateAdded(this.product)
       this.imageSets = []
       this.variants = this.product.variants.map( (v, vi) => {
         v.imgIndex = -1
@@ -102,6 +104,9 @@ export default {
           }
         }
         this.$parent.setHeight()
+        setTimeout(() => {
+          comp.$parent.updateAdded(comp.product)
+        }, 2000)
       }
     },
     setActive (variant) {
@@ -124,6 +129,10 @@ export default {
     showEcwidSelector () {
       if (this.selectedVariant.id) {
         this.$bus.$emit('show-ecwid-product', this.selectedVariant)
+        let comp = this
+        setTimeout(() => {
+          comp.$parent.updateAdded(comp.product)
+        }, 2000)
       }
     }
   }
@@ -187,23 +196,32 @@ export default {
   cursor: pointer;
 }
 
-.buy-now .icon-sunglasses {
-  margin-left: 3em;
-  transform: scale(4) skew(0deg);
+.buy-now .icon {
+  margin-left: 1em;
+  transform: scale(1) skew(0deg);
   opacity: 0.75;
   transition: all .33s ease-in-out;
   width: 1em;
   overflow: hidden;
+  font-size: 1.25em;
 }
 
-.buy-now .icon-sunglasses:before {
+.buy-now .icon:before {
   position: absolute;
-  top: 0.125em;
+  top: 0;
   right: 0;
 }
 
-.buy-now:hover .icon-sunglasses {
-  transform: scale(5) skew(-5deg);
+.buy-now:hover .icon {
+  transform: scale(1.25) skew(-5deg);
+  opacity: 1;
+}
+.buy-now .icon-check:before {
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.buy-now.added .icon-check:before {
   opacity: 1;
 }
 
