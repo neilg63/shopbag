@@ -79,6 +79,7 @@ export default {
               break
             default:
               this.contClasses.push('flex-row')
+              this.contClasses.push('multi-row')
               break
           }
           this.contClasses.push(this.section.layout.replace(/_/g,'-'))
@@ -444,13 +445,47 @@ export default {
   transform: scale(1, 1);
 }
 
-#app .image-set .row-2 figure,
-#app .image-set .row-3 figure,
-#app .image-set .row-4 figure,
-#app .image-set .row-5 figure {
+#app .image-set .multi-row figure {
   margin-bottom: -0.5em;
 }
 
+#app .image-set .multi-row figure,
+#app .image-set .multi-row figure picture {
+  max-height: 100vh;
+  overflow: hidden;
+}
+
+#app .image-set .multi-row figure picture {
+  position: relative;
+  display: flex;
+  flex-flow: nowrap row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+#app .image-set .multi-row figure img {
+
+}
+
+/*#app .image-set .multi-row figure picture {
+  position: relative;
+  display: flex;
+  flex-flow: nowrap row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+#app .image-set .multi-row figure img {
+  width: auto;
+  height: auto;
+  min-height: 100%;
+  min-width: 100%;
+}*/
 
 @media screen and (min-width: 650px) {
   #app .image-set .row-5 figure,

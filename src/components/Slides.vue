@@ -316,6 +316,7 @@ export default {
   overflow: hidden;
   font-size: 6vw;
   transform: scale(0.8);
+  outline: none;
 }
 #app ol.arrow-nav li:before {
   position: absolute;
