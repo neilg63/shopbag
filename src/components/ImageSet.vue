@@ -143,7 +143,7 @@ export default {
       let comp = this
       this.cycleIv = setInterval( () => {
         comp.next()
-      }, 2000)
+      }, 5000)
     }
   },
 }
@@ -315,6 +315,24 @@ export default {
 #app section.image-set .slides-2 figure picture,
 #app section.image-set .slides-2 figure {
   transition: transform 1s ease-in-out;
+}
+
+@media screen and (min-width: 40em) {
+  #app section.image-set figure  {
+    font-size: 125%;
+  }
+}
+
+@media screen and (min-width: 60em) {
+  #app section.image-set figure  {
+    font-size: 133%;
+  }
+}
+
+@media screen and (min-width: 80em) {
+  #app section.image-set figure  {
+    font-size: 150%;
+  }
 }
 
 #app section.image-set .slides-2.offset-1 {

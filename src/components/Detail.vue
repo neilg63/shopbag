@@ -262,6 +262,10 @@ export default {
 }
 
 
+.detail-pane figure img {
+  width: 100%;  
+}
+
 
 #app .detail-pane .flex-row .body {
   max-width: 100%;

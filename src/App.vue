@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :class="{'store-loaded': hasStore,'show-menu': showMenu,'show-detail': showDetail,'show-home': !showDetail}">
+  <div id="app" :class="{'store-loaded': hasStore,'show-menu': showMenu,'show-detail': showDetail,'show-home': !showDetail,'scrolled-up': !scrolledDown}">
     <nav class="store-nav">
       <div class="bg-solid bg-element"></div>
       <div class="bg-transition bg-element"></div>
@@ -73,7 +73,9 @@ export default {
       orderedItems: [],
       subtotal: 0,
       subtotalFormatted: '',
-      syncing: false
+      syncing: false,
+      screenY: 0,
+      scrolledDown: false
     }
   },
   created () {
@@ -126,6 +128,11 @@ export default {
         utils.removeBodyClass('show-loading')
         window.scrollTo(0, 0)
       },750)
+      
+      window.addEventListener('scroll', (e) => {
+        comp.screenY = window.pageYOffset / window.innerHeight
+        comp.scrolledDown  = comp.screenY > 0.125;
+      })
     })
     this.$bus.$on('show-detail', (status) => {
       comp.showDetail = status === true
@@ -360,7 +367,7 @@ export default {
 }
 #app .top-slides {
   position: relative;
-  margin-top: -6em;
+  margin-top: -4vh;
 }
 @media screen and (orientation: portrait) {
   #app .top-slides ul.flex-slides li figure img,
