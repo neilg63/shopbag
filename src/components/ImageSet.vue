@@ -312,9 +312,18 @@ export default {
   font-size: 1.5em;
 }
 
+
 #app section.image-set .slides-2 figure picture,
 #app section.image-set .slides-2 figure {
   transition: transform 1s ease-in-out;
+}
+
+#app section.image-set figure figcaption {
+  transition: transform .5s ease-in-out;
+}
+
+#app section.image-set figure:hover figcaption {
+    transform: scale(1.25);
 }
 
 @media screen and (min-width: 40em) {

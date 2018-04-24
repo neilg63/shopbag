@@ -281,6 +281,18 @@ export default {
   pointer-events: none;
 }
 
+@media screen and (max-width: 60em) and (orientation: portrait) {
+  #app .enter-main {
+    top: 50vw;
+  }
+}
+
+@media screen and (max-width: 25em) {
+  #app ol.dot-nav li {
+    display: none;
+  }
+}
+
 #app .top-slides li {
   cursor: pointer;
 }
@@ -293,6 +305,7 @@ export default {
   pointer-events: all;
   width: 25vw;
   height: 100vh;
+  max-height: 100vw;
   position: absolute;
   margin: 0;
   padding: 0;

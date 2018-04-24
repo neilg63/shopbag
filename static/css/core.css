@@ -437,6 +437,9 @@ body.show-store #app .main {
   opacity: 1;
   z-index: 9;
 }
+#app .product-overlay .close {
+  transition: top 0.5s ease-in-out;
+}
 
 @media screen and (min-width: 40em) {
   #app nav ul.menu > li {
@@ -530,6 +533,20 @@ body.show-store #app .main {
   #app.scrolled-up .main {
     margin-top: 6em;
   }
+
+  #app.show-detail.scrolled-up #main-logo {
+    height: 6em;
+  }
+  #app.show-detail.scrolled-up > nav.store-nav {
+    height: 5em;
+  }
+  #app.show-detail.scrolled-up .main {
+    margin-top: 4em;
+  }
+
+  #app.scrolled-up .product-overlay .close {
+    top: 4em;
+  }
 }
 
 @media screen and (min-width: 80em) {
@@ -557,6 +574,19 @@ body.show-store #app .main {
 
   #app.scrolled-up .main {
     margin-top: 6.8em;
+  }
+  #app.scrolled-up .product-overlay .close {
+    top: 4.5em;
+  }
+
+  #app.show-detail.scrolled-up #main-logo {
+    height: 6.4em;
+  }
+  #app.show-detail.scrolled-up > nav.store-nav {
+    height: 5.4em;
+  }
+  #app.show-detail.scrolled-up .main {
+    margin-top: 4.4em;
   }
 }
 

@@ -19,6 +19,7 @@
       </template>
     </div>
     <product v-if="hasActiveProduct" :product="product"></product>
+    <sections v-if="numSections > 0" :sections="sections"></sections>
   </article>
 </template>
 
@@ -26,13 +27,15 @@
 
 import Product from './Product'
 import VuePicture from './VuePicture'
+import Sections from './Sections'
 import utils from '../utils/utils'
 
 export default {
   name: 'Detail',
   components: {
     VuePicture,
-    Product
+    Product,
+    Sections
   },
   data () {
     return {
@@ -88,6 +91,12 @@ export default {
           }
         } else {
           this.image = {}
+        }
+        if (data.sections) {
+          if (data.sections instanceof Array) {
+            this.sections = data.sections
+            this.numSections = data.sections.length
+          }
         }
         if (data.type) {
           this.cType = data.type
@@ -348,7 +357,12 @@ export default {
   margin-top: 2em;
 }
 
-@media screen and (min-width: 650px) {
+#app .product-overlay > h2,
+#app .subpanel h2.article-title {
+  transform: scaleX(1.25);
+}
+
+@media screen and (min-width: 40em) {
   
   #app .detail-pane .flex-row  {
     display: flex;
@@ -363,22 +377,31 @@ export default {
   }
 }
 
-@media screen and (min-width: 975px) {
+@media screen and (min-width: 60em) {
   #app .detail-pane .body {
     font-size: 112.5%;
   }
+  #app .product-overlay > h2,
+  #app .subpanel h2.article-title {
+    font-size: 2em;
+  }
 }
 
-  @media screen and (min-width: 1300px) {
-    #app .detail-pane .body {
-      font-size: 125%;
-    }
+@media screen and (min-width: 80em) {
+  #app .detail-pane .body {
+    font-size: 125%;
   }
 
-  @media screen and (min-width: 1600px) {
-    #app .detail-pane .body {
-      font-size: 133.33%;
-    }
+  #app .product-overlay > h2,
+  #app .subpanel h2.article-title {
+    font-size: 2.5em;
   }
+}
+
+@media screen and (min-width: 100em) {
+  #app .detail-pane .body {
+    font-size: 133.33%;
+  }
+}
 
 </style>

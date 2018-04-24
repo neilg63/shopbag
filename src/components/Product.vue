@@ -229,6 +229,11 @@ export default {
   font-style: italic;
 }
 
+#app .detail-pane .body p {
+  margin: 0.25em 0;
+  padding: 0;
+}
+
 @media screen and (min-width: 60em) {
 
   #app .buy-now {
@@ -273,6 +278,7 @@ export default {
   #app .image-selector {
     width: 80%;
   }
+
 }
 
 #app .image-selector {

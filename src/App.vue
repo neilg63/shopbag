@@ -27,11 +27,7 @@
     <div class="main">
       <div class="home-pane">
         <slides/>
-        <template v-for="(section,index) in sections">
-          <template v-if="section.type == 'image_set'">
-             <image-set :key="index" :section="section"></image-set>
-          </template>
-        </template>
+        <sections :sections="sections"></sections>
         <vue-footer :menu="menu" :footer="footer" id="page-footer"></vue-footer>        
       </div>
       <div class="detail-pane">
@@ -46,14 +42,14 @@
 <script>
 /*import Products from '@/components/Products'*/
 import Slides from '@/components/Slides'
-import ImageSet from '@/components/ImageSet'
+import Sections from '@/components/Sections'
 import VueFooter from '@/components/VueFooter'
 import utils from './utils/utils'
 export default {
   name: 'App',
   components: {
     Slides,
-    ImageSet,
+    Sections,
     VueFooter
   },
   data () {
