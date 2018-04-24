@@ -15,7 +15,7 @@
         <li class="variant" :class="{'active':variant.active}" v-on:click="setActive(variant)" :data-index="variant.imgIndex"><span class="text">{{variant.title}}</span></li>
       </template>
     </ul>
-      <div class="buy-now" :class="{'added':selectedVariant.added}" v-if="selectedVariant" v-on:click="showEcwidSelector()">
+      <div class="buy-now" :class="{'added':selectedVariant.added}" v-if="selectedVariant" v-on:click="addProduct()">
         <div class="price">{{selectedVariant.price_formatted}}</div>
         <div class="icon icon-add-cart"></div>
         <div class="icon icon-check"></div>
@@ -126,9 +126,9 @@ export default {
     close () {
       this.$parent.toggleActiveProduct(false)
     },
-    showEcwidSelector () {
-      if (this.selectedVariant.id) {
-        this.$bus.$emit('show-ecwid-product', this.selectedVariant)
+    addProduct () {
+      if (this.selectedVariant.id && !this.selectedVariant.added) {
+        this.$bus.$emit('add-ecwid-product', this.selectedVariant)
         let comp = this
         setTimeout(() => {
           comp.$parent.updateAdded(comp.product)
@@ -260,8 +260,9 @@ export default {
   #app .variant-selector {
     position: absolute;
     top: 0;
+    margin-top: 2em;
     right: 0;
-    width: 20em;
+    width: 18em;
     padding-top: 2em;
     text-align: left;
   }

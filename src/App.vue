@@ -1,28 +1,29 @@
 <template>
   <div id="app" :class="{'store-loaded': hasStore,'show-menu': showMenu,'show-detail': showDetail,'show-home': !showDetail,'scrolled-up': !scrolledDown}">
     <nav class="store-nav">
-      <div class="bg-solid bg-element"></div>
-      <div class="bg-transition bg-element"></div>
-      <div class="bg-menu bg-element"></div>
-      <div class="menu-toggle icon-menu" v-on:click.stop="toggleMenu()"></div>
-      <ul class="menu">
-        <li v-for="item in menu" :key="item.link"><router-link v-bind:to="item.link">{{item.title}}</router-link></li>
-      </ul>
-      <div class="show-cart" :class="{'has-items': numInCart > 0}" v-on:click="showCheckout()"><span class="num">{{numInCart}}</span>
-        <div class="micro-cart">
-          <ul v-if="numInCart > 0" class="ordered-items plain">
-          <li v-for="(item,oi) in orderedItems">
-            <span class="quantity">{{item.quantity}}</span>
-            <em>x</em>
-            <span class="title">{{item.name}}</span>
-          </li>
+      <div class="inner">
+        <div class="bg-solid bg-element"></div>
+        <div class="bg-transition bg-element"></div>
+        <div class="bg-menu bg-element"></div>
+        <div class="menu-toggle icon-menu" v-on:click.stop="toggleMenu()"></div>
+        <ul class="menu">
+          <li v-for="item in menu" :key="item.link"><router-link v-bind:to="item.link">{{item.title}}</router-link></li>
         </ul>
-          <p class="subtotal">{{subtotalFormatted}}</p>
+        <div class="show-cart" :class="{'has-items': numInCart > 0}" v-on:click="showCheckout()"><span class="num">{{numInCart}}</span>
+          <div class="micro-cart">
+            <ul v-if="numInCart > 0" class="ordered-items plain">
+            <li v-for="(item,oi) in orderedItems">
+              <span class="quantity">{{item.quantity}}</span>
+              <em>x</em>
+              <span class="title">{{item.name}}</span>
+            </li>
+          </ul>
+            <p class="subtotal">{{subtotalFormatted}}</p>
+          </div>
         </div>
+        <div id="main-logo" @click="logoAction()"></div>
+        <div class="back-to back-to-main" v-on:click="backToMain()"><span class="text">Back</span></div>
       </div>
-      <div id="main-logo" @click="logoAction()"></div>
-      <div class="back-to back-to-main" v-on:click="backToMain()"><span class="text">Back</span></div>
-      <div class="back-to back-to-cart" v-on:click="backToCart()"><span class="text">Back</span></div>
     </nav>
     <div class="main">
       <div class="home-pane">
@@ -133,9 +134,9 @@ export default {
     this.$bus.$on('show-detail', (status) => {
       comp.showDetail = status === true
     })
-    this.$bus.$on('show-ecwid-product', (variant) => {
+    this.$bus.$on('add-ecwid-product', (variant) => {
       if (variant) {
-        comp.showEcwidProduct(variant)
+        comp.addEcwidProduct(variant)
       }
     })
     this.$bus.$on('back-to-home', (status) => {
@@ -253,7 +254,7 @@ export default {
         },500)
       }
     },
-    showEcwidProduct (product) {
+    addEcwidProduct (product) {
       let tg = '.grid-product--id-' + product.id + ' a.grid-product__title'
       let el = document.querySelector(tg)
       let comp = this
@@ -265,7 +266,7 @@ export default {
         if (contEl) {
           contEl.click()
           setTimeout(() => {
-            comp.showEcwidProduct(product)
+            comp.addEcwidProduct(product)
           }, 500)
         }
       } else {
@@ -312,7 +313,7 @@ export default {
   max-height: 100vw;
 }
 #app ol.dot-nav {
-  bottom: 8%;
+  bottom: 12.5%;
   right: 2.5vw;
   z-index: 90;
 }
@@ -377,12 +378,12 @@ export default {
 
 .back-to {
   position: absolute;
-  top: 0.25em;
+  top: 0.5em;
   right: 2.5%;
   font-size: 2em;
   opacity: 0;
   pointer-events: none;
-  transform: scale(1.5,1);
+  transform: scale(1.6667,1);
 }
 
 .back-to:before {
