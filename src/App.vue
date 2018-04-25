@@ -58,9 +58,9 @@ export default {
       menu: [],
       showMenu: false,
       showDetail: false,
-      sections: [],
-      numSections: 0,
       products: [],
+      numSections: 0,
+      sections: [],
       hasStore: false,
       footer: {
         copyright: ''
@@ -94,14 +94,8 @@ export default {
         break
     }
     this.$bus.$on('siteinfo', (data) => {
-      if (data.home) {
-        if (data.home.images instanceof Array) {
-          this.$bus.$emit('load-slides', data.home.images)
-        }
-        if (data.home.sections instanceof Array) {
-          comp.sections = data.home.sections
-          comp.numSections = comp.sections.length
-        }
+      if (data.menu) {
+        comp.loadMenu(data.menu)
       }
       if (data.ecwid_products) {
         comp.ecwidProducts = data.ecwid_products
@@ -109,8 +103,14 @@ export default {
       if (data.pages) {
         comp.$parent.pages = data.pages
       }
-      if (data.menu) {
-        comp.loadMenu(data.menu)
+      if (data.home) {
+        if (data.home.images instanceof Array) {
+          this.$bus.$emit('load-slides', data.home.images)
+        }
+        if (data.home.sections instanceof Array) {
+          comp.sections = comp.processSections(data.home.sections)
+          comp.numSections = comp.sections.length
+        }
       }
       if (data.footer) {
         comp.footer = data.footer
@@ -162,6 +162,69 @@ export default {
       if (data instanceof Array) {
         this.menu = data
       }
+    },
+    processSections (sections) {
+      if (sections instanceof Array) {
+        return sections.map(sc => {
+          switch (sc.type) {
+            case 'image_set':
+              break;
+            case 'section':
+              sc.multiple = false
+              switch (sc.text_layout) {
+                case 'fade':
+                  sc.multiple = true
+                  break
+                case 'blocks':
+                  sc.multiple = true
+                  break
+                default:
+                  if (sc.text instanceof Array) {
+                    if (sc.text.length > 0) {
+                      sc.text = sc.text[0];
+                    }
+                  }
+                  break;
+              }
+              break;
+            case 'product_set':
+              if (sc.products instanceof Array) {
+                sc.images = []
+                sc.layout = 'row-4'
+                sc.type = 'image_set'
+                let pKeys = Object.keys(this.$parent.pages), nKeys = pKeys.length, 
+                i = 0, j = 0, ct, pn, k, img
+                for (; i < nKeys; i++) {
+                  k = pKeys[i]
+                  ct = this.$parent.pages[k]
+                  if (ct.type == 'catalog') {
+                    for (j = 0; j < ct.products.length; j++) {
+                      pn = ct.products[j]
+                      if (pn.images) {
+                        if (pn.images instanceof Array) {
+                          if (pn.images.length > 0) {
+                            if (sc.products.indexOf(pn.nid) >= 0) {
+                              img = pn.images[0]
+                              img.link = {
+                                url: k + '/' + utils.cleanString(pn.title),
+                                title: pn.title
+                              }
+                              sc.images.push(img)
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                  sc.layout = 'row-' + sc.images.length
+                }
+              }
+              break;
+          }
+          return sc
+        })
+      }
+      return []
     },
     toggleMenu () {
       this.showMenu = !this.showMenu

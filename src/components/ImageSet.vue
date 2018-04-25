@@ -458,11 +458,15 @@ export default {
 #app .image-set .multi-row figure picture {
   position: relative;
   display: flex;
-  flex-flow: nowrap row;
+  flex-flow: nowrap column;
   justify-content: center;
   align-items: center;
   width: 100%;
   height: 100%;
+}
+
+#app .home-pane .image-set .multi-row figure picture {
+  justify-content: flex-start;
 }
 
 #app .image-set .multi-row figure img {
@@ -487,24 +491,37 @@ export default {
   min-width: 100%;
 }*/
 
-@media screen and (min-width: 650px) {
-  #app .image-set .row-5 figure,
-  #app .image-set .row-4 figure,
+@media screen and (min-width: 25em) {
   #app .image-set .row-2 figure {
     width:  50%;
     max-width: 50vw;
   }
-  #app .image-set .row-3 figure{
-    width:  33.33%%;
+}
+
+@media screen and (orientation: landscape) {
+  #app .image-set .row-2 figure {
+    width:  50%;
+    max-width: 50vw;
   }
 }
-@media screen and (min-width: 975px) {
+
+@media screen and (min-width: 40em) {
+  #app .image-set .row-5 figure,
+  #app .image-set .row-4 figure {
+    width:  50%;
+    max-width: 50vw;
+  }
+  #app .image-set .row-3 figure{
+    width:  33.333%;
+  }
+}
+@media screen and (min-width: 60em) {
   #app .image-set .row-5 figure,
   #app .image-set .row-6 figure {
     width:  33.333%;
   }
 }
-@media screen and (min-width: 1300px) {
+@media screen and (min-width: 80em) {
   #app .image-set .row-6 figure {
     width:  16.66666%;
   }

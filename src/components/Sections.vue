@@ -4,17 +4,22 @@
 	  <template v-if="section.type == 'image_set'">
 	     <image-set :key="index" :section="section"></image-set>
 	  </template>
+	  <template v-if="section.type == 'section'">
+	     <text-section :key="index" :section="section"></text-section>
+	  </template>
 	</template>
 	</div>
 </template>
 <script>
 
 import ImageSet from './ImageSet'
+import TextSection from './TextSection'
 
 export default {
 	name: 'Sections',
 	components: {
-    ImageSet
+    ImageSet,
+    TextSection
   },
   props: {
     sections: {
