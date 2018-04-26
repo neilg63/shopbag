@@ -5,6 +5,7 @@
       <vue-picture :imgset="image" :group="image.groupName" :className="image.classNames.join(' ')"></vue-picture>
       <figcaption v-if="image.hasLink">
         {{image.link.title}}
+        <p v-if="image.hasPriceInfo">{{image.priceInfo.price_formatted}}</p>
       </figcaption>
     </figure>
   </div>
@@ -57,10 +58,17 @@ export default {
             img.groupName = 'half'
             img.figClasses = index > 0? [] : ['active']
             img.hasLink = false
+            img.hasPriceInfo = false
             if (img.link) {
               if (img.link.url) {
                 img.hasLink = true
                 img.figClasses.push('has-link')
+              }
+            }
+            if (img.priceInfo) {
+              if (img.priceInfo.price_formatted) {
+                img.hasPriceInfo = true
+                img.figClasses.push('has-price')
               }
             }
             return img
@@ -300,6 +308,10 @@ export default {
   color: white;
 }
 
+#app section.image-set figure.has-price figcaption {
+  color: black;
+}
+
 #app section.image-set .column figure figcaption {
   font-size: 2.5em;
 }
@@ -311,6 +323,10 @@ export default {
 #app section.image-set .row-3 figure figcaption,
 #app section.image-set .row-4 figure figcaption {
   font-size: 1.5em;
+}
+
+#app section.image-set figure.has-price {
+  font-size: 75%;
 }
 
 

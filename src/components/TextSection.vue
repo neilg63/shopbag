@@ -81,18 +81,37 @@ export default {
 </script>
 <style>
 
-.text-section {
-  min-height: 50vh;
+.text-section.fade,
+.text-section.blocks,
+.home-pane .text-section {
+  min-height: 30em;
   position: relative;
 }
 
+.text-section.fade .slides > article {
+  height: 25em;
+  padding: 2.5em 5%;
+}
+
+@media screen and (min-height: 40em) {
+  .text-section.fade,
+  .text-section.blocks,
+  .home-pane .text-section,
+  .text-section {
+    min-height: 50vh;
+    position: relative;
+  }
+  .text-section.fade .slides > article {  
+    padding: 5vh 5%;
+    height: 40vh;
+  }
+}
 
 .text-section.fade .slides > article,
 .text-section.blocks .slides {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
 }
 
 .text-section.blocks .slides {
@@ -101,9 +120,7 @@ export default {
 
 .text-section.fade .slides > article {
   flex-flow: nowrap column;
-  height: 40vh;
   font-size: 1.2em;
-  padding: 5vh 5%;
   width: 90%;
 }
 

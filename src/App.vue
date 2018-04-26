@@ -189,35 +189,7 @@ export default {
               break;
             case 'product_set':
               if (sc.products instanceof Array) {
-                sc.images = []
-                sc.layout = 'row-4'
-                sc.type = 'image_set'
-                let pKeys = Object.keys(this.$parent.pages), nKeys = pKeys.length, 
-                i = 0, j = 0, ct, pn, k, img
-                for (; i < nKeys; i++) {
-                  k = pKeys[i]
-                  ct = this.$parent.pages[k]
-                  if (ct.type == 'catalog') {
-                    for (j = 0; j < ct.products.length; j++) {
-                      pn = ct.products[j]
-                      if (pn.images) {
-                        if (pn.images instanceof Array) {
-                          if (pn.images.length > 0) {
-                            if (sc.products.indexOf(pn.nid) >= 0) {
-                              img = pn.images[0]
-                              img.link = {
-                                url: k + '/' + utils.cleanString(pn.title),
-                                title: pn.title
-                              }
-                              sc.images.push(img)
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                  sc.layout = 'row-' + sc.images.length
-                }
+                this.processProductSet(sc)
               }
               break;
           }
@@ -225,6 +197,41 @@ export default {
         })
       }
       return []
+    },
+    processProductSet (sc) {
+      sc.images = []
+      sc.layout = 'row-4'
+      sc.type = 'image_set'
+      let pKeys = Object.keys(this.$parent.pages), nKeys = pKeys.length, 
+      i = 0, j = 0, ct, pn, k, img
+      for (; i < nKeys; i++) {
+        k = pKeys[i]
+        ct = this.$parent.pages[k]
+        if (ct.type == 'catalog') {
+          for (j = 0; j < ct.products.length; j++) {
+            pn = ct.products[j]
+            if (pn.images) {
+              if (pn.images instanceof Array) {
+                if (pn.images.length > 0) {
+                  if (sc.products.indexOf(pn.nid) >= 0) {
+                    img = pn.images[0]
+                    img.link = {
+                      url: k + '/' + utils.cleanString(pn.title),
+                      title: pn.title
+                    }
+                    console.log(pn.variants)
+                    if (pn.variants instanceof Array && pn.variants.length > 0) {
+                      img.priceInfo = pn.variants[0]
+                    }
+                    sc.images.push(img)
+                  }
+                }
+              }
+            }
+          }
+        }
+        sc.layout = 'row-' + sc.images.length
+      }
     },
     toggleMenu () {
       this.showMenu = !this.showMenu
@@ -427,7 +434,7 @@ export default {
 }
 #app .top-slides {
   position: relative;
-  margin-top: -4vh;
+  margin-top: -4em;
 }
 @media screen and (orientation: portrait) {
   #app .top-slides ul.flex-slides li figure img,

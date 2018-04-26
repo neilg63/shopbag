@@ -187,7 +187,7 @@ export default {
 
 #app .top-slides ul.flex-slides {
   display: flex;
-  margin-top: 10vh;
+  margin-top: 5vh;
 }
 #app .top-slides ul.flex-slides,
 #app .top-slides {
@@ -272,10 +272,10 @@ export default {
   position: absolute;
   top: 50vh;
   left: 50vw;
-  height: 20vw;
-  width: 20vw;
-  margin-left: -10vw;
-  margin-top: -10vw;
+  height: 12.5vw;
+  width: 12.5vw;
+  margin-left: -6.25vw;
+  margin-top: -6.25vw;
   opacity: 0;
   transition: opacity 1s ease-in-out;
   pointer-events: none;
@@ -303,7 +303,7 @@ export default {
 
 #app ol.arrow-nav > li {
   pointer-events: all;
-  width: 25vw;
+  width: 33.333vw;
   height: 100vh;
   max-height: 100vw;
   position: absolute;
