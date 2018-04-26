@@ -10,8 +10,8 @@
           <li v-for="item in menu" :key="item.link"><router-link v-bind:to="item.link">{{item.title}}</router-link></li>
         </ul>
         <div class="show-cart" :class="{'has-items': numInCart > 0}" v-on:click="showCheckout()"><span class="num">{{numInCart}}</span>
-          <div class="micro-cart">
-            <ul v-if="numInCart > 0" class="ordered-items plain">
+          <div v-if="numInCart > 0" class="micro-cart">
+            <ul class="ordered-items plain">
             <li v-for="(item,oi) in orderedItems">
               <span class="quantity">{{item.quantity}}</span>
               <em>x</em>

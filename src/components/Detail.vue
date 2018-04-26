@@ -5,6 +5,7 @@
     </figure>
     <div class="subpanel" :class="bodyClass">
       <h2 class="article-title" :class="{'show-title': showTitle,'hide-title': !showTitle}">{{title}}</h2>
+      <div v-if="bodyTop" class="body" v-html="body"></div>
     </div>
     <div v-if="hasProductImages" class="products">
       <template v-for="(image, index) in images">
@@ -18,7 +19,7 @@
       </template>
     </div>
     <product v-if="hasActiveProduct" :product="product"></product>
-    <div class="body" v-html="body"></div>
+    <div v-if="!bodyTop" class="body" v-html="body"></div>
     <sections v-if="numSections > 0" :sections="sections"></sections>
   </article>
 </template>
@@ -59,7 +60,8 @@ export default {
       numProducts: 0,
       contClasses: [],
       mainImageClass: 'right',
-      bodyClass: 'left'
+      bodyClass: 'left',
+      bodyTop: true
     }
   },
   created () {
@@ -104,6 +106,7 @@ export default {
         switch (this.cType) {
           case 'catalog':
             this.preProcessCatalog(data)
+            this.bodyTop = false
             break;
           default:
             this.hasProductImages = false
@@ -272,13 +275,18 @@ export default {
 
 
 .detail-pane figure img {
-  width: 100%;  
+  width: 100%;
+  max-height: 80vh;
+  margin-top: 2.5vh;
+}
+
+.detail-pane .body {
+  font-size: 80%;
 }
 
 
 #app .detail-pane .flex-row .body {
   max-width: 100%;
-  font-size: 80%;
 }
 
 #app .detail-pane .products {
@@ -351,7 +359,7 @@ export default {
 }
 
 #app .subpanel h2 {
-  padding-top: 1em;
+  padding-top: 0.25em;
 }
 
 #app .detail-pane .flex-row figure.subpanel {

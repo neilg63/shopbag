@@ -384,9 +384,13 @@ body.show-store #app .main {
   background-repeat: no-repeat;
   background-position: top right;
   background-size: 2em 100%;
-  opacity: 0;
+  opacity: .5;
   transform: skew(0deg);
   transition: all 0.5s ease-in-out;
+}
+
+#app .show-cart .num {
+  opacity: 0;
 }
 
 #app .show-cart .micro-cart {
@@ -458,6 +462,11 @@ body.show-store #app .main {
   opacity: 1;
   z-index: 9;
 }
+
+#app .show-cart.has-items .num {
+  opacity: 1;
+}
+
 #app .product-overlay .close {
   transition: top 0.5s ease-in-out;
 }
