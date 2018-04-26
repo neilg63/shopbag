@@ -5,7 +5,6 @@
     </figure>
     <div class="subpanel" :class="bodyClass">
       <h2 class="article-title" :class="{'show-title': showTitle,'hide-title': !showTitle}">{{title}}</h2>
-      <div class="body" v-html="body"></div>
     </div>
     <div v-if="hasProductImages" class="products">
       <template v-for="(image, index) in images">
@@ -19,6 +18,7 @@
       </template>
     </div>
     <product v-if="hasActiveProduct" :product="product"></product>
+    <div class="body" v-html="body"></div>
     <sections v-if="numSections > 0" :sections="sections"></sections>
   </article>
 </template>
@@ -278,6 +278,7 @@ export default {
 
 #app .detail-pane .flex-row .body {
   max-width: 100%;
+  font-size: 80%;
 }
 
 #app .detail-pane .products {
@@ -373,13 +374,13 @@ export default {
     width: 50%;
   }
   #app .detail-pane .body {
-    max-width: 80%;
+    max-width: 86.6667%;
   }
 }
 
 @media screen and (min-width: 60em) {
   #app .detail-pane .body {
-    font-size: 112.5%;
+    font-size: 100%;
   }
   #app .product-overlay > h2,
   #app .subpanel h2.article-title {
@@ -389,7 +390,7 @@ export default {
 
 @media screen and (min-width: 80em) {
   #app .detail-pane .body {
-    font-size: 125%;
+    font-size: 106.667%;
   }
 
   #app .product-overlay > h2,
@@ -400,7 +401,7 @@ export default {
 
 @media screen and (min-width: 100em) {
   #app .detail-pane .body {
-    font-size: 133.33%;
+    font-size: 112.5%%;
   }
 }
 

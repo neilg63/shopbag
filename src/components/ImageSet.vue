@@ -325,6 +325,15 @@ export default {
   font-size: 1.5em;
 }
 
+#app section.image-set figure.has-price img {
+  transform: scale(1, 1);
+  transition: transform .5s ease-in-out;
+}
+
+#app section.image-set figure.has-price:hover img {
+  transform: scale(-1, 1);
+}
+
 #app section.image-set figure.has-price {
   font-size: 75%;
 }

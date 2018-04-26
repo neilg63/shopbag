@@ -219,7 +219,6 @@ export default {
                       url: k + '/' + utils.cleanString(pn.title),
                       title: pn.title
                     }
-                    console.log(pn.variants)
                     if (pn.variants instanceof Array && pn.variants.length > 0) {
                       img.priceInfo = pn.variants[0]
                     }
@@ -434,7 +433,7 @@ export default {
 }
 #app .top-slides {
   position: relative;
-  margin-top: -4em;
+  margin-top: -2em;
 }
 @media screen and (orientation: portrait) {
   #app .top-slides ul.flex-slides li figure img,
@@ -448,7 +447,7 @@ export default {
 
 .back-to {
   position: absolute;
-  top: 0.5em;
+  top: 0.25em;
   right: 2.5%;
   font-size: 2em;
   opacity: 0;

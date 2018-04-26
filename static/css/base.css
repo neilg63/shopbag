@@ -1,15 +1,20 @@
-@font-face {
-  font-family: "DayRoman";
-  src: url("/static/fonts/DAYROM.eot"); /* IE9 Compat Modes */
-  src: url("/static/fonts/DAYROM.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
-    url("/static/fonts/DAYROM.otf") format("opentype"), /* Open Type Font */
-    url("/static/fonts/DAYROM.svg") format("svg"), /* Legacy iOS */
-    url("/static/fonts/DAYROM.ttf") format("truetype"), /* Safari, Android, iOS */
-    url("/static/fonts/DAYROM.woff") format("woff"), /* Modern Browsers */
-    url("/static/fonts/DAYROM.woff2") format("woff2"); /* Modern Browsers */
-  font-weight: normal;
-  font-style: normal;
+body,
+#app,
+html#ecwid_html body#ecwid_body.show-store .ec-size .ec-store,
+html#ecwid_html body#ecwid_body.show-store {
+  font-family: 'EB Garamond', sans-serif;
 }
+
+/*#app nav ul.menu > li,
+html#ecwid_html body#ecwid_body.show-store h2,
+html#ecwid_html body#ecwid_body.show-store h3,
+#app h2, 
+#app h3,
+#app h4,
+#app h5, 
+#app h6 {
+  font-family: 'Roboto', serif;
+}*/
 
 a {
   text-decoration: none;
@@ -191,11 +196,7 @@ body {
   background-image: linear-gradient(to bottom,rgba(228,228,228,1), rgba(228,228,228,0));
 }
 
-#app,
-html#ecwid_html body#ecwid_body.show-store .ec-size .ec-store,
-html#ecwid_html body#ecwid_body.show-store {
-  font-family: 'DayRoman';
-}
+
 
 #app footer {
   padding: 2em 0;
@@ -239,13 +240,13 @@ html#ecwid_html body#ecwid_body.show-store {
 }
 
 #main-logo:hover {
-  transform: scale(1.25, 1) skew(-7.5deg);
+  transform: scale(1.25, 1) skew(-5deg);
 }
 
 .menu-toggle {
   position: absolute;
   left: 2.5%;
-  top: 0.0625em;
+  top: 0.125em;
   font-size: 2em;
   opacity: 0.5;
   transition: all .5s ease-in-out;
@@ -258,12 +259,12 @@ html#ecwid_html body#ecwid_body.show-store {
 }
 
 .show-menu .menu-toggle:hover {
-  transform: rotate(90deg) scale(0.8,1.25) skew(7.5deg);
+  transform: rotate(90deg) scale(0.8,1.25) skew(5deg);
 }
 
 .menu-toggle:hover {
   opacity: 0.75;
-  transform: skew(-7.5deg);
+  transform: skew(-5deg);
 }
 
 #app nav ul.menu,
@@ -313,7 +314,15 @@ body.show-store .back-to-main {
   opacity: 0.6667;
   pointer-events: all;
   cursor: pointer;
+  z-index: 100;
 }
+
+body.show-store #app .show-cart {
+  opacity: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
 #app .main {
   transition: opacity 0.5s ease-in-out, margin-top 0.5s ease-in-out;
   margin-top: 4em;
@@ -367,20 +376,17 @@ body.show-store #app .main {
 
 #app .show-cart {
   position: absolute;
-  left: 3em;
+  right: 2.5%;
   top: 0.375em;
   width: 20em;
   height: 1.75em;
   background-image: url(/static/images/shopping-cart.svg);
   background-repeat: no-repeat;
-  background-position: top left;
+  background-position: top right;
   background-size: 2em 100%;
   opacity: 0;
   transform: skew(0deg);
   transition: all 0.5s ease-in-out;
-}
-#app .show-cart:hover {
-  transform: skew(-5deg);
 }
 
 #app .show-cart .micro-cart {
@@ -401,10 +407,14 @@ body.show-store #app .main {
   text-align: right;
 }
 
-#app .show-cart .micro-cart,
+#app .show-cart .micro-cart {
+  width: 100%;
+  
+}
+
+,
 #app .show-cart .micro-cart .ordered-items {
-  width: 20em;
-  max-width: 75%;
+  width: 100%;
 }
 
 #app .show-cart .micro-cart .ordered-items li {
@@ -417,7 +427,7 @@ body.show-store #app .main {
 
 #app .show-cart .num {
   position: absolute;
-  left: 3em;
+  right: 3em;
   top: 0;
   display: block;
   font-size: 0.8em;
@@ -456,11 +466,17 @@ body.show-store #app .main {
   #app nav ul.menu > li {
     font-size: 1.33em;
   }
+  section#ecwid-store-container {
+    top: 6.5em;
+  }
 }
 
 @media screen and (min-width: 50em) {
   #app nav ul.menu > li {
     font-size: 1.5em;
+  }
+  section#ecwid-store-container {
+    top: 7em;
   }
 }
 
@@ -468,11 +484,17 @@ body.show-store #app .main {
   #app nav ul.menu > li {
     font-size: 1.667em;
   }
+  section#ecwid-store-container {
+    top: 8em;
+  }
 }
 
 @media screen and (min-width: 80em) {
   #app nav ul.menu > li {
     font-size: 1.875em;
+  }
+  section#ecwid-store-container {
+    top: 9em;
   }
 }
 
@@ -485,14 +507,13 @@ body.show-store #app .main {
 @media screen and (min-width: 40em) {
   #app .show-cart {
     height: 2em;
-    left: 5em;
   }
   #app .menu-toggle {
-    font-size: 2.5em;
+    font-size: 2em;
   }
 
   #app .show-cart .num {
-    left: 4em;
+    right: 4em;
   }
   #app .show-cart .micro-cart {
     margin-top: 4em;
@@ -504,7 +525,7 @@ body.show-store #app .main {
     height: 2.25em;
   }
   #app .menu-toggle {
-    font-size: 2.75em;
+    font-size: 2.333em;
   }
   #main-logo {
     height: 3.6em;
@@ -515,11 +536,10 @@ body.show-store #app .main {
    #app .show-cart {
     height: 2.667em;
     top: 0.625em;
-    left: 8em;
     background-size: 3em 100%;
   }
   #app .menu-toggle {
-    font-size: 3.25em;
+    font-size: 2.75em;
   }
   #app > nav.store-nav {
     height: 4.5em;
@@ -531,11 +551,11 @@ body.show-store #app .main {
     height: 4em;
   }
 
-  #app.show-menu #main-logo {
+  /*#app.show-menu #main-logo {
     max-height: 4.5em;
-  }
+  }*/
 
-  #app.scrolled-up #main-logo {
+  /*#app.scrolled-up #main-logo {
     height: 7.2em;
   }
   #app.scrolled-up > nav.store-nav {
@@ -557,7 +577,7 @@ body.show-store #app .main {
 
   #app.scrolled-up .product-overlay .close {
     top: 3em;
-  }
+  }*/
 }
 
 @media screen and (min-width: 80em) {
@@ -565,7 +585,7 @@ body.show-store #app .main {
     height: 3em;
   }
   #app .menu-toggle {
-    font-size: 3.667em;
+    font-size: 3em;
   }
   #app > nav.store-nav {
     height: 5em;
@@ -576,7 +596,7 @@ body.show-store #app .main {
   #main-logo {
     height: 4.5em;
   }
-  #app.scrolled-up #main-logo {
+  /*#app.scrolled-up #main-logo {
     height: 8em;
   }
   #app.scrolled-up > nav.store-nav {
@@ -593,12 +613,13 @@ body.show-store #app .main {
   #app.show-detail.scrolled-up #main-logo {
     height: 6.4em;
   }
+
   #app.show-detail.scrolled-up > nav.store-nav {
     height: 5.4em;
   }
   #app.show-detail.scrolled-up .main {
     margin-top: 4.4em;
-  }
+  }*/
 }
 
 @media screen and (min-width: 90em) {
