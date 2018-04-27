@@ -197,7 +197,7 @@ export default {
 #app .top-slides ul.flex-slides li figure img,
 #app .top-slides ul.flex-slides,
 #app .top-slides {
-  height: 95vh;
+  height: 97vh;
 }
 #app .top-slides ul.flex-slides li figure {
   display: flex;

@@ -297,8 +297,7 @@ export default {
 #app section.image-set figure figcaption {
   position: absolute;
   z-index: 8;
-  top: 75%;
-  bottom: 10%;
+  bottom: 4rem;
   left: 10%;
   right: 10%;
   display: flex;

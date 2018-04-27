@@ -281,7 +281,7 @@ export default {
 }
 
 .detail-pane .body {
-  font-size: 80%;
+  font-size: 100%;
 }
 
 
@@ -387,9 +387,7 @@ export default {
 }
 
 @media screen and (min-width: 60em) {
-  #app .detail-pane .body {
-    font-size: 100%;
-  }
+
   #app .product-overlay > h2,
   #app .subpanel h2.article-title {
     font-size: 2em;
