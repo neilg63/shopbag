@@ -19,6 +19,7 @@
         <div class="icon icon-check"></div>
         <div class="price">{{selectedVariant.price_formatted}}</div>
         <div class="icon icon-add-cart"></div>
+        <div class="hint">{{options.buyNowHint}}</div>
       </div>
       <h3 class="selected-variant">{{selectedVariant.title}}</h3>
       <div class="catalog-body" v-html="product.intro"></div>
@@ -42,6 +43,11 @@ export default {
   },
   props: {
     product: {
+      type: Object,
+      required: true,
+      default: null
+    },
+    options: {
       type: Object,
       required: true,
       default: null
@@ -200,6 +206,8 @@ export default {
   flex-flow: nowrap row;
   cursor: pointer;
   z-index: 20;
+  height: 2.5em;
+  min-width: 5em;
 }
 
 .buy-now .icon {
@@ -210,6 +218,18 @@ export default {
   overflow: hidden;
   font-size: 1.25em;
   outline: none;
+}
+
+.buy-now .hint {
+  position: absolute;
+  bottom: -0.25em;
+  right: 0;
+  opacity: 0;
+  transition: opacity .5s ease-in-out;
+}
+
+.variant-selector:hover .buy-now .hint {
+  opacity: 1;
 }
 
 .buy-now .price,

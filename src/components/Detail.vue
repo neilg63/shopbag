@@ -18,7 +18,7 @@
         </figure>
       </template>
     </div>
-    <product v-if="hasActiveProduct" :product="product"></product>
+    <product v-if="hasActiveProduct" :product="product" :options="productOptions"></product>
     <div v-if="!bodyTop" class="body" v-html="body"></div>
     <sections v-if="showSections" :sections="sections"></sections>
   </article>
@@ -55,6 +55,9 @@ export default {
       hasActiveProduct: false,
       product: {
         title: ''
+      },
+      productOptions: {
+        buyNowHint: 'Buy now'
       },
       hasProductImages: false,
       numProducts: 0,
