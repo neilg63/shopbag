@@ -11,15 +11,23 @@
     </div>
     <div class="variant-selector" v-if="variants.length > 0">
       <ul class="plain">
-      <template v-for="(variant, index) in product.variants">
-        <li class="variant" :class="{'active':variant.active}" v-on:click="setActive(variant)" :data-index="variant.imgIndex" :key="index"><span class="text">{{variant.title}}</span></li>
-      </template>
-    </ul>
-      <div class="buy-now" :class="{'added':selectedVariant.added}" v-if="selectedVariant" v-on:click="addProduct()">
+        <template v-for="(variant, index) in product.variants">
+          <li class="variant" :class="{'active':variant.active}" v-on:click="setActive(variant)" :data-index="variant.imgIndex" :key="index"><span class="text">{{variant.title}}</span></li>
+        </template>
+      </ul>
+      <ol class="aspect-nav plain">
+        <template v-for="num in numImagesInSet">
+          <li :class="'num-'+num" :key="num" v-on:click="setAspect(num-1)" :title="num"></li>
+        </template>
+      </ol>
+      <div class="buy-now" :class="{'added':selectedVariant.added,'selecting': selecting}" v-if="selectedVariant" v-on:click="addProduct()">
         <div class="icon icon-check"></div>
         <div class="price">{{selectedVariant.price_formatted}}</div>
         <div class="icon icon-add-cart"></div>
-        <div class="hint">{{options.buyNowHint}}</div>
+        <div class="hint">
+          <span class="not-added">{{options.buyNowHint}}</span>
+          <span class="added">{{options.addedHint}}</span>
+        </div>
       </div>
       <h3 class="selected-variant">{{selectedVariant.title}}</h3>
       <div class="catalog-body" v-html="product.intro"></div>
@@ -54,7 +62,10 @@ export default {
     return {
       imageSets: [],
       variants: [],
-      selectedVariant: null
+      selectedVariant: null,
+      cycleStopped: false,
+      selecting: false,
+      numImagesInSet: 3
     }
   },
   created () {
@@ -91,6 +102,9 @@ export default {
                   sec.layout = 'aspect'
                   if (sec.images.length > 0) {
                     sec.active = c === 0
+                    if (i === 0) {
+                      this.numImagesInSet = sec.images.length
+                    }
                     this.imageSets.push(sec)
                     if (sec.ecwid) {
                       let vi = this.variants.findIndex(v => v.id === sec.ecwid)
@@ -122,6 +136,7 @@ export default {
       if (variant.imgIndex >= 0) {
         this.imageSets = this.imageSets.map((ims, index) => {
           ims.active = variant.imgIndex === index
+          this.numImagesInSet = ims.images.length
           return ims
         })
       }
@@ -131,12 +146,17 @@ export default {
     },
     addProduct () {
       if (this.selectedVariant.id && !this.selectedVariant.added) {
+        this.selecting = true
         this.$bus.$emit('add-ecwid-product', this.selectedVariant)
         let comp = this
         setTimeout(() => {
           comp.$parent.updateAdded(comp.product)
+          comp.selecting = false
         }, 2000)
       }
+    },
+    setAspect (index) {
+      this.$bus.$emit('set-image-index', index);
     }
   }
 }
@@ -156,6 +176,7 @@ export default {
   margin-top: 1em;
   padding: .5em 5% 1em 5%;
   text-align: left;
+  z-index: 8;
 }
 #app .variant-selector li span.text {
   display: none;
@@ -196,6 +217,12 @@ export default {
   height: 2.5em;
   min-width: 5em;
 }
+
+.buy-now.selecting {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 .buy-now .icon {
   transform: scale(1);
   opacity: 0.75;
@@ -212,7 +239,18 @@ export default {
   opacity: 0;
   font-style: italic;
   transition: opacity .5s ease-in-out;
+  white-space: nowrap;
 }
+
+.buy-now.added .hint span.not-added,
+.buy-now .hint span.added {
+  display: none;
+}
+
+.buy-now.added .hint span.added {
+  display: block;
+}
+
 .variant-selector:hover .buy-now .hint {
   opacity: 1;
 }
@@ -246,55 +284,7 @@ export default {
   margin: 0.25em 0;
   padding: 0;
 }
-@media screen and (min-width: 60em) {
-  #app .buy-now {
-    position: relative;
-    top: 0;
-    margin: 1em 0 1em 1em;
-  }
 
-  #app .buy-now .hint {
-    bottom: auto;
-    top: 0;
-    right: 5em;
-  }
-
-  #app .variant-selector .plain li {
-    padding: 0 0 0.5em 0;
-    margin-top: 0;
-    white-space: nowrap;
-    cursor: pointer;
-    opacity: 0.8;
-    width: auto;
-    height: auto;
-    cursor: pointer;
-  }
-  #app .variant-selector .plain {
-    flex-flow: nowrap column;
-  }
-  #app h3.selected-variant {
-    display: none;
-  }
-  #app .variant-selector {
-    position: absolute;
-    top: 0;
-    margin-top: 2em;
-    right: 0;
-    width: 18em;
-    padding-top: 2em;
-    text-align: left;
-  }
-  #app .variant-selector li span.text {
-    display: inline-block;
-  }
-  #app .variant-selector .plain li.active {
-    font-style: italic;
-    opacity: 1;
-  }
-  #app .image-selector {
-    width: 80%;
-  }
-}
 #app .image-selector {
   position: relative;
 }
@@ -348,4 +338,100 @@ export default {
   margin-top: 0;
   padding-top: 0;
 }
+
+#app .aspect-nav {
+  position: absolute;
+  top: .5em;
+  right: 25%;
+}
+
+#app .detail-pane .variant-selector ol.aspect-nav li {
+  margin: 0 .5em;
+  display: inline-block;
+  position: relative;
+  height: 1em;
+  width: 2em;
+  opacity: 0.333;
+}
+
+#app .aspect-nav li:hover {
+  opacity: 0.5;
+}
+
+#app .aspect-nav li:before {
+  font-family: icomoon;
+  position: absolute;
+  top: 0;
+  left: 0;
+  
+}
+
+#app .aspect-nav li.num-1:before {
+  content: "\e902";
+}
+
+#app .aspect-nav li.num-2:before {
+  content: "\e900";
+}
+
+#app .aspect-nav li.num-3:before {
+  content: "\e901";
+}
+
+@media screen and (min-width: 60em) {
+  #app .buy-now {
+    position: relative;
+    top: 0;
+    margin: 1em 0 1em 1em;
+  }
+
+  #app .buy-now .hint {
+    bottom: auto;
+    top: 0;
+    left: 7.5em;
+  }
+
+  #app .variant-selector .plain li {
+    padding: 0 0 0.5em 0;
+    margin-top: 0;
+    white-space: nowrap;
+    cursor: pointer;
+    opacity: 0.8;
+    width: auto;
+    height: auto;
+    cursor: pointer;
+  }
+  #app .variant-selector .plain {
+    flex-flow: nowrap column;
+  }
+  #app h3.selected-variant {
+    display: none;
+  }
+  #app .variant-selector {
+    position: absolute;
+    top: 0;
+    margin-top: 2em;
+    right: 0;
+    width: 18em;
+    padding-top: 2em;
+    text-align: left;
+    padding-bottom: 1em;
+  }
+  #app .variant-selector li span.text {
+    display: inline-block;
+  }
+  #app .variant-selector .plain li.active {
+    font-style: italic;
+    opacity: 1;
+  }
+  #app .image-selector {
+    width: 80%;
+  }
+  #app .variant-selector ol.aspect-nav {
+    position: relative;
+    right: auto;
+    display: block;
+  }
+}
+
 </style>

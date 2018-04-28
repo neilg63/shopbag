@@ -57,7 +57,8 @@ export default {
         title: ''
       },
       productOptions: {
-        buyNowHint: 'Buy now'
+        buyNowHint: 'Buy now',
+        addedHint: 'Added to your bag'
       },
       hasProductImages: false,
       numProducts: 0,
@@ -75,6 +76,9 @@ export default {
   created () {
     this.$bus.$on('page', (data) => {
       this.contClasses = []
+      this.products = []
+      this.hasProducts = false
+      this.bodyTop = true
       if (data.valid) {
         this.hasMainImage = false
         if (data.title) {
@@ -373,7 +377,7 @@ export default {
 #app .detail-pane h2 span.link-back:after {
   display: inline-block;
   font-family: icomoon;
-  content: "\e900";
+  content: "\e908";
   font-size: 0.5em;
   opacity: 0.5;
   margin: 0 .25em;

@@ -7,6 +7,10 @@
       <div class="slides">
         <article v-for="(slide,index) in slides" :key="index" v-html="slide" :class="{'active': index == currIndex}">
       </article>
+        <div class="bg top-left"></div>
+        <div class="bg top-right"></div>
+        <div class="bg bottom-left"></div>
+        <div class="bg bottom-right"></div>
       </div>
     </template>
   </section>
@@ -82,6 +86,7 @@ export default {
 <style>
 
 .text-section.fade,
+.text-section.fade .slides,
 .text-section.blocks,
 .home-pane .text-section {
   min-height: 30em;
@@ -95,6 +100,7 @@ export default {
 
 @media screen and (min-height: 40em) {
   .text-section.fade,
+  .text-section.fade .slides,
   .text-section.blocks,
   .home-pane .text-section,
   .text-section {
@@ -146,8 +152,12 @@ export default {
   height: 100%;
 }
 
+#app .fade .slides >.bg,
 .fade > .slides > article {
   position: absolute;
+}
+
+.fade > .slides > article {
   top: 0;
   bottom: 0;
   left: 0;
@@ -160,6 +170,40 @@ export default {
 #app .fade .slides > article.active {
   opacity: 1;
   z-index: 2;
+}
+
+#app .fade .slides >.bg {
+  height: 6vmin;
+  width: 6vmin;
+  z-index: 3;
+}
+
+#app .fade .slides >.bg.top-left {
+  top: 3vmin;
+  left: 3vmin;
+  border-top: dashed 1px rgba(0,0,0,0.5);
+  border-left: dashed 1px rgba(0,0,0,0.5);
+}
+
+#app .fade .slides >.bg.top-right {
+  top: 3vmin;
+  right: 3vmin;
+  border-top: dashed 1px rgba(0,0,0,0.5);
+  border-right: dashed 1px rgba(0,0,0,0.5);
+}
+
+#app .fade .slides >.bg.bottom-left {
+  bottom: 3vmin;
+  left: 3vmin;
+  border-bottom: dashed 1px rgba(0,0,0,0.5);
+  border-left: dashed 1px rgba(0,0,0,0.5);
+}
+
+#app .fade .slides >.bg.bottom-right {
+  bottom: 3vmin;
+  right: 3vmin;
+  border-bottom: dashed 1px rgba(0,0,0,0.5);
+  border-right: dashed 1px rgba(0,0,0,0.5);
 }
 
 </style>

@@ -252,9 +252,8 @@ export default {
     backToMain () {
       this.syncCart()
       this.$router.push(this.$route.path)
-      let el = document.querySelector('#ecwid-store-container .ec-breadcrumbs a')
+      let el = utils.clickEl('#ecwid-store-container .ec-breadcrumbs a')
       if (el) {
-        el.click()
         utils.removeBodyClass('show-store')
       } else {
         utils.swapBodyClass('show-store', 'cart-loaded')
@@ -268,9 +267,8 @@ export default {
       utils.addBodyClass('show-store')
     },
     showCheckout () {
-      let el = document.querySelector('.footer__link--shopping-cart')
+      let el = utils.clickEl('.footer__link--shopping-cart')
       if (el) {
-        el.click()
         utils.addBodyClass('show-store')
       }
     },
@@ -308,7 +306,7 @@ export default {
             if (cart.order) {
               if (cart.order.items instanceof Array) {
                 this.numInCart = cart.order.items.length
-                this.orderedItems = cart.order.items;
+                this.orderedItems = cart.order.items
                 this.subtotal = parseFloat(cart.order.subtotal)
                 this.subtotalFormatted = '€ ' + this.subtotal.toFixed(2)
               }
@@ -327,12 +325,12 @@ export default {
     },
     addEcwidProduct (product) {
       let tg = '.grid-product--id-' + product.id + ' a.grid-product__title'
-      let el = document.querySelector(tg)
+      let el = utils.get(tg)
       let comp = this
       if (!el) {
-        let contEl = document.querySelector('button.ecwid-btn--continueShopping')
+        let contEl = utils.get('button.ecwid-btn--continueShopping')
         if (!contEl) {
-          contEl = document.querySelector('.ec-breadcrumbs a.breadcrumbs__link--last')
+          contEl = utils.get('.ec-breadcrumbs a.breadcrumbs__link--last')
         }
         if (contEl) {
           contEl.click()
@@ -343,9 +341,8 @@ export default {
       } else {
         el.click()
         setTimeout(()=> {
-          let btEl = document.querySelector('.details-product-purchase__add-to-bag button.form-control__button')
+          let btEl = utils.clickEl('.details-product-purchase__add-to-bag button.form-control__button')
           if (btEl) {
-            btEl.click()
             setTimeout(()=> {
               comp.syncCart()
             }, 500);

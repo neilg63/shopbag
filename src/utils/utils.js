@@ -62,6 +62,18 @@ var utils = {
 
   cleanString: function(str) {
     return str.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-')
+  },
+
+  get: function(path) {
+    return document.querySelector(path);
+  },
+
+  clickEl: function(path) {
+    let el = document.querySelector(path);
+    if (el) {
+      el.click();
+    }
+    return el;
   }
 };
 

@@ -1,7 +1,7 @@
  <template>
  <section class="image-set" :class="sectionClasses">
   <div :class="contClasses">
-    <figure v-for="(image,index) in images" class="image" :class="image.figClasses" v-on:click.stop="handleSelect(image,index)">
+    <figure v-for="(image,index) in images" class="image" :class="image.figClasses" v-on:click="handleSelect(image,index)">
       <vue-picture :imgset="image" :group="image.groupName" :className="image.classNames.join(' ')"></vue-picture>
       <figcaption v-if="image.hasLink">
         <template v-if="image.hasPriceInfo">
@@ -48,6 +48,11 @@ export default {
   },
   created () {
     this.assignSection()
+    let comp = this
+    this.$bus.$on('set-image-index', (index) => {
+      comp.handleAspect()
+      comp.setIndex(index)
+    })
   },
   watch: {
     section (newVal) {
@@ -113,6 +118,7 @@ export default {
       }
     },
     handleSelect (image, index) {
+
       switch (this.section.layout) {
         case 'aspect':
           this.handleAspect()
@@ -123,8 +129,10 @@ export default {
       }
     },
     handleAspect () {
-      if (this.cycleIv) {
+      if (!this.$parent.cycleStopped) {
         clearInterval(this.cycleIv)
+        this.$parent.cycleStopped = true
+        this.cycleIv = null
       } else {
         this.next()
       }
@@ -147,6 +155,9 @@ export default {
       } else if (ni >= this.numImages) {
         ni = 0
       }
+      this.setIndex(ni)
+    },
+    setIndex (ni) {
       this.contClasses = this.contClasses.filter(c => !/offset-/.test(c))
       this.contClasses.push('offset-' + ni)
       this.currIndex = ni
@@ -167,7 +178,6 @@ export default {
         } else if (ai >= 0) {
           img.figClasses.splice(ai, 1)
         }
-        
         let prevI = img.figClasses.indexOf('prev')
         let nextI = img.figClasses.indexOf('next')
         if (index == pvI) {
@@ -189,8 +199,10 @@ export default {
     },
     cycleActive () {
       let comp = this
-      this.cycleIv = setInterval( () => {
-        comp.next()
+      this.cycleIv = setInterval(() => {
+        if (!comp.$parent.cycleStopped) {
+          comp.next()
+        }
       }, 5000)
     }
   },
@@ -222,8 +234,8 @@ export default {
 
 #app section.image-set .slide-nav:before {
   position: absolute;
-  top: 36%;
-  font-size: 6vw;
+  top: 25%;
+  font-size: 5vw;
 }
 
 #app section.image-set .slide-nav:hover {
@@ -327,18 +339,18 @@ export default {
 }
 
 #app section.image-set .slides-2 figure.prev img {
-  transform: scale(-.25,.25) translateX(-225vw);
+  transform: scale(-.25,.25) translate(-225vw,20vw);
 }
 #app section.image-set .slides-2 figure.next img {
-  transform: scale(-.25,.25) translateX(255vw);
+  transform: scale(-.25,.25) translate(255vw,20vw);
 }
 
 #app section.image-set .slides-2.num-images-6 figure.prev.last img {
-  transform: scale(-.25,.25) translateX(2160vw);
+  transform: scale(-.25,.25) translate(2160vw,20vw);
 }
 
 #app section.image-set .slides-2.num-images-6 figure.next.first img {
-  transform: scale(-.25,.25) translateX(-2160vw);
+  transform: scale(-.25,.25) translate(-2160vw,20vw);
 }
 
 #app section.image-set .slides-2 figure.active img {

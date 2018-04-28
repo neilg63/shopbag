@@ -37,7 +37,8 @@ export default {
       crossover: false,
       loaded: false,
       sectionClasses: ['loading'],
-      defaultLink: '/sunglasses'
+      defaultLink: '/sunglasses',
+      interval: null
     }
   },
   computed: {
@@ -70,6 +71,11 @@ export default {
           break;
       }
     })
+    setTimeout(() => {
+      comp.interval = setInterval(() => {
+        comp.showNext(true, true)
+      }, 7500)
+    }, 5000);
   },
   methods: {
     readData (images) {
@@ -102,13 +108,17 @@ export default {
         this.loaded = true
       }
     },
-    showNext (forward) {
+    showNext (forward, automatic) {
       let offset = forward === false ? -1 : 1
       let nx = this.index + offset
       if (nx < -1) {
         nx = this.numImages
       } else if (nx > this.numImages) {
         nx = -1
+      }
+      if (automatic !== true) {
+        clearInterval(this.interval)
+        this.interval = null
       }
       this.showIndex(nx)
     },
@@ -272,10 +282,10 @@ export default {
   position: absolute;
   top: 50vh;
   left: 50vw;
-  height: 12.5vw;
-  width: 12.5vw;
-  margin-left: -6.25vw;
-  margin-top: -6.25vw;
+  height: 9vw;
+  width: 9vw;
+  margin-left: -4.5vw;
+  margin-top: -4.5vw;
   opacity: 0;
   transition: opacity 1s ease-in-out;
   pointer-events: none;
@@ -314,8 +324,8 @@ export default {
   transition: all 0.5s ease-in-out;
   cursor: pointer;
   overflow: hidden;
-  font-size: 6vw;
-  transform: scale(0.8);
+  font-size: 4vw;
+  transform: scale(0.9);
   outline: none;
 }
 #app ol.arrow-nav li:before {
