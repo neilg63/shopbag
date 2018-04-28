@@ -1,7 +1,7 @@
 <template>
   <div class="product-overlay">
     <div class="close icon-close" v-on:click="close()"></div>
-    <h2>{{product.title}}</h2>
+    <h2><span class="catalog-title breadcrumb link-back" v-on:click="close()">{{product.catalog_title}}</span> <span class="breadcrumb last">{{product.title}}</span></h2>
     <div class="image-selector">
       <template v-for="(iset, index) in imageSets">
         <div class="set-container" :class="{'active':iset.active}">
@@ -12,7 +12,7 @@
     <div class="variant-selector" v-if="variants.length > 0">
       <ul class="plain">
       <template v-for="(variant, index) in product.variants">
-        <li class="variant" :class="{'active':variant.active}" v-on:click="setActive(variant)" :data-index="variant.imgIndex"><span class="text">{{variant.title}}</span></li>
+        <li class="variant" :class="{'active':variant.active}" v-on:click="setActive(variant)" :data-index="variant.imgIndex" :key="index"><span class="text">{{variant.title}}</span></li>
       </template>
     </ul>
       <div class="buy-now" :class="{'added':selectedVariant.added}" v-if="selectedVariant" v-on:click="addProduct()">
@@ -29,12 +29,9 @@
     </div>
   </div>
 </template>
-
 <script>
-
 import ImageSet from './ImageSet'
 import VuePicture from './VuePicture'
-
 export default {
   name: 'Product',
   components: {
@@ -73,7 +70,7 @@ export default {
       let comp = this
       this.$parent.updateAdded(this.product)
       this.imageSets = []
-      this.variants = this.product.variants.map( (v, vi) => {
+      this.variants = this.product.variants.map((v, vi) => {
         v.imgIndex = -1
         v.active = vi === 0
         if (v.active) {
@@ -145,17 +142,14 @@ export default {
 }
 </script>
 <style>
-
 #app .image-selector,
 #app .image-selector > .set-container {
   height: 33.33vw;
   overflow:hidden;
 }
-
 #app .image-selector {
   width: 100%;
 }
-
 #app .variant-selector {
   position: relative;
   width: 90%;
@@ -163,11 +157,9 @@ export default {
   padding: .5em 5% 1em 5%;
   text-align: left;
 }
-
 #app .variant-selector li span.text {
   display: none;
 }
-
 #app .variant-selector .plain li {
   width: 1.33em;
   height: 1.33em;
@@ -176,7 +168,6 @@ export default {
   cursor: pointer;
   pointer-events: all;
 }
-
 #app .variant-selector .plain li:before {
   display: inline-block;
   font-family: icomoon;
@@ -184,19 +175,15 @@ export default {
   margin-right: .25em;
   transition: all .33s ease-in-out;
 }
-
 #app .variant-selector .plain {
   display: flex;
   flex-flow: nowrap row;
   pointer-events: none;
 }
-
-
 #app .variant-selector .plain li.active:before {
-  content: "\e602";  
+  content: "\e602";
   transform: scale(1.2);
 }
-
 .buy-now {
   position: absolute;
   outline: none;
@@ -209,7 +196,6 @@ export default {
   height: 2.5em;
   min-width: 5em;
 }
-
 .buy-now .icon {
   transform: scale(1);
   opacity: 0.75;
@@ -219,38 +205,32 @@ export default {
   font-size: 1.25em;
   outline: none;
 }
-
 .buy-now .hint {
   position: absolute;
-  bottom: -0.25em;
+  bottom: -0;
   right: 0;
   opacity: 0;
+  font-style: italic;
   transition: opacity .5s ease-in-out;
 }
-
 .variant-selector:hover .buy-now .hint {
   opacity: 1;
 }
-
 .buy-now .price,
 .buy-now .icon {
   user-select: none;
 }
-
 .buy-now .icon-add-cart {
   margin-left: .5em;
 }
-
 .buy-now .icon-check {
-  margin-right: .25em; 
+  margin-right: .25em;
 }
-
 .buy-now .icon:before {
   position: absolute;
   top: 0;
   right: 0;
 }
-
 .buy-now:hover .icon-add-cart {
   transform: scale(1.25);
   opacity: 1;
@@ -259,22 +239,24 @@ export default {
   opacity: 0;
   transition: opacity 1s ease-in-out;
 }
-
 .buy-now.added .icon-check:before {
   opacity: 1;
 }
-
 #app .detail-pane .body p {
   margin: 0.25em 0;
   padding: 0;
 }
-
 @media screen and (min-width: 60em) {
-
   #app .buy-now {
     position: relative;
     top: 0;
     margin: 1em 0 1em 1em;
+  }
+
+  #app .buy-now .hint {
+    bottom: auto;
+    top: 0;
+    right: 5em;
   }
 
   #app .variant-selector .plain li {
@@ -287,11 +269,9 @@ export default {
     height: auto;
     cursor: pointer;
   }
-
   #app .variant-selector .plain {
     flex-flow: nowrap column;
   }
-
   #app h3.selected-variant {
     display: none;
   }
@@ -304,26 +284,20 @@ export default {
     padding-top: 2em;
     text-align: left;
   }
-
   #app .variant-selector li span.text {
     display: inline-block;
   }
-
   #app .variant-selector .plain li.active {
     font-style: italic;
     opacity: 1;
   }
-
   #app .image-selector {
     width: 80%;
   }
-
 }
-
 #app .image-selector {
   position: relative;
 }
-
 #app .image-selector > .set-container {
   position: absolute;
   top: 0;
@@ -333,7 +307,6 @@ export default {
   opacity: 0;
   transition: opacity .5s ease-in-out;
 }
-
 #app .image-selector > .set-container figure {
   width: 100vw;
   position: absolute;
@@ -346,11 +319,9 @@ export default {
   justify-content: center;
   align-items: center;
 }
-
 #app .image-selector > .set-container figure img {
   width: 75%;
 }
-
 #app .product-overlay .close {
   position: fixed;
   top: 3em;
@@ -363,25 +334,18 @@ export default {
   transform: scale(1);
   transition: all 0.25s ease-in-out;
 }
-
 #app .product-overlay .close:hover {
   opacity: 1;
   transform: scale(1.125);
 }
-
 #app .image-selector > .set-container.active {
   opacity: 1;
 }
-
-
 #app .product-body h2 {
   font-size: 1.1em;
 }
-
 #app .product-body h2:first-child {
   margin-top: 0;
   padding-top: 0;
 }
-
-
 </style>

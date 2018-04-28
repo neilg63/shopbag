@@ -6,6 +6,9 @@
 		<div class="info">
   		<p>{{footer.copyright}}</p>
   	</div>
+  	<div class="developed-by">
+  		<a href="http://www.multifaceted.info/" target="_blank">Developed by Multifacted Web Services</a>
+  	</div>
   	<div class="admin">
   		<a href="/user" target="_blank">Admin</a>
   	</div>

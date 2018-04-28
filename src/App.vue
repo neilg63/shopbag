@@ -29,7 +29,7 @@
       <div class="home-pane">
         <slides/>
         <sections :sections="sections"></sections>
-        <vue-footer :menu="menu" :footer="footer" id="page-footer"></vue-footer>        
+        <vue-footer :menu="menu" :footer="footer" id="page-footer"></vue-footer>
       </div>
       <div class="detail-pane">
          <keep-alive>
@@ -125,7 +125,6 @@ export default {
         utils.removeBodyClass('show-loading')
         window.scrollTo(0, 0)
       },750)
-      
       window.addEventListener('scroll', (e) => {
         comp.screenY = window.pageYOffset / window.innerHeight
         comp.scrolledDown  = comp.screenY > 0.125;
@@ -202,7 +201,7 @@ export default {
       sc.images = []
       sc.layout = 'row-3'
       sc.type = 'image_set'
-      let pKeys = Object.keys(this.$parent.pages), nKeys = pKeys.length, 
+      let pKeys = Object.keys(this.$parent.pages), nKeys = pKeys.length,
       i = 0, j = 0, ct, pn, k, img
       for (; i < nKeys; i++) {
         k = pKeys[i]
@@ -257,7 +256,6 @@ export default {
       if (el) {
         el.click()
         utils.removeBodyClass('show-store')
-
       } else {
         utils.swapBodyClass('show-store', 'cart-loaded')
       }
@@ -367,7 +365,6 @@ export default {
   z-index: 1;
   overflow-x: hidden;
 }
-
 #app ol.dot-nav,
 #app ol.arrow-nav {
   position: absolute;
@@ -414,7 +411,6 @@ export default {
 #app ol.dot-nav li.active:before {
   content: '\e602';
 }
-
 #app .page-section ul.flex-slides li figure {
   max-height: 100vh;
   overflow: hidden;
@@ -447,8 +443,6 @@ export default {
     max-height: 100vw;
   }
 }
-
-
 .back-to {
   position: absolute;
   top: 0.25em;
@@ -458,27 +452,22 @@ export default {
   pointer-events: none;
   transform: scale(1.6667,1);
 }
-
 .back-to:before {
   font-family: icomoon;
   content: "\e609";
 }
-
 .back-to span.text {
   position: absolute;
   left: -9999em;
 }
-
 footer .footer-menu {
   display: flex;
   flex-flow: wrap row;
   justify-content: center;
   align-items: center;
 }
-
 footer .footer-menu li {
   margin: 1em;
   padding: 0 1em;
 }
-
 </style>

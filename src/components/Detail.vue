@@ -219,6 +219,7 @@ export default {
           if (prod) {
             this.product = prod
             this.toggleActiveProduct(true)
+            this.mapActiveProduct()
           }
         }
       }
@@ -230,14 +231,18 @@ export default {
           this.product = this.products.find(p => p.nid == image.nid)
           if (this.product) {
             if (this.product.nid) {
-              this.product.intro = this.body
-              this.toggleActiveProduct(true)
+              this.mapActiveProduct()
               let newPath = '/' + this.$route.params.name + '/' + this.product.path.split('/').pop()
               this.$router.push(newPath)
             }
           }
         }
       }
+    },
+    mapActiveProduct () {
+      this.product.intro = this.body
+      this.product.catalog_title = this.title
+      this.toggleActiveProduct(true)
     },
     setHeight () {
       let el = document.querySelector('article.content-container')
@@ -356,6 +361,24 @@ export default {
   min-height: 100vh;
 }
 
+#app .detail-pane h2 span.breadcrumb {
+  display: inline-block;
+  margin-right: .25em;
+}
+
+#app .detail-pane h2 span.link-back {
+  cursor: pointer;
+}
+
+#app .detail-pane h2 span.link-back:after {
+  display: inline-block;
+  font-family: icomoon;
+  content: "\e900";
+  font-size: 0.5em;
+  opacity: 0.5;
+  margin: 0 .25em;
+}
+
 #app .detail-pane .show-product .product-overlay {
   z-index: 11;
   opacity: 1;
@@ -375,6 +398,7 @@ export default {
 
 #app .product-overlay > h2,
 #app .subpanel h2.article-title {
+  font-size: 1.33em;
   transform: scaleX(1.25);
 }
 
@@ -396,13 +420,17 @@ export default {
   #app .detail-pane .body {
     max-width: 86.6667%;
   }
+  #app .product-overlay > h2,
+  #app .subpanel h2.article-title {
+    font-size: 1.5em;
+  }
 }
 
 @media screen and (min-width: 60em) {
 
   #app .product-overlay > h2,
   #app .subpanel h2.article-title {
-    font-size: 2em;
+    font-size: 1.667em;
   }
 }
 
@@ -413,7 +441,7 @@ export default {
 
   #app .product-overlay > h2,
   #app .subpanel h2.article-title {
-    font-size: 2.5em;
+    font-size: 2em;
   }
 }
 

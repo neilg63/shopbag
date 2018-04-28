@@ -6,9 +6,7 @@ import App from './App'
 import router from './router'
 import utils from './utils/utils'
 import VueLocalStorage from 'vue-localstorage'
-
 var VueScrollTo = require('vue-scrollto');
-
 // You can also pass in the default options
 Vue.use(VueScrollTo, {
   container: "body",
@@ -22,8 +20,6 @@ Vue.use(VueScrollTo, {
   x: false,
   y: true
 })
-
-
 Vue.use(VueLocalStorage, {
   name: 'ls',
   bind: true //created computed members from your variable declarations
@@ -55,7 +51,6 @@ new Vue({
   },
   created () {
     this.detectLanguage()
-    
     let comp = this
     let matchedProducts = false
     let storedProductsData = this.$ls.get('products')
@@ -69,7 +64,6 @@ new Vue({
         }
       }
     }
-
     this.loadHome()
     this.updatePath(true)
     this.readInterval = setInterval(() => {
@@ -166,7 +160,7 @@ new Vue({
             hasData = storedData.valid === true && storedData.hasOwnProperty('version')
             if (hasData) {
               hasData = storedData.version === this.version
-            }          
+            }
           }
         }
         if (hasData) {
@@ -228,7 +222,7 @@ new Vue({
     handleSiteData (data, stored) {
       let comp = this
       if (data.last_edited) {
-        this.lastUpdated = parseInt(data.last_edited)  
+        this.lastUpdated = parseInt(data.last_edited)
       }
       this.homeLoaded = true
       let ts = stored ? 500 : 250
@@ -311,7 +305,7 @@ new Vue({
       let ts = init === true ? 1500 : 0
       let comp = this
       setTimeout(() => {
-        comp.updateDetail(comp.$route.path)  
+        comp.updateDetail(comp.$route.path)
       }, ts)
     },
     detectLanguage () {
