@@ -1,7 +1,7 @@
  <template>
  <section class="image-set" :class="sectionClasses">
   <div :class="contClasses">
-    <figure v-for="(image,index) in images" class="image" :class="image.figClasses" v-on:click="handleSelect(image,index)">
+    <figure v-for="(image,index) in images" class="image" :class="image.figClasses" v-on:click.prevent.stop="handleSelect(image,index)">
       <vue-picture :imgset="image" :group="image.groupName" :className="image.classNames.join(' ')"></vue-picture>
       <figcaption v-if="image.hasLink">
         <template v-if="image.hasPriceInfo">
@@ -144,6 +144,10 @@ export default {
       this.nextPrev('prev')
     },
     nextPrev (mode) {
+      let ni = this.calcNext(mode)
+      this.setIndex(ni)
+    },
+    calcNext (mode) {
       let ni = this.currIndex
       if (mode == 'prev') {
         ni--
@@ -155,7 +159,7 @@ export default {
       } else if (ni >= this.numImages) {
         ni = 0
       }
-      this.setIndex(ni)
+      return ni
     },
     setIndex (ni) {
       this.contClasses = this.contClasses.filter(c => !/offset-/.test(c))
@@ -551,11 +555,15 @@ export default {
   opacity: 0;
   transform: scale(-1, 1);
   transition: all .5s ease-in-out;
+  pointer-events: none;
+  z-index: -1;
 }
 
 #app .image-set .aspect figure.active {
   opacity: 1;
   transform: scale(1, 1);
+  pointer-events: all;
+  z-index: 2;
 }
 
 #app .image-set .multi-row figure {
