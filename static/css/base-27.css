@@ -88,8 +88,8 @@ section#ecwid-store-container,
 }
 
 #loading-overlay .lucia {
-  top: 20%;
-  bottom: 25%;
+  top: 25%;
+  bottom: 30%;
   background-image: url(/static/images/santa-lucia-di-siracusa.svg);
   animation: lucia 2s 1;
 }
@@ -162,6 +162,7 @@ body {
 .arrow-nav > li,
 .flex-slides > li {
   list-style: none;
+  outline: none;
 }
 
 .plain,

@@ -4,9 +4,15 @@
     <figure v-for="(image,index) in images" class="image" :class="image.figClasses" v-on:click.stop="handleSelect(image,index)">
       <vue-picture :imgset="image" :group="image.groupName" :className="image.classNames.join(' ')"></vue-picture>
       <figcaption v-if="image.hasLink">
-        {{image.link.title}}
-        <p v-if="image.hasPriceInfo">{{image.priceInfo.price_formatted}}</p>
+        <template v-if="image.hasPriceInfo">
+          <p class="product-name">{{image.link.title}}</p>
+        <p class="product-price">{{image.priceInfo.price_formatted}}</p>
+        </template>
+        <template v-else>
+          {{image.link.title}}
+        </template>
       </figcaption>
+
     </figure>
   </div>
   <template v-if="showNav">
@@ -52,11 +58,23 @@ export default {
     assignSection () {
       if (this.section.images) {
         if (this.section.images instanceof Array) {
+          let lastIndex = this.section.images.length - 1
           this.images = this.section.images.map((img,index) => {
             let oddClass = index % 2 === 0 ? 'odd' : 'even'
             img.classNames = ['num-' + index, oddClass]
             img.groupName = 'half'
-            img.figClasses = index > 0? [] : ['active']
+            img.figClasses = ['fig-' + index]
+            if (index === 0) {
+              img.figClasses.push('first')
+              img.figClasses.push('active')
+            }
+            if (index === 1) {
+              img.figClasses.push('next')
+            }
+            if (index === lastIndex) {
+              img.figClasses.push('last')
+              img.figClasses.push('prev')
+            }
             img.hasLink = false
             img.hasPriceInfo = false
             if (img.link) {
@@ -81,7 +99,6 @@ export default {
               this.cycleActive()
               break
             case 'slides-2':
-              this.contClasses.push('flex-row')
               this.contClasses.push('offset-0')
               this.showNav = true
               break
@@ -130,12 +147,17 @@ export default {
       } else if (ni >= this.numImages) {
         ni = 0
       }
-      let offInd = this.contClasses.findIndex(c => /offset-\d/.test(c))
-      if (offInd >= 0) {
-        this.contClasses.splice(offInd, 1)
-      }
+      this.contClasses = this.contClasses.filter(c => !/offset-/.test(c))
       this.contClasses.push('offset-' + ni)
       this.currIndex = ni
+      let nxI = ni + 1
+      let pvI = ni - 1
+      if (pvI < 0) {
+        pvI = this.numImages - 1
+      }
+      if (nxI >= this.numImages) {
+        nxI = 0
+      }
       this.images = this.images.map((img,index) => {
         let ai = img.figClasses.indexOf('active')
         if (index === ni) {
@@ -144,6 +166,23 @@ export default {
           }
         } else if (ai >= 0) {
           img.figClasses.splice(ai, 1)
+        }
+        
+        let prevI = img.figClasses.indexOf('prev')
+        let nextI = img.figClasses.indexOf('next')
+        if (index == pvI) {
+          if (prevI < 0) {
+            img.figClasses.push('prev')
+          }
+        } else if (prevI >= 0) {
+          img.figClasses.splice(prevI, 1)
+        }
+        if (index == nxI) {
+          if (nextI < 0) {
+            img.figClasses.push('next')
+          }
+        } else if (nextI >= 0) {
+          img.figClasses.splice(nextI, 1)
         }
         return img
       })
@@ -189,7 +228,6 @@ export default {
 
 #app section.image-set .slide-nav:hover {
   opacity: 0.5;
-  transform: skew(-5deg);
 }
 
 #app section.image-set .slide-nav:before {
@@ -220,70 +258,95 @@ export default {
 }
 #app section.image-set .slides-2 {
   position: relative;
-  flex-flow: nowrap row;
-  overflow: hidden;
+  overflow: visible;
 }
 
 #app section.image-set .slides-2.num-images-2 {
-  width: 200%;
-}
-
-#app section.image-set .slides-2.num-images-3 {
   width: 300%;
 }
 
-#app section.image-set .slides-2.num-images-4 {
+#app section.image-set .slides-2.num-images-3 {
   width: 400%;
 }
 
-#app section.image-set .slides-2.num-images-5 {
+#app section.image-set .slides-2.num-images-4 {
   width: 500%;
 }
 
-#app section.image-set .slides-2.num-images-6 {
+#app section.image-set .slides-2.num-images-5 {
   width: 600%;
 }
 
-#app section.image-set .slides-2.num-images-7 {
+#app section.image-set .slides-2.num-images-6 {
   width: 700%;
 }
 
-#app section.image-set .slides-2.num-images-8 {
+#app section.image-set .slides-2.num-images-7 {
   width: 800%;
 }
 
-#app section.image-set .slides-2.num-images-9 {
+#app section.image-set .slides-2.num-images-8 {
   width: 900%;
+}
+
+#app section.image-set .slides-2.num-images-9 {
+  width: 1000%;
 }
 
 #app section.image-set .slides-2,
 #app section.image-set .slides-2 figure {
   height: 25vw;
-  transition: height .5s ease-in-out;
 }
+
+#app section.image-set .slides-2 {
+  white-space: nowrap;
+  transition: left .5s ease-in-out;
+}
+
 #app section.image-set .slides-2 figure {
   position: relative;
   display: flex;
+  float: left;
   flex-flow: nowrap row;
   justify-content: center;
   align-items: center;
   width: 100vw;
+  max-width: 100vw;
 }
+
 #app section.image-set .slides-2 figure img {
-  max-width: 45vw;
+  max-width: 50vw;
   max-height: 25vw;
   width: auto;
   height: auto;
-  transform: scale(-.333,.333) translateX(200vw);
+}
+
+#app section.image-set .slides-2 figure.prev img,
+#app section.image-set .slides-2 figure.next img {
   transition: transform .5s ease-in-out;
 }
 
+#app section.image-set .slides-2 figure.prev img {
+  transform: scale(-.25,.25) translateX(-225vw);
+}
+#app section.image-set .slides-2 figure.next img {
+  transform: scale(-.25,.25) translateX(255vw);
+}
+
+#app section.image-set .slides-2.num-images-6 figure.prev.last img {
+  transform: scale(-.25,.25) translateX(2160vw);
+}
+
+#app section.image-set .slides-2.num-images-6 figure.next.first img {
+  transform: scale(-.25,.25) translateX(-2160vw);
+}
+
 #app section.image-set .slides-2 figure.active img {
-  transform: scale(1,1) translateX(-7.5vw);
+  transform: scale(1,1);
 }
 
 #app section.image-set .slides-2 figure.active:hover {
-  transform: scale(1.5) translateX(-2.5vw);
+  transform: scale(1.5);
 }
 
 #app section.image-set figure {
@@ -305,6 +368,20 @@ export default {
   justify-content: center;
   align-items: center;
   color: white;
+}
+
+#app section.image-set figure.has-price figcaption {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-flow: nowrap row;
+}
+
+#app section.image-set figure.has-price figcaption p {
+  padding: 0;
+  margin: 0 1em 0 0;
+  display: inline-block;
 }
 
 #app section.image-set figure.has-price figcaption {

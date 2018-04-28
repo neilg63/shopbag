@@ -200,7 +200,7 @@ export default {
     },
     processProductSet (sc) {
       sc.images = []
-      sc.layout = 'row-4'
+      sc.layout = 'row-3'
       sc.type = 'image_set'
       let pKeys = Object.keys(this.$parent.pages), nKeys = pKeys.length, 
       i = 0, j = 0, ct, pn, k, img
@@ -229,7 +229,11 @@ export default {
             }
           }
         }
-        sc.layout = 'row-' + sc.images.length
+        let rSize = sc.images.length
+        if (rSize > 3) {
+          rSize = 3
+        }
+        sc.layout = 'row-' + rSize
       }
     },
     toggleMenu () {

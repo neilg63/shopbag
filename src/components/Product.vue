@@ -16,9 +16,9 @@
       </template>
     </ul>
       <div class="buy-now" :class="{'added':selectedVariant.added}" v-if="selectedVariant" v-on:click="addProduct()">
+        <div class="icon icon-check"></div>
         <div class="price">{{selectedVariant.price_formatted}}</div>
         <div class="icon icon-add-cart"></div>
-        <div class="icon icon-check"></div>
       </div>
       <h3 class="selected-variant">{{selectedVariant.title}}</h3>
       <div class="catalog-body" v-html="product.intro"></div>
@@ -153,6 +153,7 @@ export default {
 #app .variant-selector {
   position: relative;
   width: 90%;
+  margin-top: 1em;
   padding: .5em 5% 1em 5%;
   text-align: left;
 }
@@ -166,6 +167,8 @@ export default {
   height: 1.33em;
   padding: 0.125em 1em 0.125em 0.125em;
   overflow: hidden;
+  cursor: pointer;
+  pointer-events: all;
 }
 
 #app .variant-selector .plain li:before {
@@ -179,6 +182,7 @@ export default {
 #app .variant-selector .plain {
   display: flex;
   flex-flow: nowrap row;
+  pointer-events: none;
 }
 
 
@@ -189,21 +193,36 @@ export default {
 
 .buy-now {
   position: absolute;
-  top: 0;
+  outline: none;
+  top: 0.5em;
   right: 5%;
   display: flex;
   flex-flow: nowrap row;
   cursor: pointer;
+  z-index: 20;
 }
 
 .buy-now .icon {
-  margin-left: 1em;
-  transform: scale(1) skew(0deg);
+  transform: scale(1);
   opacity: 0.75;
   transition: all .33s ease-in-out;
   width: 1em;
   overflow: hidden;
   font-size: 1.25em;
+  outline: none;
+}
+
+.buy-now .price,
+.buy-now .icon {
+  user-select: none;
+}
+
+.buy-now .icon-add-cart {
+  margin-left: .5em;
+}
+
+.buy-now .icon-check {
+  margin-right: .25em; 
 }
 
 .buy-now .icon:before {
@@ -212,8 +231,8 @@ export default {
   right: 0;
 }
 
-.buy-now:hover .icon {
-  transform: scale(1.25) skew(-5deg);
+.buy-now:hover .icon-add-cart {
+  transform: scale(1.25);
   opacity: 1;
 }
 .buy-now .icon-check:before {
@@ -225,10 +244,6 @@ export default {
   opacity: 1;
 }
 
-.buy-now:hover {
-  font-style: italic;
-}
-
 #app .detail-pane .body p {
   margin: 0.25em 0;
   padding: 0;
@@ -238,16 +253,19 @@ export default {
 
   #app .buy-now {
     position: relative;
+    top: 0;
     margin: 1em 0 1em 1em;
   }
 
   #app .variant-selector .plain li {
     padding: 0 0 0.5em 0;
+    margin-top: 0;
     white-space: nowrap;
     cursor: pointer;
     opacity: 0.8;
     width: auto;
     height: auto;
+    cursor: pointer;
   }
 
   #app .variant-selector .plain {

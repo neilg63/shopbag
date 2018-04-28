@@ -20,7 +20,7 @@
     </div>
     <product v-if="hasActiveProduct" :product="product"></product>
     <div v-if="!bodyTop" class="body" v-html="body"></div>
-    <sections v-if="numSections > 0" :sections="sections"></sections>
+    <sections v-if="showSections" :sections="sections"></sections>
   </article>
 </template>
 
@@ -62,6 +62,11 @@ export default {
       mainImageClass: 'right',
       bodyClass: 'left',
       bodyTop: true
+    }
+  },
+  computed: {
+    showSections () {
+      return this.numSections > 0 && !this.hasActiveProduct
     }
   },
   created () {
@@ -205,8 +210,7 @@ export default {
           let sub = this.$route.params.sub
 
           let prod = this.products.find(p => {
-            let slug = utils.cleanString(p.title)
-
+            let slug = p.path.split('/').pop()
             return slug === sub
           })
           if (prod) {
@@ -225,7 +229,7 @@ export default {
             if (this.product.nid) {
               this.product.intro = this.body
               this.toggleActiveProduct(true)
-              let newPath = '/' + this.$route.params.name + '/' + utils.cleanString(this.product.title)
+              let newPath = '/' + this.$route.params.name + '/' + this.product.path.split('/').pop()
               this.$router.push(newPath)
             }
           }
@@ -369,6 +373,11 @@ export default {
 #app .product-overlay > h2,
 #app .subpanel h2.article-title {
   transform: scaleX(1.25);
+}
+
+#app .detail-pane .sections,
+#app .detail-pane .sections > section {
+  position: relative;
 }
 
 @media screen and (min-width: 40em) {
