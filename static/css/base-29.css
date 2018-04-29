@@ -233,7 +233,7 @@ body {
   height: 3.2em;
   width: 50%;
   opacity: 0.6667;
-  transform: scale(1, 1) skew(0deg);
+  transform: scale(1, .8) skew(0deg);
   transition: all 0.5s ease-in-out;
   cursor: pointer;
   z-index: 20;
@@ -278,7 +278,8 @@ body {
 
 #app nav ul.menu {
   position: absolute;
-  top: 2.25em;
+  top: 2em;
+  padding-top: 0.5em;
   left: 0;
   opacity: 0;
   z-index: -1;
@@ -378,9 +379,9 @@ body.show-store #app .main {
 #app .show-cart {
   position: absolute;
   right: 2.5%;
-  top: 0.375em;
+  top: 0.5em;
   width: 20em;
-  height: 1.75em;
+  height: 1.6em;
   background-image: url(/static/images/shopping-cart.svg);
   background-repeat: no-repeat;
   background-position: top right;
@@ -446,6 +447,16 @@ body.show-store #app .main {
   right: 0;
 }
 
+#app footer .admin span.clear {
+  display: inline-block;
+  margin-right: 2em;
+  width: 1em;
+  height: 1em;
+  opacity: 0;
+  transform: rotate(-45deg);
+  cursor: pointer;
+}
+
 #app footer .developed-by,
 #app footer .admin a {
   opacity: 0;
@@ -467,15 +478,19 @@ body.show-store #app .main {
   transform: rotate(0deg);
 }
 
+#app footer:hover .admin .clear,
 #app footer:hover .developed-by {
   opacity: 1;
+}
+
+#app footer:hover .developed-by {
   transform: scale(1, 1);
 }
 
 #app .show-cart.has-items {
   cursor: pointer;
   opacity: 1;
-  z-index: 9;
+  z-index: 90;
 }
 
 #app .show-cart.has-items .num {
@@ -505,6 +520,9 @@ body.show-store #app .main {
 }
 
 @media screen and (min-width: 40em) {
+  #app > nav.store-nav {
+    height: 3em;
+  }
   #app nav ul.menu > li {
     font-size: 1.33em;
   }
@@ -548,7 +566,7 @@ body.show-store #app .main {
 
 @media screen and (min-width: 40em) {
   #app .show-cart {
-    height: 2em;
+    height: 1.8em;
   }
   #app .menu-toggle {
     font-size: 2em;
@@ -564,7 +582,7 @@ body.show-store #app .main {
 
 @media screen and (min-width: 50em) {
   #app .show-cart {
-    height: 2.25em;
+    height: 2em;
   }
   #app .menu-toggle {
     font-size: 2.25em;
@@ -576,7 +594,7 @@ body.show-store #app .main {
 
 @media screen and (min-width: 60em) {
    #app .show-cart {
-    height: 2.667em;
+    height: 2.4em;
     top: 0.625em;
     background-size: 3em 100%;
   }
@@ -584,10 +602,10 @@ body.show-store #app .main {
     font-size: 2.5em;
   }
   #app > nav.store-nav {
-    height: 4em;
+    height: 3.5em;
   }
   #app nav ul.menu {
-    top: 4em;
+    top: 3.5em;
   }
   #main-logo {
     height: 4em;
@@ -624,16 +642,16 @@ body.show-store #app .main {
 
 @media screen and (min-width: 80em) {
    #app .show-cart {
-    height: 3em;
+    height: 2.667em;
   }
   #app .menu-toggle {
     font-size: 2.667em;
   }
   #app > nav.store-nav {
-    height: 4.5em;
+    height: 4em;
   }
   #app nav ul.menu {
-    top: 4.5em;
+    top: 4em;
   }
   #main-logo {
     height: 4.5em;
@@ -672,10 +690,10 @@ body.show-store #app .main {
     font-size: 3em;
   }
   #app > nav.store-nav {
-    height: 5.4em;
+    height: 4.5em;
   }
   #app nav ul.menu {
-    top: 5em;
+    top: 4.5em;
   }
   #main-logo {
     height: 5em;

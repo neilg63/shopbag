@@ -6,7 +6,7 @@
       <figcaption v-if="image.hasLink">
         <template v-if="image.hasPriceInfo">
           <p class="product-name">{{image.link.title}}</p>
-        <p class="product-price">{{image.priceInfo.price_formatted}}</p>
+        <p class="product-price">{{image.priceInfo.price|currency}}</p>
         </template>
         <template v-else>
           {{image.link.title}}
@@ -23,11 +23,14 @@
 </template>
 <script>
 import VuePicture from './VuePicture'
+import filters from '../mixins/filters'
+
 export default {
   name: 'ImageSet',
   components: {
     VuePicture
   },
+  mixins: [filters],
   props: {
     section: {
       type: Object,
@@ -173,6 +176,7 @@ export default {
       if (nxI >= this.numImages) {
         nxI = 0
       }
+      this.$parent.selectedImgIndex = ni
       this.images = this.images.map((img,index) => {
         let ai = img.figClasses.indexOf('active')
         if (index === ni) {
@@ -564,6 +568,7 @@ export default {
   transform: scale(1, 1);
   pointer-events: all;
   z-index: 2;
+  cursor: pointer;
 }
 
 #app .image-set .multi-row figure {

@@ -327,6 +327,7 @@ export default {
   font-size: 4vw;
   transform: scale(0.9);
   outline: none;
+  user-select: none;
 }
 #app ol.arrow-nav li:before {
   position: absolute;

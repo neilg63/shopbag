@@ -17,12 +17,12 @@
       </ul>
       <ol class="aspect-nav plain">
         <template v-for="num in numImagesInSet">
-          <li :class="'num-'+num" :key="num" v-on:click="setAspect(num-1)" :title="num"></li>
+          <li :class="['num-'+num,{'active': (num-1) == selectedImgIndex}]" :key="num" v-on:click="setAspect(num-1)" :title="num"></li>
         </template>
       </ol>
       <div class="buy-now" :class="{'added':selectedVariant.added,'selecting': selecting}" v-if="selectedVariant" v-on:click="addProduct()">
         <div class="icon icon-check"></div>
-        <div class="price">{{selectedVariant.price_formatted}}</div>
+        <button class="price">{{selectedVariant.price|currency}}</button>
         <div class="icon icon-add-cart"></div>
         <div class="hint">
           <span class="not-added">{{options.buyNowHint}}</span>
@@ -40,12 +40,15 @@
 <script>
 import ImageSet from './ImageSet'
 import VuePicture from './VuePicture'
+import filters from '../mixins/filters'
+
 export default {
   name: 'Product',
   components: {
     VuePicture,
     ImageSet
   },
+  mixins: [filters],
   props: {
     product: {
       type: Object,
@@ -65,7 +68,8 @@ export default {
       selectedVariant: null,
       cycleStopped: false,
       selecting: false,
-      numImagesInSet: 3
+      numImagesInSet: 3,
+      selectedImgIndex: 0 
     }
   },
   created () {
@@ -156,6 +160,7 @@ export default {
       }
     },
     setAspect (index) {
+      this.selectedImgIndex = index
       this.$bus.$emit('set-image-index', index);
     }
   }
@@ -181,7 +186,7 @@ export default {
 #app .variant-selector li span.text {
   display: none;
 }
-#app .variant-selector .plain li {
+#app .variant-selector ul.plain li {
   width: 1.33em;
   height: 1.33em;
   padding: 0.125em 1em 0.125em 0.125em;
@@ -189,19 +194,18 @@ export default {
   cursor: pointer;
   pointer-events: all;
 }
-#app .variant-selector .plain li:before {
+#app .variant-selector ul.plain li:before {
   display: inline-block;
   font-family: icomoon;
   content: "\e601";
   margin-right: .25em;
-  transition: all .33s ease-in-out;
 }
-#app .variant-selector .plain {
+#app .variant-selector ul.plain {
   display: flex;
   flex-flow: nowrap row;
   pointer-events: none;
 }
-#app .variant-selector .plain li.active:before {
+#app .variant-selector ul.plain li.active:before {
   content: "\e602";
   transform: scale(1.2);
 }
@@ -223,6 +227,25 @@ export default {
   pointer-events: none;
 }
 
+.buy-now button.price {
+  border: solid 1px black;
+  padding: 0.125em 0.25em;
+  margin: 0;
+  font-size: 1em;
+  line-height: 1em;
+  outline: none;
+  height: 1.5em;
+  border-radius: 0.5em;
+  background: white;
+  cursor: pointer;
+  transition: all .33s ease-in-out;
+}
+
+.buy-now:hover button.price {
+  background: black;
+  color: white;
+}
+
 .buy-now .icon {
   transform: scale(1);
   opacity: 0.75;
@@ -234,7 +257,7 @@ export default {
 }
 .buy-now .hint {
   position: absolute;
-  bottom: -0;
+  bottom: -.5em;
   right: 0;
   opacity: 0;
   font-style: italic;
@@ -254,6 +277,9 @@ export default {
 .variant-selector:hover .buy-now .hint {
   opacity: 1;
 }
+
+.buy-now .hint,
+.buy-now .hint span,
 .buy-now .price,
 .buy-now .icon {
   user-select: none;
@@ -339,10 +365,11 @@ export default {
   padding-top: 0;
 }
 
-#app .aspect-nav {
+#app .variant-selector .aspect-nav {
   position: absolute;
   top: .5em;
   right: 25%;
+  display: none;
 }
 
 #app .detail-pane .variant-selector ol.aspect-nav li {
@@ -352,30 +379,40 @@ export default {
   height: 1em;
   width: 2em;
   opacity: 0.333;
+  transform: scale(1);
+  transition: all .5s ease-in-out;
 }
 
-#app .aspect-nav li:hover {
+#app .detail-pane .variant-selector ol.aspect-nav li.active,
+#app .detail-pane .variant-selector .aspect-nav li:hover {
   opacity: 0.5;
+  transform: scale(1.2);
 }
 
 #app .aspect-nav li:before {
   font-family: icomoon;
   position: absolute;
-  top: 0;
-  left: 0;
-  
+  top: 0.1em;
+  left: 0.1em;
+  font-size: 0.8em;
 }
 
-#app .aspect-nav li.num-1:before {
+#app .variant-selector ol.aspect-nav li.num-1:before {
   content: "\e902";
 }
 
-#app .aspect-nav li.num-2:before {
+#app .variant-selector ol.aspect-nav li.num-2:before {
   content: "\e900";
 }
 
-#app .aspect-nav li.num-3:before {
+#app .variant-selector ol.aspect-nav li.num-3:before {
   content: "\e901";
+}
+
+@media screen and (min-width: 40em) {
+  #app .variant-selector .aspect-nav {
+    display: flex;
+  }
 }
 
 @media screen and (min-width: 60em) {
@@ -388,10 +425,10 @@ export default {
   #app .buy-now .hint {
     bottom: auto;
     top: 0;
-    left: 7.5em;
+    left: 9em;
   }
 
-  #app .variant-selector .plain li {
+  #app .variant-selector ul.plain li {
     padding: 0 0 0.5em 0;
     margin-top: 0;
     white-space: nowrap;
@@ -401,7 +438,7 @@ export default {
     height: auto;
     cursor: pointer;
   }
-  #app .variant-selector .plain {
+  #app .variant-selector ul.plain {
     flex-flow: nowrap column;
   }
   #app h3.selected-variant {
@@ -420,7 +457,7 @@ export default {
   #app .variant-selector li span.text {
     display: inline-block;
   }
-  #app .variant-selector .plain li.active {
+  #app .variant-selector ul.plain li.active {
     font-style: italic;
     opacity: 1;
   }

@@ -4,7 +4,7 @@ import Vue from 'vue'
 import axios from 'axios'
 import App from './App'
 import router from './router'
-import utils from './utils/utils'
+import u from './utils/utils'
 import VueLocalStorage from 'vue-localstorage'
 var VueScrollTo = require('vue-scrollto');
 // You can also pass in the default options
@@ -40,6 +40,7 @@ new Vue({
     products: [],
     ecwidProducts: [],
     lang: 'en',
+    numFormat: '.',
     productsSynced: false,
     hasStore: false,
     showStore: false,
@@ -229,7 +230,7 @@ new Vue({
       setTimeout(() => {
         comp.$bus.$emit('siteinfo', data)
         setTimeout(() => {
-          utils.removeBodyClass('show-loading')
+          u.removeBodyClass('show-loading')
         }, (ts + 250));
       }, (ts + 100))
     },
@@ -284,19 +285,16 @@ new Vue({
       let hash = window.location.hash
       this.$bus.$emit('hide-menu', true)
       if (hash.length > 1) {
-        if (utils.addBodyClass) {
+        if (u.addBodyClass) {
           if (hash.indexOf('#/!/') === 0) {
             this.showStore = true
             if (hash.indexOf('/offset=') < 0) {
-              utils.addBodyClass('show-store')
+              u.addBodyClass('show-store')
             } else {
-              utils.removeBodyClass('show-store')
+              u.removeBodyClass('show-store')
             }
             if (hash.indexOf('/cart') > 0) {
-              let lbl = document.querySelector('.ecwid-minicart-link span')
-              if (lbl) {
-                lbl.click()
-              }
+              u.clickEl('.ecwid-minicart-link span')
             }
           }
         }
@@ -316,6 +314,23 @@ new Vue({
             this.lang = bl
             break
         }
+        switch (bl) {
+          case 'it':
+          case 'de':
+          case 'fr':
+          case 'es':
+          case 'nl':
+          case 'pt':
+            this.numFormat = ','
+            break
+          default:
+            this.numFormat = '.'
+            break
+        }
+        this.$ls.set('settings', JSON.stringify({
+          lang: this.lang,
+          nf: this.numFormat
+        }))
       }
     }
   }

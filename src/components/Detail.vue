@@ -13,7 +13,7 @@
           <vue-picture :imgset="image" :group="image.group" :className="image.type.replace('/','-')"></vue-picture>
           <figcaption v-if="image.hasVariant">
             <p class="product-name">{{image.title}}</p> 
-            <p class="price">{{image.variant.price_formatted}}</p>
+            <p class="price">{{image.variant.price|currency}}</p>
           </figcaption>
         </figure>
       </template>
@@ -29,7 +29,7 @@
 import Product from './Product'
 import VuePicture from './VuePicture'
 import Sections from './Sections'
-import utils from '../utils/utils'
+import filters from '../mixins/filters'
 
 export default {
   name: 'Detail',
@@ -38,6 +38,7 @@ export default {
     Product,
     Sections
   },
+  mixins: [filters],
   data () {
     return {
       title: 'Welcome to Lucy of Syracuse',
@@ -167,7 +168,9 @@ export default {
       this.images = []
       for (let i = 0, prod, img, variant; i < this.numProducts; i++) {
         prod = this.products[i]
-        this.mapAdded(prod)
+        if (prod) {
+          this.mapAdded(prod)
+        }
         if (prod.images) {
           if (prod.images instanceof Array && prod.images.length > 0) {
             img = prod.images[0]
@@ -197,8 +200,10 @@ export default {
       }
     },
     updateAdded () {
-      for (let i = 0, prod; i < this.numProducts; i++) {
-        this.mapAdded(this.products[i])
+      for (let i = 0; i < this.numProducts; i++) {
+        if (i < this.products.length) {
+          this.mapAdded(this.products[i])
+        }
       }
     },
     mapAdded (prod) {
@@ -297,7 +302,9 @@ export default {
 }
 
 .detail-pane .body {
+  position: relative;
   font-size: 100%;
+  z-index: 8;
 }
 
 

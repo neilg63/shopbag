@@ -7,9 +7,10 @@
   		<p>{{footer.copyright}}</p>
   	</div>
   	<div class="developed-by">
-  		<a href="http://www.multifaceted.info/" target="_blank">Developed by Multifacted Web Services</a>
+  		<a href="http://www.multifaceted.info/" target="_blank">Developed by Multifaceted Web Services</a>
   	</div>
   	<div class="admin">
+  		<span class="clear icon-backward" v-on:click="clearCache()" title="Clear cache"></span>
   		<a href="/user" target="_blank">Admin</a>
   	</div>
 </footer>
@@ -36,5 +37,10 @@ export default {
       }
     }
   },
+  methods: {
+  	clearCache () {
+  		this.$ls.remove('siteinfo')
+  	}
+  }
 }
 </script>

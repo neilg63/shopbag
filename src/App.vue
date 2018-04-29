@@ -9,7 +9,12 @@
         <ul class="menu">
           <li v-for="item in menu" :key="item.link"><router-link v-bind:to="item.link">{{item.title}}</router-link></li>
         </ul>
-        <div class="show-cart" :class="{'has-items': numInCart > 0}" v-on:click="showCheckout()"><span class="num">{{numInCart}}</span>
+        <div class="settings">
+          <span class="setting decimal" v-on:click="updateSettings('numFormat','.')">.</span>
+          <span class="setting decimal" v-on:click="updateSettings('numFormat',',')">,</span>
+        </div>
+        <div class="show-cart" :class="{'has-items': numInCart > 0}" v-on:click="showCheckout()">
+          <span class="num">{{numInCart}}</span>
           <div v-if="numInCart > 0" class="micro-cart">
             <ul class="ordered-items plain">
             <li v-for="(item,oi) in orderedItems">
@@ -45,7 +50,7 @@
 import Slides from '@/components/Slides'
 import Sections from '@/components/Sections'
 import VueFooter from '@/components/VueFooter'
-import utils from './utils/utils'
+import u from './utils/utils'
 export default {
   name: 'App',
   components: {
@@ -72,7 +77,7 @@ export default {
       subtotalFormatted: '',
       syncing: false,
       screenY: 0,
-      scrolledDown: false
+      scrolledDown: false,
     }
   },
   created () {
@@ -122,7 +127,7 @@ export default {
         }
       }
       setTimeout(() => {
-        utils.removeBodyClass('show-loading')
+        u.removeBodyClass('show-loading')
         window.scrollTo(0, 0)
       },750)
       window.addEventListener('scroll', (e) => {
@@ -153,7 +158,7 @@ export default {
     let comp = this
     this.$bus.$on('store-loaded', (data) => {
       comp.hasStore = true
-      utils.addBodyClass('store-loaded')
+      u.addBodyClass('store-loaded')
     })
   },
   methods: {
@@ -215,7 +220,7 @@ export default {
                   if (sc.products.indexOf(pn.nid) >= 0) {
                     img = pn.images[0]
                     img.link = {
-                      url: k + '/' + utils.cleanString(pn.title),
+                      url: k + '/' + pn.path.split('/').pop(),
                       title: pn.title
                     }
                     if (pn.variants instanceof Array && pn.variants.length > 0) {
@@ -239,8 +244,8 @@ export default {
       this.showMenu = !this.showMenu
     },
     logoAction () {
-      if (utils.hasBodyClass('show-store')) {
-        utils.removeBodyClass('show-store')
+      if (u.hasBodyClass('show-store')) {
+        u.removeBodyClass('show-store')
       } else if (this.showDetail && !this.$parent.showStore) {
         this.$router.push({ name: "Home"})
       } else if (this.$parent.showStore) {
@@ -252,24 +257,24 @@ export default {
     backToMain () {
       this.syncCart()
       this.$router.push(this.$route.path)
-      let el = utils.clickEl('#ecwid-store-container .ec-breadcrumbs a')
+      let el = u.clickEl('#ecwid-store-container .ec-breadcrumbs a')
       if (el) {
-        utils.removeBodyClass('show-store')
+        u.removeBodyClass('show-store')
       } else {
-        utils.swapBodyClass('show-store', 'cart-loaded')
+        u.swapBodyClass('show-store', 'cart-loaded')
       }
       this.$parent.showStore = false
       this.showMenu = false
       window.location = '#'
     },
     backToCart () {
-      utils.removeBodyClass('cart-loaded')
-      utils.addBodyClass('show-store')
+      u.removeBodyClass('cart-loaded')
+      u.addBodyClass('show-store')
     },
     showCheckout () {
-      let el = utils.clickEl('.footer__link--shopping-cart')
+      let el = u.clickEl('.footer__link--shopping-cart')
       if (el) {
-        utils.addBodyClass('show-store')
+        u.addBodyClass('show-store')
       }
     },
     /*updateCounter () {
@@ -325,12 +330,12 @@ export default {
     },
     addEcwidProduct (product) {
       let tg = '.grid-product--id-' + product.id + ' a.grid-product__title'
-      let el = utils.get(tg)
+      let el = u.get(tg)
       let comp = this
       if (!el) {
-        let contEl = utils.get('button.ecwid-btn--continueShopping')
+        let contEl = u.get('button.ecwid-btn--continueShopping')
         if (!contEl) {
-          contEl = utils.get('.ec-breadcrumbs a.breadcrumbs__link--last')
+          contEl = u.get('.ec-breadcrumbs a.breadcrumbs__link--last')
         }
         if (contEl) {
           contEl.click()
@@ -341,7 +346,7 @@ export default {
       } else {
         el.click()
         setTimeout(()=> {
-          let btEl = utils.clickEl('.details-product-purchase__add-to-bag button.form-control__button')
+          let btEl = u.clickEl('.details-product-purchase__add-to-bag button.form-control__button')
           if (btEl) {
             setTimeout(()=> {
               comp.syncCart()
@@ -350,6 +355,20 @@ export default {
         }, 500)
       }
     }
+  },
+  updateSettings (setting, newValue) {
+    let stored = this.$ls.get('settings'),
+      settings = {}
+    if (stored) {
+      settings = JSON.parse(stored)
+    }
+    switch (setting) {
+      case 'numFormat':
+        this.$parent.numFormat = this.numFormat
+        settings.nf = newValue
+        break
+    }
+    this.$ls.set('settings', JSON.stringify(settings))
   }
 }
 </script>
@@ -394,6 +413,8 @@ export default {
   margin-left: 0.5em;
   transition: all .5s ease-in-out;
   display: inline-block;
+  outline: none;
+  user-select: none;
 }
 #app ol.dot-nav li:hover {
   opacity: 1;
@@ -467,4 +488,30 @@ footer .footer-menu li {
   margin: 1em;
   padding: 0 1em;
 }
+
+.settings {
+  display: none;
+}
+
+/*.show-menu .settings {
+  display: block;
+  position: absolute;
+  top: 6em;
+  right: 2.5%;
+  z-index: 100;
+}
+
+.show-menu .settings span {
+  display: inline-block;
+  width: 0.5em;
+  height: 0.5em;
+  padding: 0.25em;
+  border: solid 1px black;
+  border-radius: 0.5em;
+  overflow: hidden;
+  margin-right: 1em;
+  cursor: pointer;
+}*/
+
+
 </style>

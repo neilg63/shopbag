@@ -173,9 +173,15 @@ export default {
 }
 
 #app .fade .slides >.bg {
-  height: 6vmin;
-  width: 6vmin;
+  height: 4vmin;
+  width: 4vmin;
   z-index: 3;
+  transition: all .5s ease-in-out;
+}
+
+#app .fade .slides:hover >.bg {
+  height: 9vmin;
+  width: 8vmin;
 }
 
 #app .fade .slides >.bg.top-left {

@@ -74,7 +74,21 @@ var utils = {
       el.click();
     }
     return el;
+  },
+
+  getStored: function(key, defVal) {
+    let vl = localStorage.getItem(key);
+    if (typeof key == 'string') {
+      if (vl.indexOf('{') === 0 && vl.indexOf('}') > 1) {
+        vl = JSON.parse(vl);
+      }
+    }
+    if (vl === undefined || vl === null) {
+      vl = defVal;
+    }
+    return vl;
   }
+
 };
 
 module.exports = utils;
