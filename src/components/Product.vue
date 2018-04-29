@@ -336,7 +336,7 @@ export default {
   align-items: center;
 }
 #app .image-selector > .set-container figure img {
-  width: 75%;
+  width: 80%;
 }
 #app .product-overlay .close {
   position: fixed;
@@ -462,13 +462,29 @@ export default {
     opacity: 1;
   }
   #app .image-selector {
-    width: 80%;
+    width: 70%;
   }
   #app .variant-selector ol.aspect-nav {
     position: relative;
     right: auto;
     display: block;
   }
+}
+
+@media screen and (min-width: 70em) {
+
+  #app .image-selector {
+    width: 75%;
+  }
+
+}
+
+@media screen and (min-width: 80em) {
+
+  #app .image-selector {
+    width: 80%;
+  }
+
 }
 
 </style>
