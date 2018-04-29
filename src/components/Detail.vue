@@ -303,6 +303,10 @@ export default {
   margin-top: 2.5vh;
 }
 
+.detail-pane .products figure img {
+  max-height: none;
+}
+
 .detail-pane .body {
   position: relative;
   font-size: 100%;

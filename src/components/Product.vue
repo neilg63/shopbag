@@ -336,8 +336,11 @@ export default {
   align-items: center;
 }
 #app .image-selector > .set-container figure img {
-  width: 80%;
+  width: 60%;
+  max-height: none;
 }
+
+
 #app .product-overlay .close {
   position: fixed;
   top: 3em;
@@ -419,6 +422,7 @@ export default {
   #app .buy-now {
     position: relative;
     top: 0;
+    left: -2.25em;
     margin: 1em 0 1em 1em;
   }
 
@@ -468,6 +472,18 @@ export default {
     position: relative;
     right: auto;
     display: block;
+  }
+}
+
+@media screen and (min-height: 25em) {
+  #app .image-selector > .set-container figure img {
+    width: 70%;
+  }
+}
+
+@media screen and (min-height: 30em) {
+  #app .image-selector > .set-container figure img {
+    width: 80%;
   }
 }
 

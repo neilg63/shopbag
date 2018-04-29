@@ -237,7 +237,7 @@ body {
   transform: scale(1, .8) skew(0deg);
   transition: all 0.5s ease-in-out;
   cursor: pointer;
-  z-index: 20;
+  z-index: 100;
 }
 
 .show-menu #main-logo,
@@ -280,7 +280,7 @@ body {
 #app nav ul.menu {
   position: absolute;
   top: 2em;
-  padding-top: 0.5em;
+  padding: 0.5em 0 1em 0;
   left: 0;
   opacity: 0;
   z-index: -1;
@@ -310,6 +310,7 @@ body {
 
 nav ul.menu > li {
   font-size: 1.25em;
+  line-height: 1em;
 }
 
 body.show-store .back-to-cart,
@@ -501,6 +502,12 @@ body.show-store #app .main {
 
 #app .product-overlay .close {
   transition: top 0.5s ease-in-out;
+}
+
+@media screen and (max-height: 20em) {
+  #app nav ul.menu {
+    height: 100vh;
+  }
 }
 
 @media screen and (min-height: 20em) {
@@ -835,6 +842,8 @@ html#ecwid_html body.show-store #ecwid-store-container > div.ecwid {
   margin: 0 auto;
 }
 
+#app p,
+#app nav ul.menu li,
 #app ul,
 #app li,
 #app ol,
@@ -901,4 +910,12 @@ html#ecwid_html body#ecwid_body div.ecwid-minicart {
 
 html#ecwid_html body#ecwid_body button.ecwid-btn--continueShopping {
   opacity: 0;
+}
+
+html#ecwid_html body#ecwid_body .ecwid-productBrowser-cart table tbody tr table tbody tr table tbody tr td.ecwid-productBrowser-cart-itemsTable-cell {
+  background-color: white;
+}
+
+html#ecwid_html body#ecwid_body .ecwid-productBrowser-cart table tbody tr table tbody tr table tbody tr .ecwid-productBrowser-cart-itemsTable-price-compact {
+  padding-right: 0.5em;
 }

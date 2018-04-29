@@ -89,12 +89,12 @@ export default {
 .text-section.fade .slides,
 .text-section.blocks,
 .home-pane .text-section {
-  min-height: 30em;
+  min-height: 20em;
   position: relative;
 }
 
 .text-section.fade .slides > article {
-  height: 25em;
+  height: 15em;
   padding: 2.5em 5%;
 }
 
@@ -128,23 +128,6 @@ export default {
   flex-flow: nowrap column;
   font-size: 1.2em;
   width: 90%;
-}
-
-@media screen and (min-width: 40em) {
-  .text-section.fade .slides > article {
-    font-size: 1.33em;
-  }
-}
-@media screen and (min-width: 60em) {
-  .text-section.fade .slides > article {
-    font-size: 1.5em;
-  }
-}
-
-@media screen and (min-width: 80em) {
-  .text-section.fade .slides > article {
-    font-size: 1.667em;
-  }
 }
 
 .text-section .slides {
@@ -210,6 +193,23 @@ export default {
   right: 3vmin;
   border-bottom: dashed 1px rgba(0,0,0,0.5);
   border-right: dashed 1px rgba(0,0,0,0.5);
+}
+
+@media screen and (min-width: 40em) {
+  .text-section.fade .slides > article {
+    font-size: 1.33em;
+  }
+}
+@media screen and (min-width: 60em) {
+  .text-section.fade .slides > article {
+    font-size: 1.5em;
+  }
+}
+
+@media screen and (min-width: 80em) {
+  .text-section.fade .slides > article {
+    font-size: 1.667em;
+  }
 }
 
 </style>

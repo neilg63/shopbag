@@ -12,7 +12,6 @@
           {{image.link.title}}
         </template>
       </figcaption>
-
     </figure>
   </div>
   <template v-if="showNav">
@@ -24,7 +23,6 @@
 <script>
 import VuePicture from './VuePicture'
 import filters from '../mixins/filters'
-
 export default {
   name: 'ImageSet',
   components: {
@@ -121,7 +119,6 @@ export default {
       }
     },
     handleSelect (image, index) {
-
       switch (this.section.layout) {
         case 'aspect':
           this.handleAspect()
@@ -213,7 +210,7 @@ export default {
         }
       }, 5000)
     }
-  },
+  }
 }
 </script>
 <style>
@@ -223,11 +220,9 @@ export default {
   justify-content: center;
   align-items: center;
 }
-
 #app .main > div > section {
   position: relative;
 }
-
 #app section.image-set .slide-nav {
   position: absolute;
   top: 0;
@@ -239,39 +234,31 @@ export default {
   transition: all 0.75s ease-in-out;
   cursor: pointer;
 }
-
 #app section.image-set .slide-nav:before {
   position: absolute;
   top: 25%;
   font-size: 5vw;
 }
-
 #app section.image-set .slide-nav:hover {
   opacity: 0.5;
 }
-
 #app section.image-set .slide-nav:before {
   font-family: icomoon;
 }
-
 #app section.image-set .left-nav {
   left:  0;
 }
-
 #app section.image-set .left-nav:before {
   left: 5%;
   content: "\e904";
 }
-
 #app section.image-set .right-nav {
   left: 65vw;
 }
-
 #app section.image-set .right-nav:before {
   right: 5%;
   content: "\e905";
 }
-
 #app .image-set {
   max-width:  100%;
   background-color: white;
@@ -280,49 +267,38 @@ export default {
   position: relative;
   overflow: visible;
 }
-
 #app section.image-set .slides-2.num-images-2 {
   width: 300%;
 }
-
 #app section.image-set .slides-2.num-images-3 {
   width: 400%;
 }
-
 #app section.image-set .slides-2.num-images-4 {
   width: 500%;
 }
-
 #app section.image-set .slides-2.num-images-5 {
   width: 600%;
 }
-
 #app section.image-set .slides-2.num-images-6 {
   width: 700%;
 }
-
 #app section.image-set .slides-2.num-images-7 {
   width: 800%;
 }
-
 #app section.image-set .slides-2.num-images-8 {
   width: 900%;
 }
-
 #app section.image-set .slides-2.num-images-9 {
   width: 1000%;
 }
-
 #app section.image-set .slides-2,
 #app section.image-set .slides-2 figure {
   height: 25vw;
 }
-
 #app section.image-set .slides-2 {
   white-space: nowrap;
   transition: left .5s ease-in-out;
 }
-
 #app section.image-set .slides-2 figure {
   position: relative;
   display: flex;
@@ -333,50 +309,40 @@ export default {
   width: 100vw;
   max-width: 100vw;
 }
-
 #app section.image-set .slides-2 figure img {
   max-width: 50vw;
   max-height: 25vw;
   width: auto;
   height: auto;
 }
-
 #app section.image-set .slides-2 figure.prev img,
 #app section.image-set .slides-2 figure.next img {
   transition: transform .5s ease-in-out;
 }
-
 #app section.image-set .slides-2 figure.prev img {
   transform: scale(-.25,.25) translate(-225vw,20vw);
 }
 #app section.image-set .slides-2 figure.next img {
   transform: scale(-.25,.25) translate(255vw,20vw);
 }
-
 #app section.image-set .slides-2.num-images-6 figure.prev.last img {
   transform: scale(-.25,.25) translate(2160vw,20vw);
 }
-
 #app section.image-set .slides-2.num-images-6 figure.next.first img {
   transform: scale(-.25,.25) translate(-2160vw,20vw);
 }
-
 #app section.image-set .slides-2 figure.active img {
   transform: scale(1,1);
 }
-
 #app section.image-set .slides-2 figure.active:hover {
   transform: scale(1.5);
 }
-
 #app section.image-set figure {
   position: relative;
 }
-
 #app section.image-set figure.has-link {
   cursor: pointer;
 }
-
 #app section.image-set figure figcaption {
   position: absolute;
   z-index: 8;
@@ -389,7 +355,6 @@ export default {
   align-items: center;
   color: white;
 }
-
 #app section.image-set figure.has-price figcaption {
   bottom: 0;
   left: 0;
@@ -397,79 +362,62 @@ export default {
   display: flex;
   flex-flow: nowrap row;
 }
-
 #app section.image-set figure.has-price figcaption p {
   padding: 0;
   margin: 0 1em 0 0;
   display: inline-block;
 }
-
 #app section.image-set figure.has-price figcaption {
   color: black;
 }
-
 #app section.image-set .column figure figcaption {
   font-size: 2.5em;
 }
-
 #app section.image-set .row-2 figure figcaption {
   font-size: 2em;
 }
-
 #app section.image-set .row-3 figure figcaption,
 #app section.image-set .row-4 figure figcaption {
   font-size: 1.5em;
 }
-
 #app section.image-set figure.has-price img {
   transform: scale(1, 1);
   transition: transform .5s ease-in-out;
 }
-
 #app section.image-set figure.has-price:hover img {
   transform: scale(-1, 1);
 }
-
 #app section.image-set figure.has-price {
   font-size: 75%;
 }
-
-
 #app section.image-set .slides-2 figure picture,
 #app section.image-set .slides-2 figure {
   transition: transform 1s ease-in-out;
 }
-
 #app section.image-set figure figcaption {
   transition: transform .5s ease-in-out;
 }
-
 #app section.image-set figure:hover figcaption {
     transform: scale(1.25);
 }
-
 @media screen and (min-width: 40em) {
   #app section.image-set figure  {
     font-size: 125%;
   }
 }
-
 @media screen and (min-width: 60em) {
   #app section.image-set figure  {
     font-size: 133%;
   }
 }
-
 @media screen and (min-width: 80em) {
   #app section.image-set figure  {
     font-size: 150%;
   }
 }
-
 #app section.image-set .slides-2.offset-1 {
   left:  -100vw;
 }
-
 #app section.image-set .slides-2.offset-2 {
   left:  -200vw;
 }
@@ -494,8 +442,6 @@ export default {
 #app section.image-set .slides-2.offset-9 {
   left:  -900vw;
 }
-
-
 #app .image-set figure {
   max-width:  100%;
   width: 100%;
@@ -527,18 +473,14 @@ export default {
     left: 0;
   }
 }
-
 #app .image-set .row-6,
 #app .image-set .row-5 {
   overflow: hidden;
 }
-
-
 #app .image-set .row-6 figure {
   width:  50%;
   max-width: 50vw;
 }
-
 #app .image-set .row-6 figure img,
 #app .image-set .row-5 figure img {
   position: relative;
@@ -548,13 +490,11 @@ export default {
   padding: 1.5vw 3vw;
   cursor: pointer;
 }
-
 #app .image-set .row-6 figure:hover img,
 #app .image-set .row-5 figure:hover img {
   transform: scale(1.5);
   z-index: 20;
 }
-
 #app .image-set .aspect figure {
   opacity: 0;
   transform: scale(-1, 1);
@@ -562,7 +502,6 @@ export default {
   pointer-events: none;
   z-index: -1;
 }
-
 #app .image-set .aspect figure.active {
   opacity: 1;
   transform: scale(1, 1);
@@ -570,17 +509,14 @@ export default {
   z-index: 2;
   cursor: pointer;
 }
-
 #app .image-set .multi-row figure {
   margin-bottom: -0.5em;
 }
-
 #app .image-set .multi-row figure,
 #app .image-set .multi-row figure picture {
   max-height: 100vh;
   overflow: hidden;
 }
-
 #app .image-set .multi-row figure picture {
   position: relative;
   display: flex;
@@ -590,15 +526,11 @@ export default {
   width: 100%;
   height: 100%;
 }
-
 #app .home-pane .image-set .multi-row figure picture {
   justify-content: flex-start;
 }
-
 #app .image-set .multi-row figure img {
-
 }
-
 /*#app .image-set .multi-row figure picture {
   position: relative;
   display: flex;
@@ -609,28 +541,24 @@ export default {
   height: 100%;
   overflow: hidden;
 }
-
 #app .image-set .multi-row figure img {
   width: auto;
   height: auto;
   min-height: 100%;
   min-width: 100%;
 }*/
-
-@media screen and (min-width: 25em) {
+@media screen and (min-width: 30em) {
   #app .image-set .row-2 figure {
     width:  50%;
     max-width: 50vw;
   }
 }
-
 @media screen and (orientation: landscape) {
   #app .image-set .row-2 figure {
     width:  50%;
     max-width: 50vw;
   }
 }
-
 @media screen and (min-width: 40em) {
   #app .image-set .row-5 figure,
   #app .image-set .row-4 figure {
