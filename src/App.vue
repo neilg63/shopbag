@@ -459,7 +459,7 @@ export default {
   font-size: 2em;
   opacity: 0;
   pointer-events: none;
-  transform: scale(1.6667,1);
+  transform: scale(1.25,1);
 }
 .back-to:before {
   font-family: icomoon;

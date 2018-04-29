@@ -342,7 +342,7 @@ export default {
   position: fixed;
   top: 3em;
   margin-top: 2vh;
-  right: 1%;
+  right: 2.5%;
   font-size: 1.5em;
   z-index: 50;
   cursor: pointer;

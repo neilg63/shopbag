@@ -78,6 +78,8 @@ export default {
     this.$bus.$on('page', (data) => {
       this.contClasses = []
       this.products = []
+      this.sections = []
+      this.numSections = 0
       this.hasProducts = false
       this.bodyTop = true
       if (data.valid) {

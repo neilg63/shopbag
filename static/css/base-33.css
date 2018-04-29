@@ -231,7 +231,7 @@ body {
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center center;
-  height: 3.2em;
+  height: 2.4em;
   width: 50%;
   opacity: 0.6667;
   transform: scale(1, .8) skew(0deg);
@@ -521,7 +521,15 @@ body.show-store #app .main {
   }
 }
 
+@media screen and (min-width: 30em) {
+
+  #main-logo {
+    height: 2.8em;
+  }
+}
+
 @media screen and (min-width: 40em) {
+
   #app > nav.store-nav {
     height: 3em;
   }
@@ -531,42 +539,11 @@ body.show-store #app .main {
   section#ecwid-store-container {
     top: 6.5em;
   }
-}
 
-@media screen and (min-width: 50em) {
-  #app nav ul.menu > li {
-    font-size: 1.5em;
+  #main-logo {
+    height: 3.2em;
   }
-  section#ecwid-store-container {
-    top: 7em;
-  }
-}
 
-@media screen and (min-width: 60em) {
-  #app nav ul.menu > li {
-    font-size: 1.667em;
-  }
-  section#ecwid-store-container {
-    top: 8em;
-  }
-}
-
-@media screen and (min-width: 80em) {
-  #app nav ul.menu > li {
-    font-size: 1.875em;
-  }
-  section#ecwid-store-container {
-    top: 9em;
-  }
-}
-
-@media screen and (min-width: 90em) {
-  #app nav ul.menu > li {
-    font-size: 2em;
-  }
-}
-
-@media screen and (min-width: 40em) {
   #app .show-cart {
     height: 1.8em;
   }
@@ -583,6 +560,14 @@ body.show-store #app .main {
 }
 
 @media screen and (min-width: 50em) {
+
+  #app nav ul.menu > li {
+    font-size: 1.5em;
+  }
+  section#ecwid-store-container {
+    top: 7em;
+  }
+
   #app .show-cart {
     height: 2em;
   }
@@ -595,7 +580,15 @@ body.show-store #app .main {
 }
 
 @media screen and (min-width: 60em) {
-   #app .show-cart {
+  
+  #app nav ul.menu > li {
+    font-size: 1.667em;
+  }
+  section#ecwid-store-container {
+    top: 8em;
+  }
+
+  #app .show-cart {
     height: 2.4em;
     top: 0.625em;
     background-size: 3em 100%;
@@ -603,6 +596,7 @@ body.show-store #app .main {
   #app .menu-toggle {
     font-size: 2.5em;
   }
+
   #app > nav.store-nav {
     height: 3.5em;
   }
@@ -643,7 +637,14 @@ body.show-store #app .main {
 }
 
 @media screen and (min-width: 80em) {
-   #app .show-cart {
+  #app nav ul.menu > li {
+    font-size: 1.875em;
+  }
+  section#ecwid-store-container {
+    top: 9em;
+  }
+
+  #app .show-cart {
     height: 2.667em;
   }
   #app .menu-toggle {
@@ -699,6 +700,10 @@ body.show-store #app .main {
   }
   #main-logo {
     height: 5em;
+  }
+
+  #app nav ul.menu > li {
+    font-size: 2em;
   }
 }
 
