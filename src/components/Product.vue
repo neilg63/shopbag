@@ -4,7 +4,7 @@
     <h2><span class="catalog-title breadcrumb link-back" v-on:click="close()">{{product.catalog_title}}</span> <span class="breadcrumb last">{{product.title}}</span></h2>
     <div class="image-selector">
       <template v-for="(iset, index) in imageSets">
-        <div class="set-container" :class="{'active':iset.active}">
+        <div class="set-container" :class="{'active':iset.active}" :key="index">
           <image-set :key="index" :section="iset"></image-set>
         </div>
       </template>
@@ -69,7 +69,7 @@ export default {
       cycleStopped: false,
       selecting: false,
       numImagesInSet: 3,
-      selectedImgIndex: 0 
+      selectedImgIndex: 0
     }
   },
   created () {
@@ -161,7 +161,7 @@ export default {
     },
     setAspect (index) {
       this.selectedImgIndex = index
-      this.$bus.$emit('set-image-index', index);
+      this.$bus.$emit('set-image-index', index)
     }
   }
 }
