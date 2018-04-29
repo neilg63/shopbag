@@ -329,46 +329,37 @@ export default {
       }
     },
     addEcwidProduct (product) {
-      let tg = '.grid-product--id-' + product.id + ' a.grid-product__title'
-      let el = u.get(tg)
-      let comp = this
-      if (!el) {
-        let contEl = u.get('button.ecwid-btn--continueShopping')
-        if (!contEl) {
-          contEl = u.get('.ec-breadcrumbs a.breadcrumbs__link--last')
+      if (Ecwid) {
+        if (Ecwid.Cart) {
+          let comp = this
+          Ecwid.Cart.addProduct({
+            id: product.id, 
+            quantity: 1, 
+            callback: function(success, product, cart){
+              if (success) {
+                setTimeout(()=> {
+                  comp.syncCart()
+                }, 500);
+              }
+            }
+          })
         }
-        if (contEl) {
-          contEl.click()
-          setTimeout(() => {
-            comp.addEcwidProduct(product)
-          }, 500)
-        }
-      } else {
-        el.click()
-        setTimeout(()=> {
-          let btEl = u.clickEl('.details-product-purchase__add-to-bag button.form-control__button')
-          if (btEl) {
-            setTimeout(()=> {
-              comp.syncCart()
-            }, 500);
-          }
-        }, 500)
       }
+    },
+    updateSettings (setting, newValue) {
+      let stored = this.$ls.get('settings'),
+        settings = {}
+      if (stored) {
+        settings = JSON.parse(stored)
+      }
+      switch (setting) {
+        case 'numFormat':
+          this.$parent.numFormat = this.numFormat
+          settings.nf = newValue
+          break
+      }
+      this.$ls.set('settings', JSON.stringify(settings))
     }
-  },
-  updateSettings (setting, newValue) {
-    let stored = this.$ls.get('settings'),
-      settings = {}
-    if (stored) {
-      settings = JSON.parse(stored)
-    }
-    switch (setting) {
-      case 'numFormat':
-        this.$parent.numFormat = this.numFormat
-        settings.nf = newValue
-        break
-    }
-    this.$ls.set('settings', JSON.stringify(settings))
   }
 }
 </script>
