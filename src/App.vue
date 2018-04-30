@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :class="{'store-loaded': hasStore,'show-menu': showMenu,'show-detail': showDetail,'show-home': !showDetail,'scrolled-up': !scrolledDown}">
+  <div id="app" :class="{'store-loaded': hasStore,'show-menu': showMenu,'show-detail': showDetail,'show-home': !showDetail,'scrolled-up': !scrolledDown,'page-up': !pageDown}">
     <nav class="store-nav">
       <div class="inner">
         <div class="bg-solid bg-element"></div>
@@ -78,6 +78,7 @@ export default {
       syncing: false,
       screenY: 0,
       scrolledDown: false,
+      pageDown: false
     }
   },
   created () {
@@ -133,6 +134,7 @@ export default {
       window.addEventListener('scroll', (e) => {
         comp.screenY = window.pageYOffset / window.innerHeight
         comp.scrolledDown  = comp.screenY > 0.125;
+        comp.pageDown = comp.screenY > 0.95;
       })
     })
     this.$bus.$on('show-detail', (status) => {
