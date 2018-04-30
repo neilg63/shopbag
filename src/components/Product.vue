@@ -189,7 +189,7 @@ export default {
 #app .variant-selector ul.plain li {
   width: 1.33em;
   height: 1.33em;
-  padding: 0.125em 1em 0.125em 0.125em;
+  padding: 0.125em .5em 0.125em 0.125em;
   overflow: hidden;
   cursor: pointer;
   pointer-events: all;
@@ -343,7 +343,7 @@ export default {
 
 #app .product-overlay .close {
   position: fixed;
-  top: 3em;
+  top: 1.8em;
   margin-top: 2vh;
   right: 2.5%;
   font-size: 1.5em;
@@ -412,13 +412,33 @@ export default {
   content: "\e901";
 }
 
+@media screen and (min-width: 30em) {
+  #app .product-overlay .close {
+    top: 2em;
+  }
+  #app .variant-selector ul.plain li {
+    padding: 0.125em .75em 0.125em 0.125em;
+  }
+}
+
 @media screen and (min-width: 40em) {
   #app .variant-selector .aspect-nav {
     display: flex;
   }
+  #app .product-overlay .close {
+    top: 2.4em;
+  }
+  #app .variant-selector ul.plain li {
+    padding: 0.125em 1em 0.125em 0.125em;
+  }
 }
 
 @media screen and (min-width: 60em) {
+
+  #app .product-overlay .close {
+    top: 3em;
+  }
+
   #app .buy-now {
     position: relative;
     top: 0;

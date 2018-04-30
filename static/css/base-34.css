@@ -43,6 +43,10 @@ section#ecwid-store-container,
   max-width: 1920px;
 }
 
+#app.show-detail {
+  background-color: white;
+}
+
 #loading-overlay {
   position: fixed;
   top: 0;
@@ -329,7 +333,7 @@ body.show-store #app .show-cart {
 
 #app .main {
   transition: opacity 0.5s ease-in-out, margin-top 0.5s ease-in-out;
-  margin-top: 4em;
+  margin-top: 2.4em;
 }
 body.show-store #app .main {
   position: fixed;
@@ -443,6 +447,10 @@ body.show-store #app .main {
   padding: 0.125em;
 }
 
+#app footer .info {
+  margin: 0.75em auto;
+}
+
 #app footer .admin {
   position: absolute;
   bottom: 2em;
@@ -533,6 +541,11 @@ body.show-store #app .main {
   #main-logo {
     height: 2.8em;
   }
+
+  #app .main {
+    margin-top: 3em;
+  }
+
 }
 
 @media screen and (min-width: 40em) {
@@ -540,6 +553,11 @@ body.show-store #app .main {
   #app > nav.store-nav {
     height: 3em;
   }
+
+  #app .main {
+    margin-top: 3.3333em;
+  }
+
   #app nav ul.menu > li {
     font-size: 1.33em;
   }
@@ -607,6 +625,11 @@ body.show-store #app .main {
   #app > nav.store-nav {
     height: 3.5em;
   }
+
+  #app .main {
+    margin-top: 3.75em;
+  }
+
   #app nav ul.menu {
     top: 3.5em;
   }
@@ -660,6 +683,11 @@ body.show-store #app .main {
   #app > nav.store-nav {
     height: 4em;
   }
+
+  #app .main {
+    margin-top: 4em;
+  }
+
   #app nav ul.menu {
     top: 4em;
   }
