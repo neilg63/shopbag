@@ -11,7 +11,7 @@
     <ol v-if="numImages > 0" class="dot-nav">
       <li v-for="(item, i) in navItems" v-on:click="showIndex(i)" :key="i" :class="{'active': i == index}"></li>
     </ol>
-    <ol class="arrow-nav">
+    <ol class="arrow-nav" v-touch:swipe="slideSwipe">
       <li class="prev icon-chevron-thin-left" v-on:click="showPrev()"></li>
       <li class="next icon-chevron-thin-right" v-on:click="showNext()"></li>
     </ol>
@@ -163,6 +163,16 @@ export default {
           this.sectionClasses.push('hover')
         }
       }
+    },
+    slideSwipe (direction) {
+      switch (direction) {
+        case 'left':
+          this.showPrev()
+          break
+        case 'right':
+          this.showNext()
+          break
+      }
     }
   }
 }
@@ -309,6 +319,30 @@ export default {
 
 #app .top-slides.hover .enter-main {
   opacity: 0.75;
+}
+
+#app ol.arrow-nav {
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.touch-disabled #app ol.arrow-nav {
+  pointer-events: none;
+}
+
+@media screen and (max-width: 50em) {
+  .touch-enabled #app ol.arrow-nav li {
+    pointer-events: none;
+  }
+}
+
+#app .top-slides ol.arrow-nav {
+  height: 100vh;
+  max-height: 100vw;
 }
 
 #app ol.arrow-nav > li {

@@ -2,7 +2,7 @@
   <div class="product-overlay">
     <div class="close icon-close" v-on:click="close()"></div>
     <h2><span class="catalog-title breadcrumb link-back" v-on:click="close()">{{product.catalog_title}}</span> <span class="breadcrumb last">{{product.title}}</span></h2>
-    <div class="image-selector">
+    <div class="image-selector" v-touch:swipe="slideSwipe">
       <template v-for="(iset, index) in imageSets">
         <div class="set-container" :class="{'active':iset.active}" :key="index">
           <image-set :key="index" :section="iset"></image-set>
@@ -57,6 +57,11 @@ export default {
       required: true,
       default: null
     },
+    productIndex: {
+      type: Number,
+      required: true,
+      default: 0
+    },
     options: {
       type: Object,
       required: true,
@@ -77,6 +82,9 @@ export default {
   },
   created () {
     this.assignImageSets()
+    if (this.productIndex > 0 && this.productIndex < this.variants.length) {
+      this.setActive(this.variants[this.productIndex])
+    }
   },
   watch: {
     product (newVal) {
@@ -214,6 +222,25 @@ export default {
     setAspect (index) {
       this.selectedImgIndex = index
       this.$bus.$emit('set-image-index', index)
+    },
+    slideSwipe (direction) {
+      let nx = this.selectedImgIndex
+      switch (direction) {
+        case 'right':
+          nx = this.selectedImgIndex + 1
+          break
+        case 'left':
+          nx = this.selectedImgIndex - 1
+          break
+      }
+      if (nx != this.selectedImgIndex) {
+        if (nx < 0) {
+          nx = this.numImagesInSet - 1
+        } else if (nx >= this.numImagesInSet) {
+          nx = 0
+        }
+        this.setAspect(nx)
+      }
     },
     setHint (altMode) {
       this.showAltHint = altMode

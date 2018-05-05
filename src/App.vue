@@ -292,7 +292,8 @@ export default {
       u.addBodyClass('show-store')
     },
     showCheckout () {
-      let el = u.clickEl('.footer__link--shopping-cart')
+      //let el = u.clickEl('.footer__link--shopping-cart')
+      Ecwid.openPage('cart');
       u.addBodyClass('show-store')
     },
     fetchCart () {
@@ -405,19 +406,7 @@ export default {
 #app ol.arrow-nav {
   position: absolute;
 }
-#app ol.arrow-nav {
-  top: 0;
-  left: 0;
-  right: 0;
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  pointer-events: none;
-}
-#app .top-slides ol.arrow-nav {
-  height: 100vh;
-  max-height: 100vw;
-}
+
 #app ol.dot-nav {
   bottom: 12.5%;
   right: 2.5vw;
@@ -485,7 +474,7 @@ export default {
   position: absolute;
   top: 0.25em;
   right: 2.5%;
-  font-size: 2em;
+  font-size: 1.5em;
   opacity: 0;
   pointer-events: none;
   transform: scale(1.25,1);
@@ -569,6 +558,9 @@ footer .footer-menu li {
 @media screen and (min-width: 60em) {
   .store-nav .lang-switcher {
     right: 7em;
+  }
+  .back-to {
+    font-size: 1.667em;
   }
 }
 

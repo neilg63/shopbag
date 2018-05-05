@@ -18,7 +18,7 @@
         </figure>
       </template>
     </div>
-    <product v-if="hasActiveProduct" :product="product" :options="productOptions"></product>
+    <product v-if="hasActiveProduct" :product="product" :options="productOptions" :productIndex="productIndex"></product>
     <div v-if="!bodyTop" class="body" v-html="body"></div>
     <sections v-if="showSections" :sections="sections"></sections>
   </article>
@@ -63,7 +63,8 @@ export default {
       contClasses: [],
       mainImageClass: 'right',
       bodyClass: 'left',
-      bodyTop: true
+      bodyTop: true,
+      productIndex: 0
     }
   },
   computed: {
@@ -214,8 +215,9 @@ export default {
             v.varAdded = false
             return v
           })
-          let hasVarAdded = prod.variants.findIndex(v => v.added) >= 0
-          if (hasVarAdded) {
+          let addedIndex = prod.variants.findIndex(v => v.added)
+          if (addedIndex >= 0) {
+            this.productIndex = addedIndex
             prod.variants = prod.variants.map(v => {
               v.varAdded = !v.added
               return v

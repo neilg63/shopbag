@@ -7,6 +7,15 @@ import router from './router'
 import u from './utils/utils'
 import VueLocalStorage from 'vue-localstorage'
 import VueScrollTo from 'vue-scrollto'
+import Vue2TouchEvents from 'vue2-touch-events'
+
+Vue.use(Vue2TouchEvents, {
+    disableClick: false,
+    touchClass: '',
+    tapTolerance: 10,
+    swipeTolerance: 30,
+    longTapTimeInterval: 400
+})
 
 // You can also pass in the default options
 Vue.use(VueScrollTo, {
@@ -56,6 +65,7 @@ new Vue({
   },
   created () {
     this.detectLanguage()
+    this.detectTouch()
     let comp = this
     let matchedProducts = false
     let storedProductsData = this.$ls.get('products')
@@ -317,6 +327,14 @@ new Vue({
         comp.updateDetail(comp.$route.path)
       }, ts)
     },
+    detectTouch () {
+      u.addBodyClass('touch-disabled')
+      window.addEventListener('touchstart', function() {
+        if (!u.hasBodyClass('touch-enabled')) {
+          u.swapBodyClass('touch-disabled','touch-enabled')
+        }
+      })
+    },
     detectLanguage () {
       let bl = 'en'
       let str = this.$ls.get('settings')
@@ -328,7 +346,7 @@ new Vue({
       } else {
         if (window.navigator.language) {
           bl = window.navigator.language.toLowerCase().split('-').shift()
-        }  
+        }
       }
       this.localiseSettings(bl)
     },
