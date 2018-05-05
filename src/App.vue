@@ -293,8 +293,12 @@ export default {
     },
     showCheckout () {
       //let el = u.clickEl('.footer__link--shopping-cart')
-      Ecwid.openPage('cart');
-      u.addBodyClass('show-store')
+      if (Ecwid) {
+        if (Ecwid.Cart) {
+          Ecwid.openPage('cart');
+          u.addBodyClass('show-store')
+        }
+      }
     },
     fetchCart () {
       let ct = this.$ls.get(this.storeKey)
@@ -438,6 +442,13 @@ export default {
 #app ol.dot-nav li.active:before {
   content: '\e602';
 }
+
+#app .main .sections > section,
+#app .main > div > section {
+  position: relative;
+  overflow: hidden;
+}
+
 #app .page-section ul.flex-slides li figure {
   max-height: 100vh;
   overflow: hidden;

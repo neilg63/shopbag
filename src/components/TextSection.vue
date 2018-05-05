@@ -151,6 +151,10 @@ export default {
   height: 100%;
 }
 
+.text-section article h3 {
+  -webkit-margin-before: 0;
+}
+
 #app .fade .slides >.bg,
 .fade > .slides > article {
   position: absolute;

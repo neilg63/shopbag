@@ -223,9 +223,7 @@ export default {
   justify-content: center;
   align-items: center;
 }
-#app .main > div > section {
-  position: relative;
-}
+
 #app section.image-set .slide-nav {
   position: absolute;
   top: 0;

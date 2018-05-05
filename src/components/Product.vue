@@ -12,7 +12,7 @@
     <div class="variant-selector" v-if="variants.length > 0">
       <ul class="plain">
         <template v-for="(variant, index) in product.variants">
-          <li class="variant" :class="{'active':variant.active}" v-on:click="setActive(variant)" :data-index="variant.imgIndex" :key="index"><span class="text">{{variant.title}}</span></li>
+          <li class="variant" :class="{'active':variant.active,'added':variant.added}" v-on:click="setActive(variant)" :data-index="variant.imgIndex" :key="index"><span class="text">{{variant.title}}</span></li>
         </template>
       </ul>
       <ol class="aspect-nav plain">
@@ -287,10 +287,17 @@ export default {
   flex-flow: nowrap row;
   pointer-events: none;
 }
+
+#app .variant-selector ul.plain li.added:before,
 #app .variant-selector ul.plain li.active:before {
   content: "\e602";
-  transform: scale(1.2);
+  transform: scale(1.125);
 }
+
+#app .variant-selector ul.plain li.added:before {
+  opacity: 0.75;
+}
+
 .buy-now {
   position: absolute;
   outline: none;
@@ -588,6 +595,11 @@ export default {
     font-style: italic;
     opacity: 1;
   }
+
+  #app .variant-selector ul.plain li.added:before {
+    margin-left: 0.125em;
+  }
+
   #app .image-selector {
     width: 70%;
   }
