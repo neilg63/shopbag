@@ -27,6 +27,7 @@ export default {
   },
   data () {
     return {
+      id: 0,
       title: '',
       text: '',
       slides: [],
@@ -39,36 +40,22 @@ export default {
     }
   },
   created () {
-    if (typeof this.section.title == 'string') {
-      this.title = this.section.title.trim()
-      this.hasTitle = this.title.length > 1
-    }
-    if (typeof this.section.text == 'string') {
-      this.text = this.section.text.trim()
-      this.hasSingle = this.text.length > 1
-    }
-    if (this.section.text instanceof Array) {
-      this.slides = this.section.text
-      this.numSlides = this.slides.length
-      this.hasSlides = this.numSlides > 0
-    }
-    this.sectionClasses = []
-    if (this.section.text_layout) {
-      this.layout = this.section.text_layout
-    }
-    if (this.layout) {
-      this.sectionClasses.push(this.layout.replace(/_/g, '-'))
-    }
-    if (this.hasSlides) {
-      this.sectionClasses.push('flex-row')
-      this.sectionClasses.push('num-' + this.slides.length)
-    }
+    this.assign(this.section)
     switch (this.layout) {
       case 'fade':
         this.cycle()
         this.hasTitle = false
         break
     }
+    let comp = this
+    this.$bus.$on('siteinfo', data => {
+      if (data.home.sections && comp.id > 0) {
+        let matched = data.home.sections.find(s => s.id == comp.id)
+        if (matched) {
+          comp.assign(matched)
+        }
+      }
+    })
   },
   methods: {
     cycle () {
@@ -79,6 +66,35 @@ export default {
         }
         this.currIndex = nx
       }, 5000)
+    },
+    assign (section) {
+      if (section.id) {
+        this.id = parseInt(section.id)
+      }
+      if (typeof section.title == 'string') {
+        this.title = section.title.trim()
+        this.hasTitle = this.title.length > 1
+      }
+      if (typeof section.text == 'string') {
+        this.text = section.text.trim()
+        this.hasSingle = this.text.length > 1
+      }
+      if (section.text instanceof Array) {
+        this.slides = section.text
+        this.numSlides = this.slides.length
+        this.hasSlides = this.numSlides > 0
+      }
+      this.sectionClasses = []
+      if (section.text_layout) {
+        this.layout = section.text_layout
+      }
+      if (this.layout) {
+        this.sectionClasses.push(this.layout.replace(/_/g, '-'))
+      }
+      if (this.hasSlides) {
+        this.sectionClasses.push('flex-row')
+        this.sectionClasses.push('num-' + this.slides.length)
+      }
     }
   }
 }

@@ -57,10 +57,7 @@ export default {
       product: {
         title: ''
       },
-      productOptions: {
-        buyNowHint: 'Buy now',
-        addedHint: 'Added to your bag'
-      },
+      productOptions: {},
       hasProductImages: false,
       numProducts: 0,
       contClasses: [],
@@ -76,6 +73,7 @@ export default {
   },
   created () {
     this.$bus.$on('page', (data) => {
+      this.matchOptions()
       this.contClasses = []
       this.products = []
       this.sections = []
@@ -213,8 +211,16 @@ export default {
         if (prod.variants instanceof Array) {
           prod.variants = prod.variants.map(v => {
             v.added = this.$parent.orderedItems.findIndex(oi => oi.productId.toString() === v.id.toString()) >= 0
+            v.varAdded = false
             return v
           })
+          let hasVarAdded = prod.variants.findIndex(v => v.added) >= 0
+          if (hasVarAdded) {
+            prod.variants = prod.variants.map(v => {
+              v.varAdded = !v.added
+              return v
+            })
+          }
         }
       }
     },
@@ -283,6 +289,30 @@ export default {
             this.$router.push('/' + this.$route.params.name)
           }
         }
+      }
+    },
+    matchOptions () {
+      let opts = {
+        en: {
+          buyNowHint: 'Add to cart',
+          selectHint: 'Select',
+          addedHint: 'Already added',
+          removeHint: 'Remove'
+        },
+        it: {
+          buyNowHint: 'Aggiungi',
+          selectHint: 'Scegli',
+          addedHint: 'Già aggiunto',
+          removeHint: 'Rimouvi'
+        }
+      }
+      switch (this.$parent.lang) {
+        case 'it':
+          this.productOptions = opts.it
+          break;
+        default:
+          this.productOptions = opts.en
+          break
       }
     }
   }

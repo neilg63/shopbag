@@ -20,13 +20,15 @@
           <li :class="['num-'+num,{'active': (num-1) == selectedImgIndex}]" :key="num" v-on:click="setAspect(num-1)" :title="num"></li>
         </template>
       </ol>
-      <div class="buy-now" :class="{'added':selectedVariant.added,'selecting': selecting}" v-if="selectedVariant" v-on:click="addProduct()">
+      <div class="buy-now" :class="{'added':selectedVariant.added,'variant-added':selectedVariant.varAdded,'selecting': selecting}" v-if="selectedVariant" >
         <div class="icon icon-check"></div>
-        <button class="price">{{selectedVariant.price|currency}}</button>
-        <div class="icon icon-add-cart"></div>
+        <button class="price" v-on:click="addProduct()">{{selectedVariant.price|currency}}</button>
+        <div class="icon cart-icon" :class="cartIconClass" v-on:mouseover="setHint(true)" v-on:mouseout="setHint(false)"  v-on:click="manageProduct()">
+          <span v-if="selectedVariant.varAdded" class="icon-plus"></span>
+          <span v-if="selectedVariant.added" class="icon-minus"></span>
+        </div>
         <div class="hint">
-          <span class="not-added">{{options.buyNowHint}}</span>
-          <span class="added">{{options.addedHint}}</span>
+          {{buyHint}}
         </div>
       </div>
       <h3 class="selected-variant">{{selectedVariant.title}}</h3>
@@ -69,7 +71,8 @@ export default {
       cycleStopped: false,
       selecting: false,
       numImagesInSet: 3,
-      selectedImgIndex: 0
+      selectedImgIndex: 0,
+      showAltHint: false
     }
   },
   created () {
@@ -78,6 +81,32 @@ export default {
   watch: {
     product (newVal) {
       this.assignImageSets()
+    }
+  },
+  computed: {
+    buyHint () {
+      if (this.selectedVariant.added) {
+        if (this.showAltHint) {
+          return this.options.removeHint
+        } else {
+          return this.options.addedHint
+        }
+      } else if (this.selectedVariant.varAdded) {
+        if (this.showAltHint) {
+          return this.options.buyNowHint
+        } else {
+          return this.options.selectHint
+        }
+      } else {
+        return this.options.buyNowHint
+      }
+    },
+    cartIconClass () {
+      if (this.selectedVariant.added || this.selectedVariant.varAdded) {
+        return 'icon-plain-cart'
+      } else {
+        return 'icon-add-cart'
+      }
     }
   },
   methods: {
@@ -151,17 +180,43 @@ export default {
     addProduct () {
       if (this.selectedVariant.id && !this.selectedVariant.added) {
         this.selecting = true
-        this.$bus.$emit('add-ecwid-product', this.selectedVariant)
+        let selVar = this.variants.find(v => v.added)
+        let ts = 0
+        if (selVar) {
+          this.$bus.$emit('remove-ecwid-product', selVar, false)
+            ts = 500
+        }
+        let comp = this
+        setTimeout(() => {
+          comp.$bus.$emit('add-ecwid-product', comp.selectedVariant)
+        }, ts)
+        setTimeout(() => {
+          comp.$parent.updateAdded(comp.product)
+          comp.selecting = false
+        }, ts + 1500)
+      }
+    },
+    manageProduct () {
+      if (this.selectedVariant.id) {
+        this.selecting = true
+        if (this.selectedVariant.added) {
+           this.$bus.$emit('remove-ecwid-product', this.selectedVariant, true) 
+        } else {
+          this.$bus.$emit('add-ecwid-product', this.selectedVariant) 
+        }
         let comp = this
         setTimeout(() => {
           comp.$parent.updateAdded(comp.product)
           comp.selecting = false
-        }, 2000)
+        }, 1500)
       }
     },
     setAspect (index) {
       this.selectedImgIndex = index
       this.$bus.$emit('set-image-index', index)
+    },
+    setHint (altMode) {
+      this.showAltHint = altMode
     }
   }
 }
@@ -284,12 +339,33 @@ export default {
 .buy-now .icon {
   user-select: none;
 }
-.buy-now .icon-add-cart {
+.buy-now .cart-icon {
   margin-left: .5em;
 }
 .buy-now .icon-check {
   margin-right: .25em;
 }
+
+.buy-now.added .cart-icon,
+.buy-now.variant-added .cart-icon {
+  width: 1.75em;
+}
+
+.buy-now.added .cart-icon:before,
+.buy-now.variant-added .cart-icon:before {
+  right: .75em;
+}
+
+.buy-now.added .cart-icon span.icon-minus,
+.buy-now.added .cart-icon span.icon-minus:before,
+.buy-now.variant-added .cart-icon span.icon-plus,
+.buy-now.variant-added .cart-icon span.icon-plus:before {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: .75em;
+}
+
 .buy-now .icon:before {
   position: absolute;
   top: 0;

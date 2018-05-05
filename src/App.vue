@@ -1,6 +1,6 @@
 <template>
   <div id="app" :class="{'store-loaded': hasStore,'show-menu': showMenu,'show-detail': showDetail,'show-home': !showDetail,'scrolled-up': !scrolledDown,'page-up': !pageDown}">
-    <nav class="store-nav">
+    <nav class="store-nav" v-on:mouseleave="hideMenu()">
       <div class="inner">
         <div class="bg-solid bg-element"></div>
         <div class="bg-transition bg-element"></div>
@@ -9,10 +9,10 @@
         <ul class="menu">
           <li v-for="item in menu" :key="item.link"><router-link v-bind:to="item.link">{{item.title}}</router-link></li>
         </ul>
-        <div class="settings">
-          <span class="setting decimal" v-on:click="updateSettings('numFormat','.')">.</span>
-          <span class="setting decimal" v-on:click="updateSettings('numFormat',',')">,</span>
-        </div>
+        <ul class="lang-switcher plain" :class="lang">
+          <li v-on:click="switchLang('en')" class="en" :class="{'selected': lang == 'en'}" title="English">en</li>
+          <li v-on:click="switchLang('it')" class="it" :class="{'selected': lang == 'it'}" title="italiano">it</li>
+        </ul>
         <div class="show-cart" :class="{'has-items': numInCart > 0}" v-on:click="showCheckout()">
           <span class="num">{{numInCart}}</span>
           <div v-if="numInCart > 0" class="micro-cart">
@@ -23,7 +23,7 @@
               <span class="title">{{item.name}}</span>
             </li>
           </ul>
-            <p class="subtotal">{{subtotalFormatted}}</p>
+            <p class="subtotal">{{subtotal|currency}}</p>
           </div>
         </div>
         <div id="main-logo" @click="logoAction()"></div>
@@ -50,6 +50,7 @@
 import Slides from '@/components/Slides'
 import Sections from '@/components/Sections'
 import VueFooter from '@/components/VueFooter'
+import filters from './mixins/filters'
 import u from './utils/utils'
 export default {
   name: 'App',
@@ -58,6 +59,7 @@ export default {
     Sections,
     VueFooter
   },
+  mixins: [filters],
   data () {
     return {
       menu: [],
@@ -74,15 +76,17 @@ export default {
       numInCart: 0,
       orderedItems: [],
       subtotal: 0,
-      subtotalFormatted: '',
       syncing: false,
       screenY: 0,
       scrolledDown: false,
-      pageDown: false
+      pageDown: false,
+      lang: 'en',
+      updating: false
     }
   },
   created () {
     this.products = this.$parent.products
+    this.lang = this.$parent.lang
     let comp = this
     this.$bus.$on('hide-menu', () => {
       comp.showMenu = false
@@ -136,6 +140,12 @@ export default {
         comp.scrolledDown  = comp.screenY > 0.125;
         comp.pageDown = comp.screenY > 0.95;
       })
+      if (comp.updating) {
+        comp.$router.push(comp.$route.path + '#' + comp.lang)
+        comp.$root.$forceUpdate()
+
+        comp.updating = false
+      }
     })
     this.$bus.$on('show-detail', (status) => {
       comp.showDetail = status === true
@@ -143,6 +153,11 @@ export default {
     this.$bus.$on('add-ecwid-product', (variant) => {
       if (variant) {
         comp.addEcwidProduct(variant)
+      }
+    })
+    this.$bus.$on('remove-ecwid-product', (variant, sync) => {
+      if (variant) {
+        comp.removeEcwidProduct(variant, sync)
       }
     })
     this.$bus.$on('back-to-home', (status) => {
@@ -245,6 +260,9 @@ export default {
     toggleMenu () {
       this.showMenu = !this.showMenu
     },
+    hideMenu () {
+      this.showMenu = false
+    },
     logoAction () {
       if (u.hasBodyClass('show-store')) {
         u.removeBodyClass('show-store')
@@ -275,49 +293,27 @@ export default {
     },
     showCheckout () {
       let el = u.clickEl('.footer__link--shopping-cart')
-      if (el) {
-        u.addBodyClass('show-store')
+      u.addBodyClass('show-store')
+    },
+    fetchCart () {
+      let ct = this.$ls.get(this.storeKey)
+      if (typeof ct == 'string') {
+        let cart = JSON.parse(ct)
+        if (cart instanceof Object && cart !== null) {
+          return cart
+        }
       }
     },
-    /*updateCounter () {
-      let sb = document.querySelector('.footer__link--shopping-cart'),
-        matched = false
-      if (sb) {
-        let txt = sb.textContent
-        if (txt.length > 0) {
-          let m = txt.match(/\((\d+)\)/)
-          if (m) {
-            let num = parseInt(m[1])
-            if (!isNaN(num)) {
-              this.numInCart = num
-              matched = true
-            }
-          }
-        }
-      }
-      let comp = this
-      setTimeout(() => {
-        if (!matched) {
-          comp.numInCart = 0
-        }
-      },333)
-    },*/
     syncCart () {
       if (!this.syncing) {
         this.syncing = true
-        let ct = this.$ls.get(this.storeKey)
         this.numInCart = 0
-        if (typeof ct == 'string') {
-          let cart = JSON.parse(ct)
-          if (cart instanceof Object && cart !== null) {
-            if (cart.order) {
-              if (cart.order.items instanceof Array) {
-                this.numInCart = cart.order.items.length
-                this.orderedItems = cart.order.items
-                this.subtotal = parseFloat(cart.order.subtotal)
-                this.subtotalFormatted = '€ ' + this.subtotal.toFixed(2)
-              }
-            }
+        let cart = this.fetchCart()
+        if (cart && cart.order) {
+          if (cart.order.items instanceof Array) {
+            this.numInCart = cart.order.items.length
+            this.orderedItems = cart.order.items
+            this.subtotal = parseFloat(cart.order.subtotal)
           }
         }
         let comp = this
@@ -346,6 +342,37 @@ export default {
             }
           })
         }
+      }
+    },
+    removeEcwidProduct (product, sync) {
+      if (Ecwid) {
+        if (Ecwid.Cart) {
+          let comp = this
+          let cart = this.fetchCart()
+          if (cart && cart.order) {
+            if (cart.order.items instanceof Array) {
+              
+              let pIndex = cart.order.items.findIndex(p => p.productId = product.id)
+              if (pIndex >= 0) {
+                Ecwid.Cart.removeProduct(pIndex);
+                if (sync) {
+                  setTimeout(()=> {
+                    comp.syncCart()
+                  }, 1000);
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    switchLang (lang) {
+      if (lang != this.$parent.lang) {
+        this.lang = lang
+        this.$parent.homeLoaded = false
+        this.updating = true
+        this.$parent.localiseSettings(lang)
+        this.$parent.loadHome(true)
       }
     },
     updateSettings (setting, newValue) {
@@ -482,29 +509,80 @@ footer .footer-menu li {
   padding: 0 1em;
 }
 
-.settings {
-  display: none;
-}
-
-/*.show-menu .settings {
-  display: block;
+.lang-switcher {
   position: absolute;
-  top: 6em;
   right: 2.5%;
-  z-index: 100;
+  bottom: -4em;
+  z-index: 101;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
 }
 
-.show-menu .settings span {
-  display: inline-block;
-  width: 0.5em;
-  height: 0.5em;
-  padding: 0.25em;
-  border: solid 1px black;
-  border-radius: 0.5em;
-  overflow: hidden;
-  margin-right: 1em;
-  cursor: pointer;
-}*/
+.show-menu .lang-switcher {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.lang-switcher li {
+  position: relative;
+  margin: 0.5em 0;
+  font-size: 1.25em;
+  opacity: 0.5;
+  line-height: 1em;
+  height: 1em;
+  width: 1em;
+  text-align: center;
+  transition: all 0.33s ease-in-out;
+}
+
+.lang-switcher li:hover,
+.lang-switcher .selected {
+  font-style: italic;
+}
+
+.lang-switcher li.selected {
+  opacity: 1;
+  text-decoration: underline dotted #999999;
+}
+
+@media screen and (min-width: 40em) {
+  .store-nav .lang-switcher {
+    top: 0.5em;
+    bottom: auto;
+    right: 6em;
+    opacity: 1;
+    pointer-events: all;
+  }
+  .store-nav .lang-switcher li {
+    display: inline-block;
+    margin: 0 1em;
+  }
+}
+
+@media screen and (min-width: 50em) {
+  .store-nav .lang-switcher {
+    right: 6.5em;
+  }
+}
+
+@media screen and (min-width: 60em) {
+  .store-nav .lang-switcher {
+    right: 7em;
+  }
+}
+
+@media screen and (min-width: 70em) {
+  .store-nav .lang-switcher {
+    right: 7.5em;
+  }
+}
+
+@media screen and (min-width: 80em) {
+  .store-nav .lang-switcher {
+    right: 8em;
+  }
+}
 
 
 </style>

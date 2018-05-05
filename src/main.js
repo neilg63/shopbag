@@ -6,7 +6,8 @@ import App from './App'
 import router from './router'
 import u from './utils/utils'
 import VueLocalStorage from 'vue-localstorage'
-var VueScrollTo = require('vue-scrollto');
+import VueScrollTo from 'vue-scrollto'
+
 // You can also pass in the default options
 Vue.use(VueScrollTo, {
   container: "body",
@@ -27,6 +28,9 @@ Vue.use(VueLocalStorage, {
 const bus = new Vue()
 Object.defineProperty(Vue.prototype,'$bus', { get () { return this.$root.bus } })
 Vue.config.productionTip = false
+
+
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -65,6 +69,7 @@ new Vue({
         }
       }
     }
+    
     this.loadHome()
     this.updatePath(true)
     this.readInterval = setInterval(() => {
@@ -135,11 +140,13 @@ new Vue({
     loadHome (fetchNew) {
       this.fetchData('siteinfo', 'siteinfo', fetchNew)
       let comp = this
-      setTimeout(() => {
-        if (!comp.homeLoaded) {
-          comp.loadHome()
-        }
-      },500)
+      if (!fetchNew) {
+        setTimeout(() => {
+          if (!comp.homeLoaded) {
+            comp.loadHome()
+          }
+        },500)
+      }
     },
     fetchData (subPath, pageKey, fetchNew) {
       let dataKey = subPath.replace(/\//g, '__')
@@ -225,8 +232,12 @@ new Vue({
       if (data.last_edited) {
         this.lastUpdated = parseInt(data.last_edited)
       }
+      if (data.lang) {
+        this.lang = data.lang
+      }
       this.homeLoaded = true
       let ts = stored ? 500 : 250
+      this.$forceUpdate()
       setTimeout(() => {
         comp.$bus.$emit('siteinfo', data)
         setTimeout(() => {
@@ -307,31 +318,46 @@ new Vue({
       }, ts)
     },
     detectLanguage () {
-      if (window.navigator.language) {
-        let bl = window.navigator.language.toLowerCase().split('-').shift()
-        switch (bl) {
-          case 'it':
-            this.lang = bl
-            break
+      let bl = 'en'
+      let str = this.$ls.get('settings')
+      if (typeof str == 'string') {
+        let settings = JSON.parse(str)
+        if (settings.lang) {
+          bl = settings.lang
         }
-        switch (bl) {
-          case 'it':
-          case 'de':
-          case 'fr':
-          case 'es':
-          case 'nl':
-          case 'pt':
-            this.numFormat = ','
-            break
-          default:
-            this.numFormat = '.'
-            break
-        }
-        this.$ls.set('settings', JSON.stringify({
-          lang: this.lang,
-          nf: this.numFormat
-        }))
+      } else {
+        if (window.navigator.language) {
+          bl = window.navigator.language.toLowerCase().split('-').shift()
+        }  
       }
+      this.localiseSettings(bl)
+    },
+    localiseSettings (bl) {
+      switch (bl) {
+        case 'it':
+          this.lang = bl
+          break
+        default:
+          this.lang = 'en'
+          break;
+      }
+      switch (bl) {
+        case 'it':
+        case 'de':
+        case 'fr':
+        case 'es':
+        case 'nl':
+        case 'pt':
+          this.numFormat = ','
+          break
+        default:
+          this.numFormat = '.'
+          break
+      }
+      this.$ls.set('settings', JSON.stringify({
+        lang: this.lang,
+        nf: this.numFormat
+      }))
     }
   }
 })

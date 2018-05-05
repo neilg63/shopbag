@@ -204,6 +204,9 @@ export default {
     },
     cycleActive () {
       let comp = this
+      if (this.cycleIv) {
+        clearInterval(this.cycleIv)
+      }
       this.cycleIv = setInterval(() => {
         if (!comp.$parent.cycleStopped) {
           comp.next()
