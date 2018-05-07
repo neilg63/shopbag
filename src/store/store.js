@@ -6,6 +6,15 @@ Vue.use(Vuex)
 export const store = Vuex.store({
 
 	state: {
+
+	},
+	getters: {
+
+	},
+	mutations: {
+
+	},
+	actions: {
 		
 	}
 

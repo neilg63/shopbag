@@ -513,6 +513,12 @@ export default {
 #app .image-set .multi-row figure {
   margin-bottom: -0.5em;
 }
+
+.sections > section.image-set > .multi-row.row-3,
+.sections > section.image-set > .multi-row.row-4 {
+  padding-bottom: 0.5em;
+}
+
 #app .image-set .multi-row figure,
 #app .image-set .multi-row figure picture {
   max-height: 100vh;

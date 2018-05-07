@@ -226,10 +226,10 @@ export default {
     slideSwipe (direction) {
       let nx = this.selectedImgIndex
       switch (direction) {
-        case 'right':
+        case 'left':
           nx = this.selectedImgIndex + 1
           break
-        case 'left':
+        case 'right':
           nx = this.selectedImgIndex - 1
           break
       }

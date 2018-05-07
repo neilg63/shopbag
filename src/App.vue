@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :class="{'store-loaded': hasStore,'show-menu': showMenu,'show-detail': showDetail,'show-home': !showDetail,'scrolled-up': !scrolledDown,'page-up': !pageDown}">
+  <div id="app" :class="{'store-loaded': hasStore,'show-menu': showMenu,'show-detail': showDetail,'show-home': !showDetail,'scrolled-up': !scrolledDown,'page-up': !pageDown,'show-intro': showIntro,'show-microcart': showMicroCart}">
     <nav class="store-nav" v-on:mouseleave="hideMenu()">
       <div class="inner">
         <div class="bg-solid bg-element"></div>
@@ -13,26 +13,27 @@
           <li v-on:click="switchLang('en')" class="en" :class="{'selected': lang == 'en'}" title="English">en</li>
           <li v-on:click="switchLang('it')" class="it" :class="{'selected': lang == 'it'}" title="italiano">it</li>
         </ul>
-        <div class="show-cart" :class="{'has-items': numInCart > 0}" v-on:click="showCheckout()">
+        <div class="show-cart" :class="{'has-items': numInCart > 0}" v-on:click="showCheckout()" v-on:mouseover="showMicro()" v-on:mouseleave="hideMicro()">
           <span class="num">{{numInCart}}</span>
-          <div v-if="numInCart > 0" class="micro-cart">
-            <ul class="ordered-items plain">
-            <li v-for="(item,oi) in orderedItems">
-              <span class="quantity">{{item.quantity}}</span>
-              <em>x</em>
-              <span class="title">{{item.name}}</span>
-            </li>
-          </ul>
-            <p class="subtotal">{{subtotal|currency}}</p>
-          </div>
         </div>
-        <div id="main-logo" @click="logoAction()"></div>
+        <div id="main-logo" @click="logoAction()" v-on:mouseover="showIntroText()" v-on:mouseleave="hideIntroText()"></div>
         <div class="back-to back-to-main" v-on:click="backToMain()"><span class="text">Back</span></div>
       </div>
     </nav>
+    <div v-if="numInCart > 0" class="micro-cart">
+      <ul class="ordered-items plain">
+      <li v-for="(item,oi) in orderedItems">
+        <span class="quantity">{{item.quantity}}</span>
+        <em>x</em>
+        <span class="title">{{item.name}}</span>
+      </li>
+    </ul>
+      <p class="subtotal">{{subtotal|currency}}</p>
+    </div>
     <div class="main">
       <div class="home-pane">
         <slides/>
+        <aside class="site-intro" v-html="introduction"></aside>
         <sections :sections="sections"></sections>
         <vue-footer :menu="menu" :footer="footer" id="page-footer"></vue-footer>
       </div>
@@ -68,6 +69,9 @@ export default {
       products: [],
       numSections: 0,
       sections: [],
+      introduction: '',
+      showIntro: false,
+      showMicroCart: false,
       hasStore: false,
       footer: {
         copyright: ''
@@ -121,6 +125,9 @@ export default {
           comp.sections = comp.processSections(data.home.sections)
           comp.numSections = comp.sections.length
         }
+        if (data.home.body) {
+          this.introduction = data.home.body
+        }
       }
       if (data.footer) {
         comp.footer = data.footer
@@ -145,6 +152,14 @@ export default {
         comp.$root.$forceUpdate()
 
         comp.updating = false
+      }
+    })
+    window.addEventListener('keyup', (e) => {
+      switch (e.keyCode) {
+        case 27:
+        case 13:
+          comp.hideMenu()
+          break;
       }
     })
     this.$bus.$on('show-detail', (status) => {
@@ -263,6 +278,12 @@ export default {
     hideMenu () {
       this.showMenu = false
     },
+    showIntroText () {
+      this.showIntro = true
+    },
+    hideIntroText () {
+      this.showIntro = false
+    },
     logoAction () {
       if (u.hasBodyClass('show-store')) {
         u.removeBodyClass('show-store')
@@ -296,7 +317,9 @@ export default {
       if (Ecwid) {
         if (Ecwid.Cart) {
           Ecwid.openPage('cart');
-          u.addBodyClass('show-store')
+          if (u.get('#ecwid-store-container > .ecwid')) {
+            u.addBodyClass('show-store')  
+          }
         }
       }
     },
@@ -393,6 +416,12 @@ export default {
           break
       }
       this.$ls.set('settings', JSON.stringify(settings))
+    },
+    showMicro () {
+      this.showMicroCart = true
+    },
+    hideMicro () {
+      this.showMicroCart = false
     }
   }
 }
@@ -447,6 +476,25 @@ export default {
 #app .main > div > section {
   position: relative;
   overflow: hidden;
+}
+
+.home-pane aside.site-intro {
+  position: absolute;
+  bottom: 25vh;
+  left: 0;
+  right: 0;
+  background-color: rgba(255,255,255,0.6667);
+  text-align: left;
+  padding: 1em 2.5%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.show-intro .home-pane aside.site-intro {
+  opacity: 1;
+  pointer-events: all;
+  z-index: 30;
 }
 
 #app .page-section ul.flex-slides li figure {
@@ -558,11 +606,19 @@ footer .footer-menu li {
     display: inline-block;
     margin: 0 1em;
   }
+  .home-pane aside.site-intro {
+    left: 5%;
+    right: 5%;
+  }
 }
 
 @media screen and (min-width: 50em) {
   .store-nav .lang-switcher {
     right: 6.5em;
+  }
+  .home-pane aside.site-intro {
+    left: 7.5%;
+    right: 7.5%;
   }
 }
 
@@ -573,17 +629,29 @@ footer .footer-menu li {
   .back-to {
     font-size: 1.667em;
   }
+  .home-pane aside.site-intro {
+    left: 10%;
+    right: 10%;
+  }
 }
 
 @media screen and (min-width: 70em) {
   .store-nav .lang-switcher {
     right: 7.5em;
   }
+  .home-pane aside.site-intro {
+    left: 15%;
+    right: 15%;
+  }
 }
 
 @media screen and (min-width: 80em) {
   .store-nav .lang-switcher {
     right: 8em;
+  }
+  .home-pane aside.site-intro {
+    left: 20%;
+    right: 20%;
   }
 }
 

@@ -167,10 +167,10 @@ export default {
     slideSwipe (direction) {
       switch (direction) {
         case 'left':
-          this.showPrev()
+          this.showNext()
           break
         case 'right':
-          this.showNext()
+          this.showPrev()
           break
       }
     }
