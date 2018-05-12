@@ -1,11 +1,13 @@
 <template>
   <article class="content-container node-page" :class="contClasses">
-    <figure v-if="hasMainImage" class="subpanel" :class="mainImageClass">
-      <vue-picture :imgset="image" :group="image.group" :className="image.type.replace('/','-')"></vue-picture>
-    </figure>
-    <div class="subpanel" :class="bodyClass">
-      <h2 class="article-title" :class="{'show-title': showTitle,'hide-title': !showTitle}">{{title}}</h2>
-      <div v-if="bodyTop" class="body" v-html="body"></div>
+    <div class="article-top">
+      <figure v-if="hasMainImage" class="subpanel" :class="mainImageClass">
+        <vue-picture :imgset="image" :group="image.group" :className="image.type.replace('/','-')"></vue-picture>
+      </figure>
+      <div class="subpanel" :class="bodyClass">
+        <h2 class="article-title" :class="{'show-title': showTitle,'hide-title': !showTitle}">{{title}}</h2>
+        <div v-if="bodyTop" class="body" v-html="body"></div>
+      </div>
     </div>
     <div v-if="hasProductImages" class="products">
       <template v-for="(image, index) in images">
@@ -21,6 +23,7 @@
     <product v-if="hasActiveProduct" :product="product" :options="productOptions" :productIndex="productIndex"></product>
     <div v-if="!bodyTop" class="body" v-html="body"></div>
     <sections v-if="showSections" :sections="sections"></sections>
+    <share :title="title"></share>
   </article>
 </template>
 
@@ -29,6 +32,7 @@
 import Product from './Product'
 import VuePicture from './VuePicture'
 import Sections from './Sections'
+import Share from './Share'
 import filters from '../mixins/filters'
 
 export default {
@@ -36,7 +40,8 @@ export default {
   components: {
     VuePicture,
     Product,
-    Sections
+    Sections,
+    Share
   },
   mixins: [filters],
   data () {
@@ -138,9 +143,9 @@ export default {
       this.$parent.syncCart()
       let comp = this
       window.scrollTo(0, 0)
-      window.addEventListener('resize', () => {
+      /*window.addEventListener('resize', () => {
         comp.setHeight()
-      })
+      })*/
       window.addEventListener('keyup', (e) => {
         switch (e.keyCode) {
           case 27:
@@ -262,7 +267,7 @@ export default {
       this.product.intro = this.body
       this.product.catalog_title = this.title
       this.toggleActiveProduct(true)
-    },
+    },/*
     setHeight () {
       let el = document.querySelector('article.content-container')
       if (el) {
@@ -272,7 +277,7 @@ export default {
           el.style.minHeight = style.height
         }
       }
-    },
+    },*/
     toggleActiveProduct (newVal) {
       this.hasActiveProduct = newVal
       let cl = 'show-product'
@@ -281,9 +286,9 @@ export default {
         if (ai < 0) {
           this.contClasses.push(cl)
         }
-        setTimeout(() => {
+        /*setTimeout(() => {
           this.setHeight()
-        }, 500)
+        }, 500)*/
       } else {
         if (ai >= 0) {
           this.contClasses.splice(ai, 1)
@@ -407,7 +412,7 @@ export default {
 }
 
 #app .detail-pane > article {
-  min-height: 100vh;
+  min-height: 75vh;
 }
 
 #app .detail-pane h2 span.breadcrumb {
@@ -429,12 +434,20 @@ export default {
 }
 
 #app .detail-pane .show-product .product-overlay {
+  position: relative;
   z-index: 11;
   opacity: 1;
 }
 
+#app .detail-pane .show-product > .sections,
+#app .detail-pane .show-product > .body,
+#app .detail-pane .show-product > .article-top,
+#app .detail-pane .show-product > .subpanel,
 #app .detail-pane .show-product .products {
   opacity: 0;
+  height: 0;
+  overflow: hidden;
+  padding: 0;
 }
 
 #app .subpanel h2 {
@@ -458,7 +471,8 @@ export default {
 
 @media screen and (min-width: 40em) {
   
-  #app .detail-pane .flex-row  {
+  #app .detail-pane .flex-row  .article-top {
+    width: 100%;
     display: flex;
     flex-flow: nowrap row;
   }

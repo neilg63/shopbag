@@ -1,14 +1,17 @@
 <template>
-	<section class="text-section" :class="sectionClasses">
+	<section class="text-section" :class="sectionClasses" v-on:mouseleave="hideIntro">
   	<h3 v-if="hasTitle"></h3>
     <template v-if="hasSingle" v-html="text">
     </template>
     <template v-if="hasSlides">
       <div class="slides">
         <article v-for="(slide,index) in slides" :key="index" v-html="slide" :class="{'active': index == currIndex}">
-      </article>
+        </article>
+        <aside v-if="hasIntro" class="site-intro">
+          <div class="inner" v-html="intro"></div>
+        </aside>
         <div class="bg top-left"></div>
-        <div class="bg top-right"></div>
+        <div class="bg top-right" v-on:click.stop="toggleIntro"></div>
         <div class="bg bottom-left"></div>
         <div class="bg bottom-right"></div>
       </div>
@@ -23,6 +26,10 @@ export default {
       type: Object,
       required: true,
       default: null
+    },
+    intro: {
+      type: String,
+      required: false
     }
   },
   data () {
@@ -36,7 +43,8 @@ export default {
       layout: 'single',
       multiple: false,
       hasSingle: false,
-      hasSlides: false 
+      hasSlides: false,
+      hasIntro: false
     }
   },
   created () {
@@ -94,6 +102,27 @@ export default {
       if (this.hasSlides) {
         this.sectionClasses.push('flex-row')
         this.sectionClasses.push('num-' + this.slides.length)
+      }
+      if (typeof this.intro == 'string') {
+        this.hasIntro = this.intro.length > 5
+      }
+      if (this.hasIntro) {
+        this.sectionClasses.push('has-intro')
+      }
+    },
+    showIntro (e) {
+      this.toggleIntro(e, 'show')
+    },
+    hideIntro (e) {
+      this.toggleIntro(e, 'hide')
+    },
+    toggleIntro (e, mode) {
+      let index = this.sectionClasses.indexOf('show-intro')
+      if (index >= 0 && mode != 'show') {
+        this.sectionClasses.splice(index, 1)
+      }
+      if (index < 0 && mode != 'hide') {
+        this.sectionClasses.push('show-intro')
       }
     }
   }
@@ -170,49 +199,85 @@ export default {
   transition: opacity .5s ease-in-out;
 }
 
-#app .fade .slides > article.active {
+.fade .slides > article.active {
   opacity: 1;
   z-index: 2;
 }
 
-#app .fade .slides >.bg {
+.fade .slides >.bg {
   height: 4vmin;
   width: 4vmin;
   z-index: 3;
   transition: all .5s ease-in-out;
 }
 
-#app .fade .slides:hover >.bg {
+.fade .slides:hover >.bg {
   height: 9vmin;
   width: 8vmin;
 }
 
-#app .fade .slides >.bg.top-left {
+.fade .slides >.bg.top-left {
   top: 3vmin;
   left: 3vmin;
   border-top: dashed 1px rgba(0,0,0,0.5);
   border-left: dashed 1px rgba(0,0,0,0.5);
 }
 
-#app .fade .slides >.bg.top-right {
+.fade .slides >.bg.top-right {
   top: 3vmin;
   right: 3vmin;
   border-top: dashed 1px rgba(0,0,0,0.5);
   border-right: dashed 1px rgba(0,0,0,0.5);
 }
 
-#app .fade .slides >.bg.bottom-left {
+#app .has-intro .slides > .bg.top-right {
+  border-top: none;
+  border-right: none;
+  cursor: pointer;
+}
+
+#app .has-intro .slides >.bg.top-right:before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-family: icomoon;
+  content: "\e912";
+  font-size: 2em;
+}
+
+.fade .slides >.bg.bottom-left {
   bottom: 3vmin;
   left: 3vmin;
   border-bottom: dashed 1px rgba(0,0,0,0.5);
   border-left: dashed 1px rgba(0,0,0,0.5);
 }
 
-#app .fade .slides >.bg.bottom-right {
+.fade .slides >.bg.bottom-right {
   bottom: 3vmin;
   right: 3vmin;
   border-bottom: dashed 1px rgba(0,0,0,0.5);
   border-right: dashed 1px rgba(0,0,0,0.5);
+}
+
+.home-pane aside.site-intro {
+  position: absolute;
+  top: 10%;
+  height: 80%;
+  left: -90%;
+  width: 80%;
+  z-index: -1;
+  text-align: left;
+  pointer-events: none;
+  transition: left 0.75s ease-in-out;
+  background-color: rgb(228,228,228);
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+}
+
+.home-pane section.text-section.show-intro aside.site-intro {
+  left: 10%;
+  z-index: 20;
 }
 
 @media screen and (min-width: 40em) {

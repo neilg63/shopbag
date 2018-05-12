@@ -5,7 +5,7 @@
        <image-set :key="index" :section="section"></image-set>
     </template>
     <template v-if="section.type == 'section'">
-       <text-section :key="index" :section="section"></text-section>
+       <text-section :key="index" :section="section" :intro="intro"></text-section>
     </template>
   </template>
   </div>
@@ -25,6 +25,10 @@ export default {
     sections: {
       type: Array,
       required: true
+    },
+    intro: {
+      type: String,
+      required: false
     }
   }
 }

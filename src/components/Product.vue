@@ -20,7 +20,7 @@
           <li :class="['num-'+num,{'active': (num-1) == selectedImgIndex}]" :key="num" v-on:click="setAspect(num-1)" :title="num"></li>
         </template>
       </ol>
-      <div class="buy-now" :class="{'added':selectedVariant.added,'variant-added':selectedVariant.varAdded,'selecting': selecting}" v-if="selectedVariant" >
+      <div class="buy-now" :class="buyNowClasses" v-if="selectedVariant">
         <div class="icon icon-check"></div>
         <button class="price" v-on:click="addProduct()">{{selectedVariant.price|currency}}</button>
         <div class="icon cart-icon" :class="cartIconClass" v-on:mouseover="setHint(true)" v-on:mouseout="setHint(false)"  v-on:click="manageProduct()">
@@ -115,6 +115,19 @@ export default {
       } else {
         return 'icon-add-cart'
       }
+    },
+    buyNowClasses () {
+      let cls = []
+      if (this.selectedVariant.added) {
+        cls.push('added')
+      }
+      if (this.selectedVariant.varAdded) {
+        cls.push('variant-added')
+      }
+      if (this.selecting) {
+        cls.push('selecting')
+      }
+      return cls
     }
   },
   methods: {
@@ -161,7 +174,7 @@ export default {
             }
           }
         }
-        this.$parent.setHeight()
+        //this.$parent.setHeight()
         setTimeout(() => {
           comp.$parent.updateAdded(comp.product)
         }, 2000)
@@ -201,21 +214,26 @@ export default {
         setTimeout(() => {
           comp.$parent.updateAdded(comp.product)
           comp.selecting = false
+          comp.selectedVariant.added = true
         }, ts + 1500)
       }
     },
     manageProduct () {
       if (this.selectedVariant.id) {
         this.selecting = true
+        let newStatus = false
         if (this.selectedVariant.added) {
-           this.$bus.$emit('remove-ecwid-product', this.selectedVariant, true) 
+           this.$bus.$emit('remove-ecwid-product', this.selectedVariant, true)
+           newStatus = false
         } else {
-          this.$bus.$emit('add-ecwid-product', this.selectedVariant) 
+          this.$bus.$emit('add-ecwid-product', this.selectedVariant)
+          newStatus = true
         }
         let comp = this
         setTimeout(() => {
           comp.$parent.updateAdded(comp.product)
           comp.selecting = false
+          comp.selectedVariant.added = newStatus
         }, 1500)
       }
     },
@@ -396,8 +414,17 @@ export default {
 .buy-now.variant-added .cart-icon span.icon-plus:before {
   position: absolute;
   right: 0;
+}
+
+.buy-now.added .cart-icon span.icon-minus,
+.buy-now.added .cart-icon span.icon-plus {
   top: 0;
-  font-size: .75em;
+}
+
+.buy-now.added .cart-icon span.icon-minus:before,
+.buy-now.added .cart-icon span.icon-plus:before {
+  top: 0.375em;
+  font-size: .5em;
 }
 
 .buy-now .icon:before {
@@ -490,7 +517,7 @@ export default {
   display: inline-block;
   position: relative;
   height: 1em;
-  width: 2em;
+  width: 1.75em;
   opacity: 0.333;
   transform: scale(1);
   transition: all .5s ease-in-out;
@@ -516,6 +543,7 @@ export default {
 
 #app .variant-selector ol.aspect-nav li.num-2:before {
   content: "\e900";
+  left: 0.3em;
 }
 
 #app .variant-selector ol.aspect-nav li.num-3:before {
@@ -553,7 +581,7 @@ export default {
     position: relative;
     top: 0;
     left: -2.25em;
-    margin: 1em 0 1em 1em;
+    margin: 2em 0 1.25em 1em;
   }
 
   #app .buy-now .hint {

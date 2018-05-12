@@ -1,24 +1,26 @@
 <template>
-  <div id="app" :class="{'store-loaded': hasStore,'show-menu': showMenu,'show-detail': showDetail,'show-home': !showDetail,'scrolled-up': !scrolledDown,'page-up': !pageDown,'show-intro': showIntro,'show-microcart': showMicroCart}">
-    <nav class="store-nav" v-on:mouseleave="hideMenu()">
+  <div id="app" :class="{'store-loaded': hasStore,'show-menu': showMenu,'show-detail': showDetail,'show-home': !showDetail,'scrolled-up': !scrolledDown,'page-up': !pageDown, 'show-microcart': showMicroCart}">
+    <header class="top-header">
       <div class="inner">
         <div class="bg-solid bg-element"></div>
         <div class="bg-transition bg-element"></div>
         <div class="bg-menu bg-element"></div>
-        <div class="menu-toggle icon-menu" v-on:click.stop="toggleMenu()"></div>
-        <ul class="menu">
-          <li v-for="item in menu" :key="item.link"><router-link v-bind:to="item.link">{{item.title}}</router-link></li>
-        </ul>
-        <ul class="lang-switcher plain" :class="lang">
-          <li v-on:click="switchLang('en')" class="en" :class="{'selected': lang == 'en'}" title="English">en</li>
-          <li v-on:click="switchLang('it')" class="it" :class="{'selected': lang == 'it'}" title="italiano">it</li>
-        </ul>
-        <div class="show-cart" :class="{'has-items': numInCart > 0}" v-on:click="showCheckout()" v-on:mouseover="showMicro()" v-on:mouseleave="hideMicro()">
+        <div class="menu-toggle icon-menu top-icon" v-on:click.stop="toggleMenu()"></div>
+        
+        <lang-switcher :lang="lang"></lang-switcher>
+        <div class="show-cart icon-shopping-cart top-icon" :class="{'has-items': numInCart > 0}" v-on:click="showCheckout()" v-on:mouseover="showMicro()" v-on:mouseleave="hideMicro()">
           <span class="num">{{numInCart}}</span>
         </div>
-        <div id="main-logo" @click="logoAction()" v-on:mouseover="showIntroText()" v-on:mouseleave="hideIntroText()"></div>
+        <div id="main-logo" @click="logoAction()"></div>
         <div class="back-to back-to-main" v-on:click="backToMain()"><span class="text">Back</span></div>
       </div>
+    </header>
+    <nav class="main-nav">
+      <div class="menu-toggle icon-menu top-icon" v-on:click.stop="toggleMenu()"></div>
+      <ul class="menu">
+        <li v-for="item in menu" :key="item.link"><router-link v-bind:to="item.link">{{item.title}}</router-link></li>
+      </ul>
+      <lang-switcher :lang="lang"></lang-switcher>
     </nav>
     <div v-if="numInCart > 0" class="micro-cart">
       <ul class="ordered-items plain">
@@ -33,8 +35,8 @@
     <div class="main">
       <div class="home-pane">
         <slides/>
-        <aside class="site-intro" v-html="introduction"></aside>
-        <sections :sections="sections"></sections>
+        <sections :sections="sections" :intro="introduction">
+        </sections>
         <vue-footer :menu="menu" :footer="footer" id="page-footer"></vue-footer>
       </div>
       <div class="detail-pane">
@@ -51,6 +53,7 @@
 import Slides from '@/components/Slides'
 import Sections from '@/components/Sections'
 import VueFooter from '@/components/VueFooter'
+import LangSwitcher from '@/components/LangSwitcher'
 import filters from './mixins/filters'
 import u from './utils/utils'
 export default {
@@ -58,7 +61,8 @@ export default {
   components: {
     Slides,
     Sections,
-    VueFooter
+    VueFooter,
+    LangSwitcher
   },
   mixins: [filters],
   data () {
@@ -70,7 +74,6 @@ export default {
       numSections: 0,
       sections: [],
       introduction: '',
-      showIntro: false,
       showMicroCart: false,
       hasStore: false,
       footer: {
@@ -278,12 +281,6 @@ export default {
     hideMenu () {
       this.showMenu = false
     },
-    showIntroText () {
-      this.showIntro = true
-    },
-    hideIntroText () {
-      this.showIntro = false
-    },
     logoAction () {
       if (u.hasBodyClass('show-store')) {
         u.removeBodyClass('show-store')
@@ -394,15 +391,6 @@ export default {
         }
       }
     },
-    switchLang (lang) {
-      if (lang != this.$parent.lang) {
-        this.lang = lang
-        this.$parent.homeLoaded = false
-        this.updating = true
-        this.$parent.localiseSettings(lang)
-        this.$parent.loadHome(true)
-      }
-    },
     updateSettings (setting, newValue) {
       let stored = this.$ls.get('settings'),
         settings = {}
@@ -478,20 +466,7 @@ export default {
   overflow: hidden;
 }
 
-.home-pane aside.site-intro {
-  position: absolute;
-  bottom: 25vh;
-  left: 0;
-  right: 0;
-  background-color: rgba(255,255,255,0.6667);
-  text-align: left;
-  padding: 1em 2.5%;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.5s ease-in-out;
-}
-
-.show-intro .home-pane aside.site-intro {
+.scrolled-up.show-intro .home-pane aside.site-intro {
   opacity: 1;
   pointer-events: all;
   z-index: 30;
@@ -546,6 +521,7 @@ export default {
   position: absolute;
   left: -9999em;
 }
+
 footer .footer-menu {
   display: flex;
   flex-flow: wrap row;
@@ -559,21 +535,23 @@ footer .footer-menu li {
 
 .lang-switcher {
   position: absolute;
-  right: 2.5%;
-  bottom: -4em;
-  z-index: 101;
-  cursor: pointer;
-  opacity: 0;
-  pointer-events: none;
 }
 
-.show-menu .lang-switcher {
-  opacity: 1;
-  pointer-events: all;
+nav.main-nav .lang-switcher {
+  margin-top: 1.5em;
+  clear: both;
+  bottom: 1em;
+  left: 2.5vw;
 }
+
+nav.main-nav .lang-switcher li {
+  text-align: left;
+}
+
 
 .lang-switcher li {
   position: relative;
+  display: inline-block;
   margin: 0.5em 0;
   font-size: 1.25em;
   opacity: 0.5;
@@ -582,6 +560,11 @@ footer .footer-menu li {
   width: 1em;
   text-align: center;
   transition: all 0.33s ease-in-out;
+  cursor: pointer;
+}
+
+.top-header .lang-switcher {
+  display: none;
 }
 
 .lang-switcher li:hover,
@@ -595,17 +578,19 @@ footer .footer-menu li {
 }
 
 @media screen and (min-width: 40em) {
-  .store-nav .lang-switcher {
+  .top-header .lang-switcher {
+    display: block;
     top: 0.5em;
     bottom: auto;
     right: 6em;
     opacity: 1;
     pointer-events: all;
   }
-  .store-nav .lang-switcher li {
+  .top-header .lang-switcher li {
     display: inline-block;
     margin: 0 1em;
   }
+
   .home-pane aside.site-intro {
     left: 5%;
     right: 5%;
@@ -613,7 +598,7 @@ footer .footer-menu li {
 }
 
 @media screen and (min-width: 50em) {
-  .store-nav .lang-switcher {
+  .top-header .lang-switcher {
     right: 6.5em;
   }
   .home-pane aside.site-intro {
@@ -623,7 +608,7 @@ footer .footer-menu li {
 }
 
 @media screen and (min-width: 60em) {
-  .store-nav .lang-switcher {
+  .top-header .lang-switcher {
     right: 7em;
   }
   .back-to {
@@ -636,8 +621,8 @@ footer .footer-menu li {
 }
 
 @media screen and (min-width: 70em) {
-  .store-nav .lang-switcher {
-    right: 7.5em;
+  .top-header .lang-switcher {
+    right: 8em;
   }
   .home-pane aside.site-intro {
     left: 15%;
@@ -647,13 +632,12 @@ footer .footer-menu li {
 
 @media screen and (min-width: 80em) {
   .store-nav .lang-switcher {
-    right: 8em;
+    right: 9em;
   }
   .home-pane aside.site-intro {
     left: 20%;
     right: 20%;
   }
 }
-
 
 </style>

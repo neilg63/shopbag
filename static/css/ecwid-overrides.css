@@ -1,0 +1,168 @@
+html#ecwid_html body#ecwid_body.show-cart-widget div.ecwid-minicart {
+  opacity: 1;
+  pointer-events: all;
+}
+
+html#ecwid_html body#ecwid_body.front div.ecwid-minicart-link,
+html#ecwid_html body#ecwid_body.front div.ecwid-minicart-caption {
+  width: 100%;
+}
+
+html#ecwid_html body#ecwid_body.front div.ecwid-minicart-caption {
+  top: 6em;
+}
+
+html#ecwid_html body#ecwid_body.front div.ecwid-minicart-link {
+  top: 0;
+  height: 8em;
+}
+
+html#ecwid_html body#ecwid_body div.ecwid-minicart-link span {
+  display: inline-block;
+  text-indent: -999em;
+  font-size: 1em;
+  width: 100%;
+  height: 8em;
+  opacity: 0;
+}
+
+html#ecwid_html body#ecwid_body.show-store span.ecwid-productBrowser-cart-weight,
+html#ecwid_html body#ecwid_body.show-store div.ecwid-productBrowser-productNameLink *,
+html#ecwid_html body#ecwid_body.show-store .ecwid .ecwid-btn,
+html#ecwid_html body#ecwid_body.show-store .ecwid a {
+  font-size: 1em;
+}
+
+html#ecwid_html body#ecwid_body.show-store .ecwid .ecwid-btn {
+  padding: 0.5em 1em;
+}
+
+html#ecwid_html body#ecwid_body.front div.ecwid-minicart-clickArea {
+  top: 0.5em;
+  left: 2em;
+  width: 4em;
+  height: 5em;
+  background-size: contain;
+  transition: transform .5s ease-in-out;
+}
+
+html#ecwid_html body#ecwid_body.front div.ecwid-minicart:hover div.ecwid-minicart-clickArea {
+  transform: scale(1.125) translate(0,0.125em);
+}
+
+html#ecwid_html body#ecwid_body.front div.ecwid-minicart-counter {
+  left: 2em;
+  top: 2em;
+  font-size: 1.5em;
+  line-height: 1em;
+  transition: filter 0.25s ease-in-out;
+}
+
+html#ecwid_html #ecwid-store-container {
+  position: fixed;
+  left: 0;
+  right: 0;
+  width: 100%;
+  opacity: 0;
+  z-index: -1;
+  pointer-events: none;
+  transition: opacity 0.75s ease-in-out;
+  background: none;
+}
+
+html#ecwid_html body.show-store #ecwid-store-container {
+  position: relative;
+  opacity: 1;
+  z-index: 2;
+  pointer-events: all;
+  z-index: 20;
+  width: 100%;
+  margin: 0 auto;
+}
+
+html#ecwid_html body.show-store #ecwid-store-container > div.ecwid {
+  max-width: 80em;
+  margin: 0 auto;
+}
+
+#app p,
+#app nav ul.menu li,
+#app ul,
+#app li,
+#app ol,
+#app figure {
+  -webkit-margin-before: 0;
+  -webkit-margin-after: 0;
+  -webkit-margin-start: 0;
+  -webkit-margin-end: 0;
+  -webkit-padding-start: 0;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  margin-inline-start: 0;
+  margin-inline-end: 0;
+}
+
+#app .body li {
+  -webkit-margin-start: 1em;
+}
+
+html#ecwid_html body#ecwid_body.show-store .ec-size .ec-store .likely__widget,
+html#ecwid_html body#ecwid_body.show-store .ec-size .ec-store .likely__widget:hover {
+  background: none;
+}
+
+html#ecwid_html body#ecwid_body.front div.ecwid-minicart,
+html#ecwid_html body#ecwid_body.show-store .ec-size.ec-size--xl .ec-store .ec-breadcrumbs,
+html#ecwid_html body#ecwid_body.show-store .ec-size .ec-store .likely__widget .likely__button {
+  display: none;
+}
+
+html#ecwid_html body#ecwid_body.show-store .ec-size .ec-store .likely__widget {
+  transition: transform 0.5s ease-in-out;
+}
+html#ecwid_html body#ecwid_body.show-store .ec-size .ec-store .likely__widget:hover {
+  transform: scale(1.25);
+}
+
+html#ecwid_html body#ecwid_body.show-store .ec-size.ec-size--xl .ec-store .form-control--large .form-control__button {
+  background:none;
+  min-height: 4em;
+}
+
+html#ecwid_html  body#ecwid_body.show-store div.ecwid-productBrowser-cart-hint {
+  font-size: 0.9em;
+}
+
+html#ecwid_html body#ecwid_body.show-store .ec-size .ec-store .likely svg {
+  height: 3em;
+  width: 3em;
+  left: 0;
+  top: 0;
+}
+
+html#ecwid_html body#ecwid_body.show-store .ec-size .ec-store .likely .likely__icon {
+  width: 4em;
+  height: 5em;
+}
+
+html#ecwid_html body#ecwid_body.show-store .ec-size .ec-store .likely__wrapper {
+  margin: 0.5em 0;
+  overflow: visible;
+}
+
+html#ecwid_html body#ecwid_body div.ecwid-minicart {
+  z-index: 200;
+  opacity: 1;
+}
+
+html#ecwid_html body#ecwid_body button.ecwid-btn--continueShopping {
+  opacity: 0;
+}
+
+html#ecwid_html body#ecwid_body .ecwid-productBrowser-cart table tbody tr table tbody tr table tbody tr td.ecwid-productBrowser-cart-itemsTable-cell {
+  background-color: white;
+}
+
+html#ecwid_html body#ecwid_body .ecwid-productBrowser-cart table tbody tr table tbody tr table tbody tr .ecwid-productBrowser-cart-itemsTable-price-compact {
+  padding-right: 0.5em;
+}

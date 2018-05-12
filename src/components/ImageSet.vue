@@ -258,7 +258,7 @@ export default {
 }
 #app section.image-set .right-nav:before {
   right: 5%;
-  content: "\e905";
+  content: "\e90a";
 }
 #app .image-set {
   max-width:  100%;
@@ -372,14 +372,14 @@ export default {
   color: black;
 }
 #app section.image-set .column figure figcaption {
-  font-size: 2.5em;
+  font-size: 2em;
 }
 #app section.image-set .row-2 figure figcaption {
-  font-size: 2em;
+  font-size: 1.5em;
 }
 #app section.image-set .row-3 figure figcaption,
 #app section.image-set .row-4 figure figcaption {
-  font-size: 1.5em;
+  font-size: 1em;
 }
 #app section.image-set figure.has-price img {
   transform: scale(1, 1);
