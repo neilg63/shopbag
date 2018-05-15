@@ -11,7 +11,7 @@
         <div class="show-cart icon-shopping-cart top-icon" :class="{'has-items': numInCart > 0}" v-on:click="showCheckout()" v-on:mouseover="showMicro()" v-on:mouseleave="hideMicro()">
           <span class="num">{{numInCart}}</span>
         </div>
-        <div id="main-logo" @click="logoAction()"></div>
+        <div id="main-logo" class="main-logo" @click="logoAction()"></div>
         <div class="back-to back-to-main" v-on:click="backToMain()"><span class="text">Back</span></div>
       </div>
     </header>
@@ -144,7 +144,7 @@ export default {
       setTimeout(() => {
         u.removeBodyClass('show-loading')
         window.scrollTo(0, 0)
-      },750)
+      },250)
       window.addEventListener('scroll', (e) => {
         comp.screenY = window.pageYOffset / window.innerHeight
         comp.scrolledDown  = comp.screenY > 0.125;

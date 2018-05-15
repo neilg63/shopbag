@@ -41,6 +41,7 @@ body {
   margin-block-end: 0;
   margin-inline-start: 0;
   margin-inline-end: 0;
+  margin: 0;
 }
 
 #app .body li {
@@ -74,6 +75,7 @@ header.top-header > .inner,
   background-color: rgb(228,228,228);
   transition: opacity 1s ease-in-out, z-index 0s linear 1s;
   animation: loader 2s 1;
+  animation-iteration-count: 1;
 }
 
 #loading-overlay .element {
@@ -89,17 +91,17 @@ header.top-header > .inner,
 }
 
 #loading-overlay .progress {
-  width: 33.333%;
-  height: 33.333%;
+  width: 30%;
+  height: 30%;
 }
 
 #loading-overlay .progress-left {
-  top: 7.5%;
+  top: 20%;
   left: 10%;
 }
 
 #loading-overlay .progress-right {
-  top: 35%;
+  top: 50%;
   right: 10%;
 }
 
@@ -110,18 +112,15 @@ header.top-header > .inner,
 
 #loading-overlay .lucia {
   top: 30%;
-  bottom: 35%;
+  bottom: 30%;
   background-image: url(/static/images/santa-lucia-di-siracusa.svg);
-  animation: lucia 2s 1;
+  animation: lucia 1.5s 1;
+  animation-iteration-count: 1;
 }
 
 #loading-overlay .logo {
-  bottom: 1%;
-  height: 15vh;
-  opacity: 0.5;
-  background-image: url(/static/images/logo-font-black.svg);
-  transform: scale(1.333,0.75) skew(-3deg);
-  animation: loading-logo 2s 1;
+  animation: loading-logo 1.5s 1;
+  animation-iteration-count: 1;
   z-index: 10;
 }
 
@@ -148,11 +147,12 @@ header.top-header > .inner,
 @keyframes loading-logo {
   0% {
     opacity: 0;
-    transform: scale(1,1) skew(0deg);
+  }
+  33.333% {
+    opacity: 0.625;
   }
   100% {
-    opacity: 0.5;
-    transform: scale(1.333,0.75) skew(-3deg);
+    opacity: 0.75;
   }
 }
 
@@ -228,6 +228,7 @@ body {
   padding: 2em 0;
 }
 
+#loading-overlay > header.top-header,
 #app > header.top-header {
   position: fixed;
   top: 0;
@@ -241,6 +242,7 @@ body {
   transition: height 0.5s ease-in-out;
 }
 
+#loading-overlay > .top-header > .inner,
 #app > .top-header > .inner {
   display: flex;
   flex-flow: nowrap row;
@@ -248,7 +250,9 @@ body {
   justify-content: center;
 }
 
-#main-logo {
+.main-logo {
+  position: relative;
+  margin-top: -.125em;
   background-image: url('/static/images/logo-font-black.svg');
   background-repeat: no-repeat;
   background-size: contain;
@@ -256,22 +260,29 @@ body {
   height: 2.4em;
   width: 50%;
   opacity: 0.6667;
-  transform: scale(1, .8);
+  /*transform: scale(1, .8);*/
+  transform: scale(.8, .8);
   transition: all 0.5s ease-in-out;
   cursor: pointer;
   z-index: 100;
+}
+
+.front #loading-overlay .logo,
+.show-home.scrolled-up .main-logo {
+  transform: scale(1, 1);
+  margin-top: 0;
 }
 
 .show-store #app.show-menu {
   z-index: 30;
 }
 
-#main-logo:hover {
-  transform: scale(1.25, 0.8);
+.main-logo:hover {
+  /*transform: scale(1.25, 0.8);*/
 }
 
-.show-menu #main-logo:hover {
-  transform: scale(1.25, 1);
+.show-menu .main-logo:hover {
+  /*transform: scale(1.25, 1);*/
 }
 
 .top-icon {
@@ -614,7 +625,7 @@ nav.main-nav {
 
 @media screen and (min-width: 30em) {
 
-  #main-logo {
+  .main-logo {
     height: 2.8em;
   }
 
@@ -634,6 +645,7 @@ nav.main-nav {
     height: 12%;
   }
 
+  #loading-overlay > header.top-header,
   #app > header.top-header {
     height: 3em;
   }
@@ -650,8 +662,9 @@ nav.main-nav {
     top: 6.5em;
   }
 
-  #main-logo {
+  .main-logo {
     height: 3.2em;
+    margin-top: -.25em;
   }
 
   #app .show-cart {
@@ -682,7 +695,7 @@ nav.main-nav {
   #app .top-icon:before {
     font-size: 2.25rem;
   }
-  #main-logo {
+  .main-logo {
     height: 3.6em;
   }
 }
@@ -712,6 +725,7 @@ nav.main-nav {
     font-size: 2.5rem;
   }
 
+  #loading-overlay > header.top-header,
   #app > header.top-header {
     height: 3.5em;
   }
@@ -723,7 +737,7 @@ nav.main-nav {
   #app nav ul.menu {
     top: 2.5em;
   }
-  #main-logo {
+  .main-logo {
     height: 4em;
   }
 
@@ -734,7 +748,6 @@ nav.main-nav {
   #app .show-cart .num {
     right: 3.25em;
   }
-
 
 }
 
@@ -776,6 +789,7 @@ nav.main-nav {
   #app .top-icon:before {
     font-size: 2.667rem;
   }
+  #loading-overlay > header.top-header,
   #app > header.top-header {
     height: 4em;
   }
@@ -787,7 +801,7 @@ nav.main-nav {
   #app nav ul.menu {
     top: 3em;
   }
-  #main-logo {
+  .main-logo {
     height: 4.5em;
   }
   #app .show-cart .num {
@@ -802,13 +816,14 @@ nav.main-nav {
   #app .top-icon:before {
     font-size: 3rem;
   }
+  #loading-overlay > header.top-header,
   #app > header.top-header {
     height: 4.5em;
   }
   #app nav ul.menu {
     top: 3.5em;
   }
-  #main-logo {
+  .main-logo {
     height: 5em;
   }
 

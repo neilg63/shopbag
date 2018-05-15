@@ -194,9 +194,7 @@ new Vue({
             this.$bus.$emit(pageKey, storedData)
           }
         } else {
-          if (this.lang !== 'en') {
-            subPath += '?lang=' + this.lang
-          }
+          subPath += '?lang=' + this.lang
           axios.get(this.cmsApi + subPath)
             .then(response => {
               if (response.data) {

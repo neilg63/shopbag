@@ -23,7 +23,7 @@
       <div class="buy-now" :class="buyNowClasses" v-if="selectedVariant">
         <div class="icon icon-check"></div>
         <button class="price" v-on:click="addProduct()">{{selectedVariant.price|currency}}</button>
-        <div class="icon cart-icon" :class="cartIconClass" v-on:mouseover="setHint(true)" v-on:mouseout="setHint(false)"  v-on:click="manageProduct()">
+        <div class="icon cart-icon" :class="cartIconClass" v-on:click="manageProduct()">
           <span v-if="selectedVariant.varAdded" class="icon-plus"></span>
           <span v-if="selectedVariant.added" class="icon-minus"></span>
         </div>
@@ -77,45 +77,27 @@ export default {
       selecting: false,
       numImagesInSet: 3,
       selectedImgIndex: 0,
-      showAltHint: false
+      showAltHint: false,
+      buyHint: '',
+      cartIconClass: 'icon-add-cart'
     }
   },
   created () {
     this.assignImageSets()
     if (this.productIndex > 0 && this.productIndex < this.variants.length) {
       this.setActive(this.variants[this.productIndex])
+      this.adaptBuyWidget()
     }
   },
   watch: {
     product (newVal) {
       this.assignImageSets()
+    },
+    selectedVariant (newVal) {
+      this.adaptBuyWidget();
     }
   },
   computed: {
-    buyHint () {
-      if (this.selectedVariant.added) {
-        if (this.showAltHint) {
-          return this.options.removeHint
-        } else {
-          return this.options.addedHint
-        }
-      } else if (this.selectedVariant.varAdded) {
-        if (this.showAltHint) {
-          return this.options.buyNowHint
-        } else {
-          return this.options.selectHint
-        }
-      } else {
-        return this.options.buyNowHint
-      }
-    },
-    cartIconClass () {
-      if (this.selectedVariant.added || this.selectedVariant.varAdded) {
-        return 'icon-plain-cart'
-      } else {
-        return 'icon-add-cart'
-      }
-    },
     buyNowClasses () {
       let cls = []
       if (this.selectedVariant.added) {
@@ -215,6 +197,7 @@ export default {
           comp.$parent.updateAdded(comp.product)
           comp.selecting = false
           comp.selectedVariant.added = true
+          comp.adaptBuyWidget()
         }, ts + 1500)
       }
     },
@@ -234,6 +217,7 @@ export default {
           comp.$parent.updateAdded(comp.product)
           comp.selecting = false
           comp.selectedVariant.added = newStatus
+          comp.adaptBuyWidget()
         }, 1500)
       }
     },
@@ -260,8 +244,27 @@ export default {
         this.setAspect(nx)
       }
     },
-    setHint (altMode) {
-      this.showAltHint = altMode
+    adaptBuyWidget () {
+      if (this.selectedVariant.added) {
+        if (this.showAltHint) {
+          this.buyHint = this.options.removeHint
+        } else {
+          this.buyHint = this.options.addedHint
+        }
+      } else if (this.selectedVariant.varAdded) {
+        if (this.showAltHint) {
+          this.buyHint = this.options.buyNowHint
+        } else {
+          this.buyHint = this.options.selectHint
+        }
+      } else {
+        this.buyHint = this.options.buyNowHint
+      }
+      if (this.selectedVariant.added || this.selectedVariant.varAdded) {
+        this.cartIconClass = 'icon-plain-cart'
+      } else {
+        this.cartIconClass = 'icon-add-cart'
+      }
     }
   }
 }
@@ -417,12 +420,12 @@ export default {
 }
 
 .buy-now.added .cart-icon span.icon-minus,
-.buy-now.added .cart-icon span.icon-plus {
+.buy-now.variant-added .cart-icon span.icon-plus {
   top: 0;
 }
 
 .buy-now.added .cart-icon span.icon-minus:before,
-.buy-now.added .cart-icon span.icon-plus:before {
+.buy-now.variant-added .cart-icon span.icon-plus:before {
   top: 0.375em;
   font-size: .5em;
 }
