@@ -1,17 +1,14 @@
 <template>
-	<section class="text-section" :class="sectionClasses" v-on:mouseleave="hideIntro">
+	<section class="text-section" :class="sectionClasses">
   	<h3 v-if="hasTitle"></h3>
-    <template v-if="hasSingle" v-html="text">
-    </template>
+    <article v-if="hasSingle" v-html="text" class="body">
+    </article>
     <template v-if="hasSlides">
       <div class="slides">
         <article v-for="(slide,index) in slides" :key="index" v-html="slide" :class="{'active': index == currIndex}">
         </article>
-        <aside v-if="hasIntro" class="site-intro">
-          <div class="inner" v-html="intro"></div>
-        </aside>
         <div class="bg top-left"></div>
-        <div class="bg top-right" v-on:click.stop="toggleIntro"></div>
+        <div class="bg top-right"></div>
         <div class="bg bottom-left"></div>
         <div class="bg bottom-right"></div>
       </div>
@@ -26,10 +23,6 @@ export default {
       type: Object,
       required: true,
       default: null
-    },
-    intro: {
-      type: String,
-      required: false
     }
   },
   data () {
@@ -43,8 +36,7 @@ export default {
       layout: 'single',
       multiple: false,
       hasSingle: false,
-      hasSlides: false,
-      hasIntro: false
+      hasSlides: false
     }
   },
   created () {
@@ -103,27 +95,6 @@ export default {
         this.sectionClasses.push('flex-row')
         this.sectionClasses.push('num-' + this.slides.length)
       }
-      if (typeof this.intro == 'string') {
-        this.hasIntro = this.intro.length > 5
-      }
-      if (this.hasIntro) {
-        this.sectionClasses.push('has-intro')
-      }
-    },
-    showIntro (e) {
-      this.toggleIntro(e, 'show')
-    },
-    hideIntro (e) {
-      this.toggleIntro(e, 'hide')
-    },
-    toggleIntro (e, mode) {
-      let index = this.sectionClasses.indexOf('show-intro')
-      if (index >= 0 && mode != 'show') {
-        this.sectionClasses.splice(index, 1)
-      }
-      if (index < 0 && mode != 'hide') {
-        this.sectionClasses.push('show-intro')
-      }
     }
   }
 }
@@ -149,20 +120,34 @@ export default {
   .text-section.blocks,
   .home-pane .text-section,
   .text-section {
-    min-height: 50vh;
+    min-height: 40vh;
     position: relative;
   }
   .text-section.fade .slides > article {  
     padding: 5vh 5%;
-    height: 40vh;
+    height: 30vh;
   }
 }
 
+.text-section.single,
 .text-section.fade .slides > article,
 .text-section.blocks .slides {
   display: flex;
-  justify-content: center;
   align-items: center;
+}
+
+.text-section.single article {
+  padding: 2em 10%;
+  text-align: left;
+  margin: 0 auto;
+  max-width: 60em;
+}
+
+
+.text-section.fade .slides > article,
+.text-section.blocks .slides {
+  
+  justify-content: center;
 }
 
 .text-section.blocks .slides {

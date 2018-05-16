@@ -35,7 +35,7 @@
     <div class="main">
       <div class="home-pane">
         <slides/>
-        <sections :sections="sections" :intro="introduction">
+        <sections :sections="sections">
         </sections>
         <vue-footer :menu="menu" :footer="footer" id="page-footer"></vue-footer>
       </div>
@@ -124,12 +124,12 @@ export default {
         if (data.home.images instanceof Array) {
           this.$bus.$emit('load-slides', data.home.images)
         }
+        if (data.home.body) {
+          this.introduction = data.home.body
+        }
         if (data.home.sections instanceof Array) {
           comp.sections = comp.processSections(data.home.sections)
           comp.numSections = comp.sections.length
-        }
-        if (data.home.body) {
-          this.introduction = data.home.body
         }
       }
       if (data.footer) {
@@ -207,6 +207,14 @@ export default {
         return sections.map(sc => {
           switch (sc.type) {
             case 'image_set':
+              break;
+            case 'body':
+              if (sc.show_body) {
+                sc.title = ''
+                sc.text = this.introduction
+                sc.type = 'section'
+                sc.text_layout = 'single'
+              }
               break;
             case 'section':
               sc.multiple = false
