@@ -357,7 +357,7 @@ export default {
   color: white;
 }
 #app section.image-set figure.has-price figcaption {
-  bottom: 0;
+  bottom: 1em;
   left: 0;
   right: 0;
   display: flex;
@@ -399,7 +399,7 @@ export default {
   transition: transform .5s ease-in-out;
 }
 #app section.image-set figure:hover figcaption {
-    transform: scale(1.25);
+    transform: scale(1.5);
 }
 @media screen and (min-width: 40em) {
   #app section.image-set figure  {

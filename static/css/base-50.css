@@ -749,6 +749,8 @@ nav.main-nav {
     right: 3.25em;
   }
 
+
+
 }
 
 @media screen and (min-width: 70em) {
@@ -807,6 +809,10 @@ nav.main-nav {
   #app .show-cart .num {
     right: 3.75em;
   }
+
+  .text-section article.body {
+    font-size: 1.0625em;
+  }
 }
 
 @media screen and (min-width: 90em) {
@@ -830,6 +836,11 @@ nav.main-nav {
   #app nav.main-nav {
     font-size: 1.5em;
   }
+
+  .text-section article.body {
+    font-size: 1.125em;
+  }
+
 }
 
 

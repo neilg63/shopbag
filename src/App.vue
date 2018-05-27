@@ -205,6 +205,7 @@ export default {
     processSections (sections) {
       if (sections instanceof Array) {
         return sections.map(sc => {
+          sc.showBlock = false
           switch (sc.type) {
             case 'image_set':
               break;
@@ -214,6 +215,13 @@ export default {
                 sc.text = this.introduction
                 sc.type = 'section'
                 sc.text_layout = 'single'
+                if (sc.block) {
+                  switch (sc.block) {
+                    case 1:
+                      sc.block = 'instafeed'
+                      sc.showBlock = true
+                  }
+                }
               }
               break;
             case 'section':

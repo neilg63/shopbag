@@ -1,8 +1,13 @@
 <template>
 	<section class="text-section" :class="sectionClasses">
-  	<h3 v-if="hasTitle"></h3>
-    <article v-if="hasSingle" v-html="text" class="body">
-    </article>
+    <aside v-if="showBlock" class="subsection aside">
+      <instafeed></instafeed>
+    </aside>
+  	<div class="main-text subsection">
+      <h3 v-if="hasTitle"></h3>
+      <article v-if="hasSingle" v-html="text" class="body">
+      </article>
+    </div>
     <template v-if="hasSlides">
       <div class="slides">
         <article v-for="(slide,index) in slides" :key="index" v-html="slide" :class="{'active': index == currIndex}">
@@ -16,8 +21,15 @@
   </section>
 </template>
 <script>
+
+
+import Instafeed from './Instafeed'
+
 export default {
 	name: 'TextSection',
+  components: {
+    Instafeed
+  },
   props: {
     section: {
       type: Object,
@@ -36,7 +48,9 @@ export default {
       layout: 'single',
       multiple: false,
       hasSingle: false,
-      hasSlides: false
+      hasSlides: false,
+      block: '',
+      showBlock: false
     }
   },
   created () {
@@ -88,6 +102,12 @@ export default {
       if (section.text_layout) {
         this.layout = section.text_layout
       }
+      if (section.showBlock) {
+        this.showBlock = section.showBlock
+        this.block = section.block
+        this.layout = 'side-block'
+        this.sectionClasses.push('has-block')
+      }
       if (this.layout) {
         this.sectionClasses.push(this.layout.replace(/_/g, '-'))
       }
@@ -104,6 +124,7 @@ export default {
 .text-section.fade,
 .text-section.fade .slides,
 .text-section.blocks,
+.text-section.side-block > .main-text,
 .home-pane .text-section {
   min-height: 20em;
   position: relative;
@@ -118,6 +139,7 @@ export default {
   .text-section.fade,
   .text-section.fade .slides,
   .text-section.blocks,
+  .text-section.side-block > .main-text,
   .home-pane .text-section,
   .text-section {
     min-height: 40vh;
@@ -130,6 +152,7 @@ export default {
 }
 
 .text-section.single,
+.text-section.side-block > .main-text,
 .text-section.fade .slides > article,
 .text-section.blocks .slides {
   display: flex;
@@ -167,6 +190,10 @@ export default {
 
 .text-section article h3 {
   -webkit-margin-before: 0;
+}
+
+.has-block {
+
 }
 
 #app .fade .slides >.bg,
@@ -269,6 +296,19 @@ export default {
   .text-section.fade .slides > article {
     font-size: 1.33em;
   }
+
+  .text-section.side-block {
+    display: flex;
+    flex-flow: nowrap row;
+  }
+
+  .text-section.side-block > .subsection {
+    width: 50%;
+  }
+
+  .text-section.side-block > .main-text > article {
+    padding: 5%;
+  }
 }
 @media screen and (min-width: 60em) {
   .text-section.fade .slides > article {
@@ -279,6 +319,14 @@ export default {
 @media screen and (min-width: 80em) {
   .text-section.fade .slides > article {
     font-size: 1.667em;
+  }
+
+  #app .text-section.side-block > .aside {
+    width: 40em;
+  }
+  #app .text-section.side-block > .main-text {
+    width: auto;
+    max-width: calc(100% - 40em);
   }
 }
 
