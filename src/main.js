@@ -48,7 +48,7 @@ new Vue({
   template: '<App/>',
   data: {
     bus,
-    version: 0.28,
+    version: 0.30,
     cmsApi: '/jsonstyles/',
     products: [],
     ecwidProducts: [],
@@ -61,7 +61,11 @@ new Vue({
     fetching: false,
     homeLoaded: false,
     pages: {},
-    lastUpdated: 0
+    lastUpdated: 0,
+    user: {
+      id: 0
+    },
+    nid: 0
   },
   created () {
     this.detectLanguage()
@@ -82,11 +86,6 @@ new Vue({
     
     this.loadHome()
     this.updatePath(true)
-    this.readInterval = setInterval(() => {
-      if (!comp.hasStore) {
-        comp.readStore()
-      }
-    }, 3000)
     setTimeout(() => {
       this.updateDetail(comp.$route.path)
     }, 1000)
@@ -115,6 +114,21 @@ new Vue({
           console.log(e)
         })
     },10000)
+    let cms = comp.$ls.get('cms')
+    if (cms) {
+      this.user = JSON.parse(cms);
+    }
+    setTimeout(() => {
+      axios.get(comp.cmsApi + 'user')
+        .then((response) => {
+          if (response.data) {
+            if (response.data.roles) {
+              comp.$ls.set('cms', JSON.stringify(response.data))
+              comp.user = response.data
+            }
+          }
+        });
+    }, 6000);
   },
   watch:{
     $route (to, from){
@@ -134,19 +148,6 @@ new Vue({
     }
   },
   methods: {
-    readStore () {
-      let elems = document.querySelectorAll('.grid-product')
-      if (elems.length > 0) {
-        if (!this.productsSynced) {
-          this.updateStoreRefs(elems)
-        }
-        this.hasStore = true
-        this.$bus.$emit('store-loaded', true)
-        if (this.readInterval) {
-          clearInterval(this.readInterval)
-        }
-      }
-    },
     loadHome (fetchNew) {
       this.fetchData('siteinfo', 'siteinfo', fetchNew)
       let comp = this
@@ -252,38 +253,6 @@ new Vue({
           u.removeBodyClass('show-loading')
         }, (ts + 250));
       }, (ts + 100))
-    },
-    updateStoreRefs (elems) {
-      this.products = []
-      for (let i = 0, elem, cls, prod, img, srcSet,ep; i < elems.length; i++) {
-        elem = elems.item(i)
-        cls = elem.classList
-        if (cls.length > 1) {
-          for (let j = 0; j < cls.length; j++) {
-            if (cls.item(j).indexOf('grid-product--id') === 0) {
-              prod = { id: cls.item(j).split('-').pop(), price: 0.00 }
-              img = elem.querySelector('.grid-product__image-wrap img')
-              if (img) {
-                srcSet = img.getAttribute('srcset')
-                if (srcSet) {
-                  prod.img = srcSet.split(',').pop().replace(/\s*\dx/, '')
-                  ep = this.ecwidProducts.find(p => p.id === prod.id)
-                  if (ep) {
-                    prod.title = ep.title
-                    prod.price = ep.price
-                    prod.price_formatted = ep.price_formatted
-                  }
-                  this.products.push(prod)
-                }
-              }
-            }
-          }
-        }
-      }
-      let seri = JSON.stringify(this.products)
-      this.$ls.set('products', seri)
-      this.productsSynced = true
-      this.$bus.$emit('load-products', this.products)
     },
     updateDetail (path) {
       path = path.replace(/^\//,'')

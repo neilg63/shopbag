@@ -4,6 +4,32 @@ var utils = {
     return cl.contains(className);
   },
 
+  scrollTo: function(el, y, ms, ease) {
+    y = y + el.scrollTop;
+    var steps = 5,
+      i = steps,
+      time = ms || 250,
+      ydiff = y - el.scrollTop,
+      fx = ease ? ease : function(i, steps) {
+          return Math.pow(2, i);
+      };
+      if (scrollInterval) {
+        clearInterval(scrollInterval);
+      }
+      let scrollInterval = setInterval(function() {
+          i -= 1;
+          let divisor = fx(i, steps);
+   
+          el.scroll(0, (ydiff / divisor) + el.scrollTop);
+   
+          // last step
+          if (0 === i) {
+              clearInterval(scrollInterval);
+              el.scroll(0, y);
+          }
+      }, time / steps);
+  },
+
   addRemBodyClass: function(className, remove) {
     var cl = document.body.classList,
     hasClass = cl.contains(className);

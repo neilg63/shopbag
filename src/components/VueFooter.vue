@@ -11,7 +11,7 @@
   	</div>
   	<div class="admin">
   		<span class="clear icon-backward" v-on:click="clearCache()" title="Clear cache"></span>
-  		<a href="/user" target="_blank">Admin</a>
+  		<a :href="adminLink" target="_blank">{{adminLabel}}</a>
   	</div>
 </footer>
 </template>
@@ -37,10 +37,52 @@ export default {
       }
     }
   },
+  data () {
+    return {
+      adminLink: '/user',
+      adminLabel: 'Admin'
+    }
+  },
+  created () {
+    this.adminLink = '/user'
+    this.checkUser()
+    let comp = this
+    if (this.id == 'page-footer') {
+      setTimeout(() => {
+        comp.checkUser()
+      }, 12000)
+    } else {
+      this.$bus.$on('show-detail', () => {
+        comp.checkUser()
+      })
+    }
+  },
   methods: {
   	clearCache () {
   		this.$ls.remove('siteinfo')
-  	}
+  	},
+    checkUser () {
+      let user = this.$parent.$parent.user;
+      if (user) {
+        if (user.is_editor) {
+          this.adminLabel = 'Edit'
+          switch (this.id) {
+            case 'inner-page-footer':
+              let ps = this.$parent.$parent.pages
+              this.adminLink = 'admin/content'
+              if (ps.hasOwnProperty(this.$route.path)) {
+                if (ps[this.$route.path].nid) {
+                  this.adminLink = 'node/' + ps[this.$route.path].nid + '/edit'
+                }
+              }
+              break;
+            default:
+              this.adminLink = 'node/' +this.$parent.$parent.nid+ '/edit'
+              break
+          }
+        }
+      }
+    }
   }
 }
 </script>

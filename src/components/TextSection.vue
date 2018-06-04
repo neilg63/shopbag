@@ -310,9 +310,15 @@ export default {
     padding: 5%;
   }
 }
-@media screen and (min-width: 60em) {
+@media screen and (min-height: 40em) and (min-width: 60em) {
   .text-section.fade .slides > article {
     font-size: 1.5em;
+  }
+
+  .text-section.side-block #instafeed,
+  .text-section.side-block .instafeed-wrapper,
+  #app .text-section.side-block > .main-text {
+    min-height: 50vh;
   }
 }
 

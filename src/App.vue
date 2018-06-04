@@ -114,6 +114,7 @@ export default {
       if (data.menu) {
         comp.loadMenu(data.menu)
       }
+
       if (data.ecwid_products) {
         comp.ecwidProducts = data.ecwid_products
       }
@@ -121,6 +122,9 @@ export default {
         comp.$parent.pages = data.pages
       }
       if (data.home) {
+        if (data.home.nid) {
+          comp.$parent.nid = data.home.nid
+        }
         if (data.home.images instanceof Array) {
           this.$bus.$emit('load-slides', data.home.images)
         }
