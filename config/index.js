@@ -44,17 +44,24 @@ module.exports = {
 
     proxyTable: {
       '/jsonstyles': {
-          target: 'http://cms8.indypedia.agency',
-          changeOrigin: true,
-          pathRewrite: {
+        target: 'https://www.lucyofsyracuse.it',
+        changeOrigin: true,
+        pathRewrite: {
           '^/jsonstyles': '/jsonstyles'
         }
       },
       '/files': {
-          target: 'http://cms8.indypedia.agency',
-          changeOrigin: true,
-          pathRewrite: {
+        target: 'https://www.lucyofsyracuse.it',
+        changeOrigin: true,
+        pathRewrite: {
           '^/files': '/files'
+        }
+      },
+      '/instaapi': {
+        target: 'https://www.lucyofsyracuse.it',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/instaapi': '/instaapi'
         }
       }
     }

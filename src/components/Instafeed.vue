@@ -30,8 +30,9 @@ export default {
   },
   data () {
   	return {
-  		userId: 7116321893,
-			token: '7116321893.1677ed0.d1b9e82114554cfd84e348152ba4f082',
+  		userId: '7116321893',
+  		clientId: '816835b2d35b4b7693bd08cb25209598',
+			token: '7116321893.816835b.78e85ffc5d684040ad318d818ea17538',
 			fullUrl: 'https://www.instagram.com/lucyofsyracuse',
 			coreEl: null
   	}
@@ -47,18 +48,21 @@ export default {
   methods: {
   	init () {
   		if (Instafeed) {
-  			window.instaFeed = new Instafeed({
+  			let opts = {
 				  get: 'user',
 				  userId: this.userId,
 				  accessToken: this.token,
-				  clientId: this.clientId,
 				  sortBy: this.sortBy,
 				  limit: this.limit,
 				  resolution: this.resolutionId(),
 				  useHttp: true,
 				  template: '<figure><a class="instagram-image" href="{{link}}" target="_blank"><img src="{{image}}" /></a></figure>',
-				});
-				let d = window.instaFeed.run()
+				}
+				if (this.clientId) {
+  				opts.clientId = this.clientId;
+  			}
+  			let inf = window.instaFeed = new Instafeed(opts)
+				window.instaFeed.run()
   		}
   	},
   	resolutionId () {

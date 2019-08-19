@@ -10,11 +10,11 @@ import VueScrollTo from 'vue-scrollto'
 import Vue2TouchEvents from 'vue2-touch-events'
 
 Vue.use(Vue2TouchEvents, {
-    disableClick: false,
-    touchClass: '',
-    tapTolerance: 10,
-    swipeTolerance: 30,
-    longTapTimeInterval: 400
+  disableClick: false,
+  touchClass: '',
+  tapTolerance: 10,
+  swipeTolerance: 30,
+  longTapTimeInterval: 400
 })
 
 // You can also pass in the default options
@@ -35,7 +35,7 @@ Vue.use(VueLocalStorage, {
   bind: true //created computed members from your variable declarations
 })
 const bus = new Vue()
-Object.defineProperty(Vue.prototype,'$bus', { get () { return this.$root.bus } })
+Object.defineProperty(Vue.prototype, '$bus', { get() { return this.$root.bus } })
 Vue.config.productionTip = false
 
 
@@ -48,9 +48,12 @@ new Vue({
   template: '<App/>',
   data: {
     bus,
-    version: 0.30,
+    version: 0.32,
     cmsApi: '/jsonstyles/',
     products: [],
+    enablePurchase: false,
+    availNotice: '',
+    contactEmail: 'info@lucyofsyracuse.com',
     ecwidProducts: [],
     lang: 'en',
     numFormat: '.',
@@ -67,11 +70,10 @@ new Vue({
     },
     nid: 0
   },
-  created () {
+  created() {
     this.detectLanguage()
     this.detectTouch()
     let comp = this
-    let matchedProducts = false
     let storedProductsData = this.$ls.get('products')
     if (typeof storedProductsData === 'string') {
       let storedProducts = JSON.parse(storedProductsData)
@@ -83,7 +85,7 @@ new Vue({
         }
       }
     }
-    
+
     this.loadHome()
     this.updatePath(true)
     setTimeout(() => {
@@ -113,7 +115,7 @@ new Vue({
         .catch(e => {
           console.log(e)
         })
-    },10000)
+    }, 10000)
     let cms = comp.$ls.get('cms')
     if (cms) {
       this.user = JSON.parse(cms);
@@ -130,14 +132,14 @@ new Vue({
         });
     }, 6000);
   },
-  watch:{
-    $route (to, from){
+  watch: {
+    $route(to, from) {
       if (to.path) {
         this.$bus.$emit('hide-menu', true)
         this.updateDetail(to.path)
       }
     },
-    homeLoaded (newVal) {
+    homeLoaded(newVal) {
       if (newVal) {
         let hash = window.location.hash
         if (/^#\/!/.test(hash)) {
@@ -148,7 +150,7 @@ new Vue({
     }
   },
   methods: {
-    loadHome (fetchNew) {
+    loadHome(fetchNew) {
       this.fetchData('siteinfo', 'siteinfo', fetchNew)
       let comp = this
       if (!fetchNew) {
@@ -156,10 +158,10 @@ new Vue({
           if (!comp.homeLoaded) {
             comp.loadHome()
           }
-        },500)
+        }, 500)
       }
     },
-    fetchData (subPath, pageKey, fetchNew) {
+    fetchData(subPath, pageKey, fetchNew) {
       let dataKey = subPath.replace(/\//g, '__')
       let comp = this
       if (!this.fetching && dataKey.indexOf('!') < 0) {
@@ -188,7 +190,7 @@ new Vue({
           }
           setTimeout(() => {
             comp.fetching = false
-          },500)
+          }, 500)
           if (subPath == 'siteinfo') {
             this.handleSiteData(storedData, true)
           } else {
@@ -211,7 +213,7 @@ new Vue({
                 }
                 setTimeout(() => {
                   comp.fetching = false
-                },125)
+                }, 125)
               }
             })
             .catch(e => {
@@ -221,9 +223,9 @@ new Vue({
       }
       setTimeout(() => {
         comp.fetching = false
-      },1000)
+      }, 1000)
     },
-    fetchPage (path) {
+    fetchPage(path) {
       let pk = '/' + path, matched = false
       if (this.pages.hasOwnProperty(pk)) {
         if (this.pages[pk].valid) {
@@ -233,16 +235,30 @@ new Vue({
         }
       }
       if (!matched) {
-        this.fetchData('page-path/' + path,'page')
+        this.fetchData('page-path/' + path, 'page')
       }
     },
-    handleSiteData (data, stored) {
+    handleSiteData(data, stored) {
       let comp = this
       if (data.last_edited) {
         this.lastUpdated = parseInt(data.last_edited)
       }
       if (data.lang) {
         this.lang = data.lang
+      }
+      this.enablePurchase = data.enable_purchase
+      if (!this.enablePurchase) {
+        let node = data.availability_notice
+        if (node) {
+          if (node.body) {
+            this.availNotice = node.body
+          }
+        }
+      }
+      if (data.footer) {
+        if (data.footer.email) {
+          this.contactEmail = data.footer.email
+        }
       }
       this.homeLoaded = true
       let ts = stored ? 500 : 250
@@ -254,22 +270,22 @@ new Vue({
         }, (ts + 250));
       }, (ts + 100))
     },
-    updateDetail (path) {
-      path = path.replace(/^\//,'')
-        switch (path) {
-          case '':
-          case 'home':
-            this.$bus.$emit('show-detail', false)
-            break
-          default:
-            if (/\w+\/\w+/.test(path)) {
-              path = path.split('/').shift()
-            }
-            this.fetchPage(path)
-            break
-        }
+    updateDetail(path) {
+      path = path.replace(/^\//, '')
+      switch (path) {
+        case '':
+        case 'home':
+          this.$bus.$emit('show-detail', false)
+          break
+        default:
+          if (/\w+\/\w+/.test(path)) {
+            path = path.split('/').shift()
+          }
+          this.fetchPage(path)
+          break
+      }
     },
-    updatePath (init) {
+    updatePath(init) {
       let hash = window.location.hash
       this.$bus.$emit('hide-menu', true)
       if (hash.length > 1) {
@@ -294,15 +310,15 @@ new Vue({
         comp.updateDetail(comp.$route.path)
       }, ts)
     },
-    detectTouch () {
+    detectTouch() {
       u.addBodyClass('touch-disabled')
-      window.addEventListener('touchstart', function() {
+      window.addEventListener('touchstart', function () {
         if (!u.hasBodyClass('touch-enabled')) {
-          u.swapBodyClass('touch-disabled','touch-enabled')
+          u.swapBodyClass('touch-disabled', 'touch-enabled')
         }
       })
     },
-    detectLanguage () {
+    detectLanguage() {
       let bl = 'en'
       let str = this.$ls.get('settings')
       if (typeof str == 'string') {
@@ -317,7 +333,7 @@ new Vue({
       }
       this.localiseSettings(bl)
     },
-    localiseSettings (bl) {
+    localiseSettings(bl) {
       switch (bl) {
         case 'it':
           this.lang = bl

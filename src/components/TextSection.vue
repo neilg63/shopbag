@@ -1,17 +1,20 @@
 <template>
-	<section class="text-section" :class="sectionClasses">
+  <section class="text-section" :class="sectionClasses">
     <aside v-if="showBlock" class="subsection aside">
-      <instafeed></instafeed>
+      <instaapi></instaapi>
     </aside>
-  	<div class="main-text subsection">
+    <div class="main-text subsection">
       <h3 v-if="hasTitle"></h3>
-      <article v-if="hasSingle" v-html="text" class="body">
-      </article>
+      <article v-if="hasSingle" v-html="text" class="body"></article>
     </div>
     <template v-if="hasSlides">
       <div class="slides">
-        <article v-for="(slide,index) in slides" :key="index" v-html="slide" :class="{'active': index == currIndex}">
-        </article>
+        <article
+          v-for="(slide,index) in slides"
+          :key="index"
+          v-html="slide"
+          :class="{'active': index == currIndex}"
+        ></article>
         <div class="bg top-left"></div>
         <div class="bg top-right"></div>
         <div class="bg bottom-left"></div>
@@ -21,14 +24,13 @@
   </section>
 </template>
 <script>
-
-
-import Instafeed from './Instafeed'
+import Instaapi from "./Instaapi"
+import axios from "axios"
 
 export default {
-	name: 'TextSection',
+  name: "TextSection",
   components: {
-    Instafeed
+    Instaapi
   },
   props: {
     section: {
@@ -37,32 +39,32 @@ export default {
       default: null
     }
   },
-  data () {
+  data() {
     return {
       id: 0,
-      title: '',
-      text: '',
+      title: "",
+      text: "",
       slides: [],
       currIndex: 0,
       numSlides: 0,
-      layout: 'single',
+      layout: "single",
       multiple: false,
       hasSingle: false,
       hasSlides: false,
-      block: '',
+      block: "",
       showBlock: false
     }
   },
-  created () {
+  created() {
     this.assign(this.section)
     switch (this.layout) {
-      case 'fade':
+      case "fade":
         this.cycle()
         this.hasTitle = false
         break
     }
     let comp = this
-    this.$bus.$on('siteinfo', data => {
+    this.$bus.$on("siteinfo", data => {
       if (data.home.sections && comp.id > 0) {
         let matched = data.home.sections.find(s => s.id == comp.id)
         if (matched) {
@@ -72,7 +74,7 @@ export default {
     })
   },
   methods: {
-    cycle () {
+    cycle() {
       setInterval(() => {
         let nx = this.currIndex + 1
         if (nx >= this.numSlides) {
@@ -81,15 +83,15 @@ export default {
         this.currIndex = nx
       }, 5000)
     },
-    assign (section) {
+    assign(section) {
       if (section.id) {
         this.id = parseInt(section.id)
       }
-      if (typeof section.title == 'string') {
+      if (typeof section.title == "string") {
         this.title = section.title.trim()
         this.hasTitle = this.title.length > 1
       }
-      if (typeof section.text == 'string') {
+      if (typeof section.text == "string") {
         this.text = section.text.trim()
         this.hasSingle = this.text.length > 1
       }
@@ -105,22 +107,21 @@ export default {
       if (section.showBlock) {
         this.showBlock = section.showBlock
         this.block = section.block
-        this.layout = 'side-block'
-        this.sectionClasses.push('has-block')
+        this.layout = "side-block"
+        this.sectionClasses.push("has-block")
       }
       if (this.layout) {
-        this.sectionClasses.push(this.layout.replace(/_/g, '-'))
+        this.sectionClasses.push(this.layout.replace(/_/g, "-"))
       }
       if (this.hasSlides) {
-        this.sectionClasses.push('flex-row')
-        this.sectionClasses.push('num-' + this.slides.length)
+        this.sectionClasses.push("flex-row")
+        this.sectionClasses.push("num-" + this.slides.length)
       }
     }
   }
 }
 </script>
 <style>
-
 .text-section.fade,
 .text-section.fade .slides,
 .text-section.blocks,
@@ -145,7 +146,7 @@ export default {
     min-height: 40vh;
     position: relative;
   }
-  .text-section.fade .slides > article {  
+  .text-section.fade .slides > article {
     padding: 5vh 5%;
     height: 30vh;
   }
@@ -166,10 +167,8 @@ export default {
   max-width: 60em;
 }
 
-
 .text-section.fade .slides > article,
 .text-section.blocks .slides {
-  
   justify-content: center;
 }
 
@@ -193,10 +192,9 @@ export default {
 }
 
 .has-block {
-
 }
 
-#app .fade .slides >.bg,
+#app .fade .slides > .bg,
 .fade > .slides > article {
   position: absolute;
 }
@@ -208,7 +206,7 @@ export default {
   right: 0;
   opacity: 0;
   z-index: -1;
-  transition: opacity .5s ease-in-out;
+  transition: opacity 0.5s ease-in-out;
 }
 
 .fade .slides > article.active {
@@ -216,30 +214,30 @@ export default {
   z-index: 2;
 }
 
-.fade .slides >.bg {
+.fade .slides > .bg {
   height: 4vmin;
   width: 4vmin;
   z-index: 3;
-  transition: all .5s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
 
-.fade .slides:hover >.bg {
+.fade .slides:hover > .bg {
   height: 9vmin;
   width: 8vmin;
 }
 
-.fade .slides >.bg.top-left {
+.fade .slides > .bg.top-left {
   top: 3vmin;
   left: 3vmin;
-  border-top: dashed 1px rgba(0,0,0,0.5);
-  border-left: dashed 1px rgba(0,0,0,0.5);
+  border-top: dashed 1px rgba(0, 0, 0, 0.5);
+  border-left: dashed 1px rgba(0, 0, 0, 0.5);
 }
 
-.fade .slides >.bg.top-right {
+.fade .slides > .bg.top-right {
   top: 3vmin;
   right: 3vmin;
-  border-top: dashed 1px rgba(0,0,0,0.5);
-  border-right: dashed 1px rgba(0,0,0,0.5);
+  border-top: dashed 1px rgba(0, 0, 0, 0.5);
+  border-right: dashed 1px rgba(0, 0, 0, 0.5);
 }
 
 #app .has-intro .slides > .bg.top-right {
@@ -248,7 +246,7 @@ export default {
   cursor: pointer;
 }
 
-#app .has-intro .slides >.bg.top-right:before {
+#app .has-intro .slides > .bg.top-right:before {
   position: absolute;
   top: 0;
   right: 0;
@@ -257,18 +255,18 @@ export default {
   font-size: 2em;
 }
 
-.fade .slides >.bg.bottom-left {
+.fade .slides > .bg.bottom-left {
   bottom: 3vmin;
   left: 3vmin;
-  border-bottom: dashed 1px rgba(0,0,0,0.5);
-  border-left: dashed 1px rgba(0,0,0,0.5);
+  border-bottom: dashed 1px rgba(0, 0, 0, 0.5);
+  border-left: dashed 1px rgba(0, 0, 0, 0.5);
 }
 
-.fade .slides >.bg.bottom-right {
+.fade .slides > .bg.bottom-right {
   bottom: 3vmin;
   right: 3vmin;
-  border-bottom: dashed 1px rgba(0,0,0,0.5);
-  border-right: dashed 1px rgba(0,0,0,0.5);
+  border-bottom: dashed 1px rgba(0, 0, 0, 0.5);
+  border-right: dashed 1px rgba(0, 0, 0, 0.5);
 }
 
 .home-pane aside.site-intro {
@@ -281,7 +279,7 @@ export default {
   text-align: left;
   pointer-events: none;
   transition: left 0.75s ease-in-out;
-  background-color: rgb(228,228,228);
+  background-color: rgb(228, 228, 228);
   display: flex;
   flex-flow: column;
   justify-content: center;
@@ -335,5 +333,4 @@ export default {
     max-width: calc(100% - 40em);
   }
 }
-
 </style>

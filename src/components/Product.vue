@@ -1,7 +1,13 @@
-<template>
-  <div class="product-overlay">
+-<template>
+  <div class="product-overlay" :class="{'show-overlay':showContactOverlay}">
     <div class="close icon-close" v-on:click="close()"></div>
-    <h2><span class="catalog-title breadcrumb link-back" v-on:click="close()">{{product.catalog_title}}</span> <span class="breadcrumb last">{{product.title}}</span></h2>
+    <h2>
+      <span
+        class="catalog-title breadcrumb link-back"
+        v-on:click="close()"
+      >{{product.catalog_title}}</span>
+      <span class="breadcrumb last">{{product.title}}</span>
+    </h2>
     <div class="image-selector" v-touch:swipe="slideSwipe">
       <template v-for="(iset, index) in imageSets">
         <div class="set-container" :class="{'active':iset.active}" :key="index">
@@ -12,40 +18,70 @@
     <div class="variant-selector" v-if="variants.length > 0">
       <ul class="plain">
         <template v-for="(variant, index) in product.variants">
-          <li class="variant" :class="{'active':variant.active,'added':variant.added}" v-on:click="setActive(variant)" :data-index="variant.imgIndex" :key="index"><span class="text">{{variant.title}}</span></li>
+          <li
+            class="variant"
+            :class="{'active':variant.active,'added':variant.added}"
+            v-on:click="setActive(variant)"
+            :data-index="variant.imgIndex"
+            :key="index"
+          >
+            <span class="text">{{variant.title}}</span>
+          </li>
         </template>
       </ul>
       <ol class="aspect-nav plain">
         <template v-for="num in numImagesInSet">
-          <li :class="['num-'+num,{'active': (num-1) == selectedImgIndex}]" :key="num" v-on:click="setAspect(num-1)" :title="num"></li>
+          <li
+            :class="['num-'+num,{'active': (num-1) == selectedImgIndex}]"
+            :key="num"
+            v-on:click="setAspect(num-1)"
+            :title="num"
+          ></li>
         </template>
       </ol>
       <div class="buy-now" :class="buyNowClasses" v-if="selectedVariant">
         <div class="icon icon-check"></div>
-        <button class="price" v-on:click="addProduct()">{{selectedVariant.price|currency}}</button>
+        <button class="price" v-on:click="addToCart()">{{selectedVariant.price|currency}}</button>
         <div class="icon cart-icon" :class="cartIconClass" v-on:click="manageProduct()">
           <span v-if="selectedVariant.varAdded" class="icon-plus"></span>
           <span v-if="selectedVariant.added" class="icon-minus"></span>
         </div>
-        <div class="hint">
-          {{buyHint}}
-        </div>
+        <div class="hint">{{buyHint}}</div>
       </div>
       <h3 class="selected-variant">{{selectedVariant.title}}</h3>
+      <h4 class="out-of-stock" v-if="!selectedVariant.stock">{{options.outOfStockLabel}}</h4>
       <div class="catalog-body" v-html="product.intro"></div>
     </div>
     <div class="body">
       <div class="product-body" v-html="product.body"></div>
     </div>
+    <div class="contact-overlay">
+      <div class="icon-close" @click="cancelOverlay"></div>
+      <div class="message" v-html="contactMessage"></div>
+
+      <p title="Click to send email">
+        <a :href="'mailto:' + contactEmail">{{contactEmail}}</a>
+      </p>
+      <form v-if="showContactOverlay">
+        <p>
+          <label for="contact-name">{{options.nameLabel}}</label>
+          <input type="text" size="32" id="contact-name" />
+        </p>
+        <p>
+          <label for="contact-email">{{options.email}}</label>
+          <input type="email" size="32" id="contact-email" />
+        </p>
+      </form>
+    </div>
   </div>
 </template>
 <script>
-import ImageSet from './ImageSet'
-import VuePicture from './VuePicture'
-import filters from '../mixins/filters'
+import ImageSet from "./ImageSet";
+import VuePicture from "./VuePicture";
+import filters from "../mixins/filters";
 
 export default {
-  name: 'Product',
+  name: "Product",
   components: {
     VuePicture,
     ImageSet
@@ -68,7 +104,7 @@ export default {
       default: null
     }
   },
-  data () {
+  data() {
     return {
       imageSets: [],
       variants: [],
@@ -78,78 +114,100 @@ export default {
       numImagesInSet: 3,
       selectedImgIndex: 0,
       showAltHint: false,
-      buyHint: '',
-      cartIconClass: 'icon-add-cart'
-    }
+      buyHint: "",
+      cartIconClass: "icon-add-cart",
+      showContactOverlay: false
+    };
   },
-  created () {
-    this.assignImageSets()
+  created() {
+    this.assignImageSets();
     if (this.productIndex > 0 && this.productIndex < this.variants.length) {
-      this.setActive(this.variants[this.productIndex])
-      this.adaptBuyWidget()
+      this.setActive(this.variants[this.productIndex]);
+      this.adaptBuyWidget();
     }
   },
   watch: {
-    product (newVal) {
-      this.assignImageSets()
+    product(newVal) {
+      this.assignImageSets();
     },
-    selectedVariant (newVal) {
+    selectedVariant(newVal) {
       this.adaptBuyWidget();
     }
   },
   computed: {
-    buyNowClasses () {
-      let cls = []
+    buyNowClasses() {
+      let cls = [];
       if (this.selectedVariant.added) {
-        cls.push('added')
+        cls.push("added");
       }
       if (this.selectedVariant.varAdded) {
-        cls.push('variant-added')
+        cls.push("variant-added");
+      }
+      if (!this.selectedVariant.stock) {
+        cls.push("out-of-stock");
+      } else {
+        cls.push("in-stock");
       }
       if (this.selecting) {
-        cls.push('selecting')
+        cls.push("selecting");
       }
-      return cls
+      return cls;
+    },
+    enabled() {
+      return this.$parent.$parent.$parent.enablePurchase;
+    },
+    contactMessage() {
+      let str = "";
+      if (this.enabled === false) {
+        return this.$parent.$parent.$parent.availNotice;
+      }
+      return str;
+    },
+    contactEmail() {
+      return this.$parent.$parent.$parent.contactEmail;
     }
   },
   methods: {
-    assignImageSets () {
-      let comp = this
-      this.$parent.updateAdded(this.product)
-      this.imageSets = []
+    assignImageSets() {
+      let comp = this;
+      this.$parent.updateAdded(this.product);
+      this.imageSets = [];
       this.variants = this.product.variants.map((v, vi) => {
-        v.imgIndex = -1
-        v.active = vi === 0
+        v.imgIndex = -1;
+        v.active = vi === 0;
         if (v.active) {
-          comp.selectedVariant = v
+          comp.selectedVariant = v;
         }
         if (/^[A-Z]+\s*-\s*\w+/.test(v.title)) {
-          v.title = v.title.replace(/^\w+\s*-/, '')
+          v.title = v.title.replace(/^\w+\s*-/, "");
         }
-        return v
-      })
+        return v;
+      });
       if (this.product.sections) {
-        if (this.product.sections instanceof Array && this.product.sections.length > 0) {
+        if (
+          this.product.sections instanceof Array &&
+          this.product.sections.length > 0
+        ) {
           for (let i = 0, c = 0, sec; i < this.product.sections.length; i++) {
-            sec = this.product.sections[i]
-            if (sec.type == 'image_set') {
+            sec = this.product.sections[i];
+            if (sec.type == "image_set") {
               if (sec.images) {
                 if (sec.images instanceof Array) {
-                  sec.layout = 'aspect'
+                  sec.layout = "aspect";
                   if (sec.images.length > 0) {
-                    sec.active = c === 0
+                    sec.active = c === 0;
                     if (i === 0) {
-                      this.numImagesInSet = sec.images.length
+                      this.numImagesInSet = sec.images.length;
                     }
-                    this.imageSets.push(sec)
+                    this.imageSets.push(sec);
                     if (sec.ecwid) {
-                      let vi = this.variants.findIndex(v => v.id === sec.ecwid)
+                      let vi = this.variants.findIndex(v => v.id === sec.ecwid);
                       if (vi >= 0) {
-                        this.variants[vi].title = sec.title
-                        this.variants[vi].imgIndex = i
+                        this.variants[vi].title = sec.title;
+                        this.variants[vi].imgIndex = i;
                       }
                     }
-                    c++
+                    c++;
                   }
                 }
               }
@@ -158,122 +216,140 @@ export default {
         }
         //this.$parent.setHeight()
         setTimeout(() => {
-          comp.$parent.updateAdded(comp.product)
-        }, 2000)
+          comp.$parent.updateAdded(comp.product);
+        }, 2000);
       }
     },
-    setActive (variant) {
+    setActive(variant) {
       this.variants = this.variants.map(v => {
-        v.active = false
-        return v
-      })
-      variant.active = true
-      this.selectedVariant = variant
+        v.active = false;
+        return v;
+      });
+      variant.active = true;
+      this.selectedVariant = variant;
       if (variant.imgIndex >= 0) {
         this.imageSets = this.imageSets.map((ims, index) => {
-          ims.active = variant.imgIndex === index
-          this.numImagesInSet = ims.images.length
-          return ims
-        })
+          ims.active = variant.imgIndex === index;
+          this.numImagesInSet = ims.images.length;
+          return ims;
+        });
       }
     },
-    close () {
-      this.$parent.toggleActiveProduct(false)
+    close() {
+      this.$parent.toggleActiveProduct(false);
     },
-    addProduct () {
-      if (this.selectedVariant.id && !this.selectedVariant.added) {
-        this.selecting = true
-        let selVar = this.variants.find(v => v.added)
-        let ts = 0
-        if (selVar) {
-          this.$bus.$emit('remove-ecwid-product', selVar, false)
-            ts = 500
-        }
-        let comp = this
-        setTimeout(() => {
-          comp.$bus.$emit('add-ecwid-product', comp.selectedVariant)
-        }, ts)
-        setTimeout(() => {
-          comp.$parent.updateAdded(comp.product)
-          comp.selecting = false
-          comp.selectedVariant.added = true
-          comp.adaptBuyWidget()
-        }, ts + 1500)
-      }
-    },
-    manageProduct () {
-      if (this.selectedVariant.id) {
-        this.selecting = true
-        let newStatus = false
-        if (this.selectedVariant.added) {
-           this.$bus.$emit('remove-ecwid-product', this.selectedVariant, true)
-           newStatus = false
+    addToCart() {
+      if (this.selectedVariant.stock) {
+        if (this.enabled) {
+          this.addProduct();
         } else {
-          this.$bus.$emit('add-ecwid-product', this.selectedVariant)
-          newStatus = true
+          this.showContactOverlay = true;
         }
-        let comp = this
-        setTimeout(() => {
-          comp.$parent.updateAdded(comp.product)
-          comp.selecting = false
-          comp.selectedVariant.added = newStatus
-          comp.adaptBuyWidget()
-        }, 1500)
       }
     },
-    setAspect (index) {
-      this.selectedImgIndex = index
-      this.$bus.$emit('set-image-index', index)
+    addProduct() {
+      if (this.selectedVariant.id && !this.selectedVariant.added) {
+        this.selecting = true;
+        let selVar = this.variants.find(v => v.added);
+        let ts = 0;
+        if (selVar) {
+          this.$bus.$emit("remove-ecwid-product", selVar, false);
+          ts = 500;
+        }
+        let comp = this;
+        setTimeout(() => {
+          comp.$bus.$emit("add-ecwid-product", comp.selectedVariant);
+        }, ts);
+        setTimeout(() => {
+          comp.$parent.updateAdded(comp.product);
+          comp.selecting = false;
+          comp.selectedVariant.added = true;
+          comp.adaptBuyWidget();
+        }, ts + 1500);
+      }
     },
-    slideSwipe (direction) {
-      let nx = this.selectedImgIndex
+    manageProduct() {
+      if (this.selectedVariant.stock) {
+        if (!this.enabled) {
+          this.showContactOverlay = true;
+        } else if (this.selectedVariant.id) {
+          this.selecting = true;
+          let newStatus = false;
+          if (this.selectedVariant.added) {
+            this.$bus.$emit("remove-ecwid-product", this.selectedVariant, true);
+            newStatus = false;
+          } else {
+            this.$bus.$emit("add-ecwid-product", this.selectedVariant);
+            newStatus = true;
+          }
+          let comp = this;
+          setTimeout(() => {
+            comp.$parent.updateAdded(comp.product);
+            comp.selecting = false;
+            comp.selectedVariant.added = newStatus;
+            comp.adaptBuyWidget();
+          }, 1500);
+        }
+      }
+    },
+    setAspect(index) {
+      this.selectedImgIndex = index;
+      this.$bus.$emit("set-image-index", index);
+    },
+    slideSwipe(direction) {
+      let nx = this.selectedImgIndex;
       switch (direction) {
-        case 'left':
-          nx = this.selectedImgIndex + 1
-          break
-        case 'right':
-          nx = this.selectedImgIndex - 1
-          break
+        case "left":
+          nx = this.selectedImgIndex + 1;
+          break;
+        case "right":
+          nx = this.selectedImgIndex - 1;
+          break;
       }
       if (nx != this.selectedImgIndex) {
         if (nx < 0) {
-          nx = this.numImagesInSet - 1
+          nx = this.numImagesInSet - 1;
         } else if (nx >= this.numImagesInSet) {
-          nx = 0
+          nx = 0;
         }
-        this.setAspect(nx)
+        this.setAspect(nx);
       }
     },
-    adaptBuyWidget () {
-      if (this.selectedVariant.added) {
+    adaptBuyWidget() {
+      if (!this.enabled) {
+        this.buyHint = this.options.notAvail;
+      } else if (this.selectedVariant.added) {
         if (this.showAltHint) {
-          this.buyHint = this.options.removeHint
+          this.buyHint = this.options.removeHint;
         } else {
-          this.buyHint = this.options.addedHint
+          this.buyHint = this.options.addedHint;
         }
       } else if (this.selectedVariant.varAdded) {
         if (this.showAltHint) {
-          this.buyHint = this.options.buyNowHint
+          this.buyHint = this.options.buyNowHint;
         } else {
-          this.buyHint = this.options.selectHint
+          this.buyHint = this.options.selectHint;
         }
       } else {
-        this.buyHint = this.options.buyNowHint
+        this.buyHint = this.options.buyNowHint;
       }
       if (this.selectedVariant.added || this.selectedVariant.varAdded) {
-        this.cartIconClass = 'icon-plain-cart'
+        this.cartIconClass = "icon-plain-cart";
       } else {
-        this.cartIconClass = 'icon-add-cart'
+        this.cartIconClass = "icon-add-cart";
       }
+    },
+    cancelOverlay() {
+      this.showContactOverlay = false;
     }
   }
-}
+};
 </script>
 <style>
 #app .image-selector,
 #app .image-selector > .set-container {
   height: 33.33vw;
-  overflow:hidden;
+  overflow: hidden;
 }
 #app .image-selector {
   width: 100%;
@@ -282,7 +358,7 @@ export default {
   position: relative;
   width: 90%;
   margin-top: 1em;
-  padding: .5em 5% 1em 5%;
+  padding: 0.5em 5% 1em 5%;
   text-align: left;
   z-index: 8;
 }
@@ -292,7 +368,7 @@ export default {
 #app .variant-selector ul.plain li {
   width: 1.33em;
   height: 1.33em;
-  padding: 0.125em .5em 0.125em 0.125em;
+  padding: 0.125em 0.5em 0.125em 0.125em;
   overflow: hidden;
   cursor: pointer;
   pointer-events: all;
@@ -301,7 +377,7 @@ export default {
   display: inline-block;
   font-family: icomoon;
   content: "\e601";
-  margin-right: .25em;
+  margin-right: 0.25em;
 }
 #app .variant-selector ul.plain {
   display: flex;
@@ -348,10 +424,10 @@ export default {
   border-radius: 0.5em;
   background: white;
   cursor: pointer;
-  transition: all .33s ease-in-out;
+  transition: all 0.33s ease-in-out;
 }
 
-.buy-now:hover button.price {
+.buy-now.in-stock:hover button.price {
   background: black;
   color: white;
 }
@@ -359,7 +435,7 @@ export default {
 .buy-now .icon {
   transform: scale(1);
   opacity: 0.75;
-  transition: all .33s ease-in-out;
+  transition: all 0.33s ease-in-out;
   width: 1em;
   overflow: hidden;
   font-size: 1.25em;
@@ -367,11 +443,11 @@ export default {
 }
 .buy-now .hint {
   position: absolute;
-  bottom: -.5em;
+  bottom: -0.5em;
   right: 0;
   opacity: 0;
   font-style: italic;
-  transition: opacity .5s ease-in-out;
+  transition: opacity 0.5s ease-in-out;
   white-space: nowrap;
 }
 
@@ -395,10 +471,10 @@ export default {
   user-select: none;
 }
 .buy-now .cart-icon {
-  margin-left: .5em;
+  margin-left: 0.5em;
 }
 .buy-now .icon-check {
-  margin-right: .25em;
+  margin-right: 0.25em;
 }
 
 .buy-now.added .cart-icon,
@@ -406,9 +482,19 @@ export default {
   width: 1.75em;
 }
 
+.buy-now.out-of-stock .cart-icon,
+.buy-now.out-of-stock button {
+  cursor: default;
+}
+
+.buy-now.out-of-stock .cart-icon,
+#app .buy-now.out-of-stock .hint {
+  opacity: 0;
+}
+
 .buy-now.added .cart-icon:before,
 .buy-now.variant-added .cart-icon:before {
-  right: .75em;
+  right: 0.75em;
 }
 
 .buy-now.added .cart-icon span.icon-minus,
@@ -427,7 +513,7 @@ export default {
 .buy-now.added .cart-icon span.icon-minus:before,
 .buy-now.variant-added .cart-icon span.icon-plus:before {
   top: 0.375em;
-  font-size: .5em;
+  font-size: 0.5em;
 }
 
 .buy-now .icon:before {
@@ -435,7 +521,7 @@ export default {
   top: 0;
   right: 0;
 }
-.buy-now:hover .icon-add-cart {
+.buy-now.in-stock:hover .icon-add-cart {
   transform: scale(1.25);
   opacity: 1;
 }
@@ -461,7 +547,7 @@ export default {
   right: 0;
   bottom: 0;
   opacity: 0;
-  transition: opacity .5s ease-in-out;
+  transition: opacity 0.5s ease-in-out;
 }
 #app .image-selector > .set-container figure {
   width: 100vw;
@@ -479,7 +565,6 @@ export default {
   width: 60%;
   max-height: none;
 }
-
 
 #app .product-overlay .close {
   position: fixed;
@@ -510,20 +595,20 @@ export default {
 
 #app .variant-selector .aspect-nav {
   position: absolute;
-  top: .5em;
+  top: 0.5em;
   right: 25%;
   display: none;
 }
 
 #app .detail-pane .variant-selector ol.aspect-nav li {
-  margin: 0 .5em;
+  margin: 0 0.5em;
   display: inline-block;
   position: relative;
   height: 1em;
   width: 1.75em;
   opacity: 0.333;
   transform: scale(1);
-  transition: all .5s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
 
 #app .detail-pane .variant-selector ol.aspect-nav li.active,
@@ -558,7 +643,7 @@ export default {
     top: 2em;
   }
   #app .variant-selector ul.plain li {
-    padding: 0.125em .75em 0.125em 0.125em;
+    padding: 0.125em 0.75em 0.125em 0.125em;
   }
 }
 
@@ -575,7 +660,6 @@ export default {
 }
 
 @media screen and (min-width: 60em) {
-
   #app .product-overlay .close {
     top: 3em;
   }
@@ -641,6 +725,32 @@ export default {
   }
 }
 
+.contact-overlay {
+  position: absolute;
+  left: 2.5%;
+  right: 2.5%;
+  top: 20%;
+  padding: 1em;
+  background-color: white;
+  box-shadow: 2px 1px 1px #999999;
+  z-index: 300;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.75s ease-in-out;
+}
+
+.contact-overlay .icon-close {
+  position: absolute;
+  top: 0.25em;
+  right: 0.25em;
+  cursor: pointer;
+}
+
+.product-overlay.show-overlay .contact-overlay {
+  pointer-events: all;
+  opacity: 1;
+}
+
 @media screen and (min-height: 25em) {
   #app .image-selector > .set-container figure img {
     width: 70%;
@@ -654,19 +764,38 @@ export default {
 }
 
 @media screen and (min-width: 70em) {
-
   #app .image-selector {
     width: 75%;
   }
 
+  #app .contact-overlay {
+    left: 5%;
+    right: 5%;
+  }
 }
 
 @media screen and (min-width: 80em) {
-
   #app .image-selector {
     width: 80%;
   }
 
+  #app .contact-overlay {
+    left: 10%;
+    right: 10%;
+  }
 }
 
+@media screen and (min-width: 90em) {
+  #app .contact-overlay {
+    left: 12.5%;
+    right: 12.5%;
+  }
+}
+
+@media screen and (min-width: 100em) {
+  #app .contact-overlay {
+    left: 15%;
+    right: 15%;
+  }
+}
 </style>
