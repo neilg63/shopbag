@@ -15,17 +15,13 @@
           v-html="slide"
           :class="{'active': index == currIndex}"
         ></article>
-        <div class="bg top-left"></div>
-        <div class="bg top-right"></div>
-        <div class="bg bottom-left"></div>
-        <div class="bg bottom-right"></div>
       </div>
     </template>
   </section>
 </template>
 <script>
-import Instaapi from "./Instaapi"
-import axios from "axios"
+import Instaapi from "./Instaapi";
+import axios from "axios";
 
 export default {
   name: "TextSection",
@@ -53,73 +49,73 @@ export default {
       hasSlides: false,
       block: "",
       showBlock: false
-    }
+    };
   },
   created() {
-    this.assign(this.section)
+    this.assign(this.section);
     switch (this.layout) {
       case "fade":
-        this.cycle()
-        this.hasTitle = false
-        break
+        this.cycle();
+        this.hasTitle = false;
+        break;
     }
-    let comp = this
+    let comp = this;
     this.$bus.$on("siteinfo", data => {
       if (data.home.sections && comp.id > 0) {
-        let matched = data.home.sections.find(s => s.id == comp.id)
+        let matched = data.home.sections.find(s => s.id == comp.id);
         if (matched) {
-          comp.assign(matched)
+          comp.assign(matched);
         }
       }
-    })
+    });
   },
   methods: {
     cycle() {
       setInterval(() => {
-        let nx = this.currIndex + 1
+        let nx = this.currIndex + 1;
         if (nx >= this.numSlides) {
-          nx = 0
+          nx = 0;
         }
-        this.currIndex = nx
-      }, 5000)
+        this.currIndex = nx;
+      }, 5000);
     },
     assign(section) {
       if (section.id) {
-        this.id = parseInt(section.id)
+        this.id = parseInt(section.id);
       }
       if (typeof section.title == "string") {
-        this.title = section.title.trim()
-        this.hasTitle = this.title.length > 1
+        this.title = section.title.trim();
+        this.hasTitle = this.title.length > 1;
       }
       if (typeof section.text == "string") {
-        this.text = section.text.trim()
-        this.hasSingle = this.text.length > 1
+        this.text = section.text.trim();
+        this.hasSingle = this.text.length > 1;
       }
       if (section.text instanceof Array) {
-        this.slides = section.text
-        this.numSlides = this.slides.length
-        this.hasSlides = this.numSlides > 0
+        this.slides = section.text;
+        this.numSlides = this.slides.length;
+        this.hasSlides = this.numSlides > 0;
       }
-      this.sectionClasses = []
+      this.sectionClasses = [];
       if (section.text_layout) {
-        this.layout = section.text_layout
+        this.layout = section.text_layout;
       }
       if (section.showBlock) {
-        this.showBlock = section.showBlock
-        this.block = section.block
-        this.layout = "side-block"
-        this.sectionClasses.push("has-block")
+        this.showBlock = section.showBlock;
+        this.block = section.block;
+        this.layout = "side-block";
+        this.sectionClasses.push("has-block");
       }
       if (this.layout) {
-        this.sectionClasses.push(this.layout.replace(/_/g, "-"))
+        this.sectionClasses.push(this.layout.replace(/_/g, "-"));
       }
       if (this.hasSlides) {
-        this.sectionClasses.push("flex-row")
-        this.sectionClasses.push("num-" + this.slides.length)
+        this.sectionClasses.push("flex-row");
+        this.sectionClasses.push("num-" + this.slides.length);
       }
     }
   }
-}
+};
 </script>
 <style>
 .text-section.fade,
@@ -219,7 +215,7 @@ export default {
   width: 4vmin;
   z-index: 3;
   transition: all 0.5s ease-in-out;
-}
+} /* 
 
 .fade .slides:hover > .bg {
   height: 9vmin;
@@ -267,7 +263,7 @@ export default {
   right: 3vmin;
   border-bottom: dashed 1px rgba(0, 0, 0, 0.5);
   border-right: dashed 1px rgba(0, 0, 0, 0.5);
-}
+} */
 
 .home-pane aside.site-intro {
   position: absolute;
@@ -316,7 +312,7 @@ export default {
   .text-section.side-block #instafeed,
   .text-section.side-block .instafeed-wrapper,
   #app .text-section.side-block > .main-text {
-    min-height: 50vh;
+    min-height: 62.5vh;
   }
 }
 
@@ -325,12 +321,10 @@ export default {
     font-size: 1.667em;
   }
 
-  #app .text-section.side-block > .aside {
-    width: 40em;
-  }
+  #app .text-section.side-block > .aside,
   #app .text-section.side-block > .main-text {
     width: auto;
-    max-width: calc(100% - 40em);
+    max-width: 50%;
   }
 }
 </style>
