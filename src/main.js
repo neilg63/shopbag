@@ -48,7 +48,7 @@ new Vue({
   template: '<App/>',
   data: {
     bus,
-    version: 0.33,
+    version: 0.37,
     cmsApi: '/jsonstyles/',
     products: [],
     enablePurchase: false,

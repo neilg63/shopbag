@@ -58,6 +58,7 @@
         <vue-footer :menu="menu" :footer="footer" id="inner-page-footer"></vue-footer>
       </div>
     </div>
+    <cookie-overlay :text="cookie.text" :accept="cookie.accept"></cookie-overlay>
   </div>
 </template>
 <script>
@@ -65,6 +66,7 @@
 import Slides from "@/components/Slides";
 import Sections from "@/components/Sections";
 import VueFooter from "@/components/VueFooter";
+import CookieOverlay from "@/components/CookieOverlay";
 import LangSwitcher from "@/components/LangSwitcher";
 import filters from "./mixins/filters";
 import u from "./utils/utils";
@@ -74,7 +76,8 @@ export default {
     Slides,
     Sections,
     VueFooter,
-    LangSwitcher
+    LangSwitcher,
+    CookieOverlay
   },
   mixins: [filters],
   data() {
@@ -100,7 +103,11 @@ export default {
       scrolledDown: false,
       pageDown: false,
       lang: "en",
-      updating: false
+      updating: false,
+      cookie: {
+        text: "",
+        accept: "OK"
+      }
     };
   },
   created() {
@@ -147,6 +154,10 @@ export default {
           comp.sections = comp.processSections(data.home.sections);
           comp.numSections = comp.sections.length;
         }
+      }
+      if (data.cookie_policy instanceof Object) {
+        comp.cookie.text = data.cookie_policy.body;
+        console.log(comp.cookie.text);
       }
       if (data.footer) {
         comp.footer = data.footer;
@@ -626,6 +637,69 @@ nav.main-nav .lang-switcher li {
   text-decoration: underline dotted #999999;
 }
 
+#cookie-policy {
+  position: fixed;
+  bottom: -60em;
+  opacity: 1;
+  z-index: 5000;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.6667);
+  color: white;
+  pointer-events: none;
+  transition: bottom 3s ease-in-out;
+}
+
+#cookie-policy .inner {
+  position: relative;
+  max-width: 60em;
+  margin: 1em auto;
+  text-align: left;
+  padding: 0;
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+#cookie-policy .inner .text {
+  max-width: calc(90% - 8em);
+}
+
+#cookie-policy .inner .actions {
+  max-width: 8em;
+}
+
+#cookie-policy .inner .actions button {
+  float: right;
+}
+
+#cookie-policy.out {
+  opacity: 0;
+  z-index: -1;
+}
+
+#cookie-policy.show {
+  opacity: 1;
+  bottom: 0;
+  pointer-events: all;
+}
+
+#cookie-policy .actions button {
+  background: none;
+  border: solid 1px white;
+  color: white;
+  padding: 0.25em 0.5em;
+  border-radius: 1em;
+  transition: all 0.5s ease-in-out;
+}
+
+#cookie-policy .actions:hover button.agree {
+  transform: scale(1.2);
+}
+
+#cookie-policy .actions:hover button.agree:before {
+  color: green;
+}
+
 @media screen and (min-width: 40em) {
   .top-header .lang-switcher {
     display: block;
@@ -667,6 +741,9 @@ nav.main-nav .lang-switcher li {
     left: 10%;
     right: 10%;
   }
+  #cookie-policy .actions button {
+    font-size: 1.25em;
+  }
 }
 
 @media screen and (min-width: 70em) {
@@ -677,6 +754,9 @@ nav.main-nav .lang-switcher li {
     left: 15%;
     right: 15%;
   }
+  #cookie-policy .actions button {
+    font-size: 1.3125em;
+  }
 }
 
 @media screen and (min-width: 80em) {
@@ -686,6 +766,9 @@ nav.main-nav .lang-switcher li {
   .home-pane aside.site-intro {
     left: 20%;
     right: 20%;
+  }
+  #cookie-policy .actions button {
+    font-size: 1.375em;
   }
 }
 </style>
