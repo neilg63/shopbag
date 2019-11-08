@@ -1,6 +1,6 @@
 <template>
   <ul class="share-links plain">
-    <li v-for="item in services" :class="item.type">
+    <li v-for="item in services" :class="item.type" :key="['share',item.type].join('-')">
       <a :href="format(item)" :title="item.title" :class="'icon-' + item.type" target="_blank"></a>
     </li>
   </ul>
