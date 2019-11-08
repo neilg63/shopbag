@@ -57,6 +57,13 @@ module.exports = {
           '^/files': '/files'
         }
       },
+      '/videos': {
+        target: 'https://www.lucyofsyracuse.it',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/videos': '/videos'
+        }
+      },
       '/instaapi': {
         target: 'https://www.lucyofsyracuse.it',
         changeOrigin: true,

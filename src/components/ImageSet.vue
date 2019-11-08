@@ -1,7 +1,7 @@
  <template>
  <section class="image-set" :class="sectionClasses">
   <div :class="contClasses">
-    <figure v-for="(image,index) in images" class="image" :class="image.figClasses" v-on:click.prevent.stop="handleSelect(image,index)">
+    <figure v-for="(image,index) in images" :key="image.id" class="image" :class="image.figClasses" v-on:click.prevent.stop="handleSelect(image,index)">
       <vue-picture :imgset="image" :group="image.groupName" :className="image.classNames.join(' ')"></vue-picture>
       <figcaption v-if="image.hasLink">
         <template v-if="image.hasPriceInfo">
@@ -149,7 +149,7 @@ export default {
     },
     calcNext (mode) {
       let ni = this.currIndex
-      if (mode == 'prev') {
+      if (mode === 'prev') {
         ni--
       } else {
         ni++
@@ -185,14 +185,14 @@ export default {
         }
         let prevI = img.figClasses.indexOf('prev')
         let nextI = img.figClasses.indexOf('next')
-        if (index == pvI) {
+        if (index === pvI) {
           if (prevI < 0) {
             img.figClasses.push('prev')
           }
         } else if (prevI >= 0) {
           img.figClasses.splice(prevI, 1)
         }
-        if (index == nxI) {
+        if (index === nxI) {
           if (nextI < 0) {
             img.figClasses.push('next')
           }

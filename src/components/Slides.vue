@@ -57,23 +57,22 @@ export default {
     }
   },
   created () {
-    let comp = this
     this.$bus.$on('load-slides', (images) => {
-      comp.readData(images)
+      this.readData(images)
     });
     window.addEventListener('keyup', (e) => {
       switch (e.keyCode) {
         case 39:
-          comp.showNext()
+          this.showNext()
           break;
         case 37:
-          comp.showPrev()
+          this.showPrev()
           break;
       }
     })
     setTimeout(() => {
-      comp.interval = setInterval(() => {
-        comp.showNext(true, true)
+      this.interval = setInterval(() => {
+        this.showNext(true, true)
       }, 7500)
     }, 5000);
   },

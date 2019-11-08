@@ -48,7 +48,7 @@ new Vue({
   template: '<App/>',
   data: {
     bus,
-    version: 0.37,
+    version: 0.432,
     cmsApi: '/jsonstyles/',
     products: [],
     enablePurchase: false,
@@ -73,7 +73,6 @@ new Vue({
   created() {
     this.detectLanguage()
     this.detectTouch()
-    let comp = this
     let storedProductsData = this.$ls.get('products')
     if (typeof storedProductsData === 'string') {
       let storedProducts = JSON.parse(storedProductsData)
@@ -89,7 +88,7 @@ new Vue({
     this.loadHome()
     this.updatePath(true)
     setTimeout(() => {
-      this.updateDetail(comp.$route.path)
+      this.updateDetail(this.$route.path)
     }, 1000)
     setTimeout(() => {
       axios.get(this.cmsApi + 'edited')
@@ -106,8 +105,8 @@ new Vue({
                   max = ts
                 }
               }
-              if (max > (comp.lastUpdated + 600)) {
-                comp.loadHome(true)
+              if (max > (this.lastUpdated + 600)) {
+                this.loadHome(true)
               }
             }
           }
@@ -116,17 +115,17 @@ new Vue({
           console.log(e)
         })
     }, 10000)
-    let cms = comp.$ls.get('cms')
+    let cms = this.$ls.get('cms')
     if (cms) {
       this.user = JSON.parse(cms);
     }
     setTimeout(() => {
-      axios.get(comp.cmsApi + 'user')
+      axios.get(this.cmsApi + 'user')
         .then((response) => {
           if (response.data) {
             if (response.data.roles) {
-              comp.$ls.set('cms', JSON.stringify(response.data))
-              comp.user = response.data
+              this.$ls.set('cms', JSON.stringify(response.data))
+              this.user = response.data
             }
           }
         });
@@ -134,9 +133,12 @@ new Vue({
   },
   watch: {
     $route(to, from) {
-      if (to.path) {
+      if (to.path !== from.path) {
         this.$bus.$emit('hide-menu', true)
         this.updateDetail(to.path)
+        if (to.path.length < 4) {
+          this.$bus.$emit('return-home', true)
+        }
       }
     },
     homeLoaded(newVal) {
@@ -152,11 +154,10 @@ new Vue({
   methods: {
     loadHome(fetchNew) {
       this.fetchData('siteinfo', 'siteinfo', fetchNew)
-      let comp = this
       if (!fetchNew) {
         setTimeout(() => {
-          if (!comp.homeLoaded) {
-            comp.loadHome()
+          if (!this.homeLoaded) {
+            this.loadHome()
           }
         }, 500)
       }

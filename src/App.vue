@@ -37,7 +37,7 @@
     </nav>
     <div v-if="numInCart > 0" class="micro-cart">
       <ul class="ordered-items plain">
-        <li v-for="(item,oi) in orderedItems">
+        <li v-for="(item,oi) in orderedItems" :key="['oi',oi].join('-')">
           <span class="quantity">{{item.quantity}}</span>
           <em>x</em>
           <span class="title">{{item.name}}</span>
@@ -47,8 +47,9 @@
     </div>
     <div class="main">
       <div class="home-pane">
-        <slides />
+        <video-intro :videoSet="videoSet" />
         <sections :sections="sections"></sections>
+        <slides />
         <vue-footer :menu="menu" :footer="footer" id="page-footer"></vue-footer>
       </div>
       <div class="detail-pane">
@@ -63,6 +64,7 @@
 </template>
 <script>
 /*import Products from '@/components/Products'*/
+import VideoIntro from "@/components/VideoIntro";
 import Slides from "@/components/Slides";
 import Sections from "@/components/Sections";
 import VueFooter from "@/components/VueFooter";
@@ -73,6 +75,7 @@ import u from "./utils/utils";
 export default {
   name: "App",
   components: {
+    VideoIntro,
     Slides,
     Sections,
     VueFooter,
@@ -87,6 +90,12 @@ export default {
       showDetail: false,
       products: [],
       numSections: 0,
+      videoSet: {
+        sizes: [],
+        formats: [],
+        background: {},
+        foreground: {}
+      },
       sections: [],
       introduction: "",
       showMicroCart: false,
@@ -113,9 +122,8 @@ export default {
   created() {
     this.products = this.$parent.products;
     this.lang = this.$parent.lang;
-    let comp = this;
     this.$bus.$on("hide-menu", () => {
-      comp.showMenu = false;
+      this.showMenu = false;
     });
     let path = this.$route.path.replace(/^\//, "");
     if (path.length < 2) {
@@ -131,41 +139,50 @@ export default {
     }
     this.$bus.$on("siteinfo", data => {
       if (data.menu) {
-        comp.loadMenu(data.menu);
+        this.loadMenu(data.menu);
       }
 
       if (data.ecwid_products) {
-        comp.ecwidProducts = data.ecwid_products;
+        this.ecwidProducts = data.ecwid_products;
       }
       if (data.pages) {
-        comp.$parent.pages = data.pages;
+        this.$parent.pages = data.pages;
       }
       if (data.home) {
         if (data.home.nid) {
-          comp.$parent.nid = data.home.nid;
+          this.$parent.nid = data.home.nid;
         }
         if (data.home.images instanceof Array) {
           this.$bus.$emit("load-slides", data.home.images);
+        }
+        if (data.videos instanceof Object) {
+          if (data.videos.sizes instanceof Array) {
+            if (data.videos.sizes.length > 0 && data.videos.background instanceof Object) {
+              this.videoSet = data.videos;
+              setTimeout(() => {
+                this.$bus.$emit("video-data-loaded", true);
+              }, 375);
+            }
+          }
         }
         if (data.home.body) {
           this.introduction = data.home.body;
         }
         if (data.home.sections instanceof Array) {
-          comp.sections = comp.processSections(data.home.sections);
-          comp.numSections = comp.sections.length;
+          this.sections = this.processSections(data.home.sections);
+          this.numSections = this.sections.length;
         }
       }
       if (data.cookie_policy instanceof Object) {
-        comp.cookie.text = data.cookie_policy.body;
-        console.log(comp.cookie.text);
+        this.cookie.text = data.cookie_policy.body;
       }
       if (data.footer) {
-        comp.footer = data.footer;
+        this.footer = data.footer;
       }
       if (data.ecwid_store_key) {
-        comp.storeKey = data.ecwid_store_key;
-        if (comp.storeKey) {
-          comp.syncCart();
+        this.storeKey = data.ecwid_store_key;
+        if (this.storeKey) {
+          this.syncCart();
         }
       }
       setTimeout(() => {
@@ -173,53 +190,53 @@ export default {
         window.scrollTo(0, 0);
       }, 250);
       window.addEventListener("scroll", e => {
-        comp.screenY = window.pageYOffset / window.innerHeight;
-        comp.scrolledDown = comp.screenY > 0.125;
-        comp.pageDown = comp.screenY > 0.95;
+        this.screenY = window.pageYOffset / window.innerHeight;
+        this.scrolledDown = this.screenY > 0.125;
+        //this.pageDown = this.screenY > 0.95;
+        this.pageDown = this.screenY > 1.95;
       });
-      if (comp.updating) {
-        comp.$router.push(comp.$route.path + "#" + comp.lang);
-        comp.$root.$forceUpdate();
+      if (this.updating) {
+        this.$router.push(this.$route.path + "#" + this.lang);
+        this.$root.$forceUpdate();
 
-        comp.updating = false;
+        this.updating = false;
       }
     });
     window.addEventListener("keyup", e => {
       switch (e.keyCode) {
         case 27:
         case 13:
-          comp.hideMenu();
+          this.hideMenu();
           break;
       }
     });
     this.$bus.$on("show-detail", status => {
-      comp.showDetail = status === true;
+      this.showDetail = status === true;
     });
     this.$bus.$on("add-ecwid-product", variant => {
       if (variant) {
-        comp.addEcwidProduct(variant);
+        this.addEcwidProduct(variant);
       }
     });
     this.$bus.$on("remove-ecwid-product", (variant, sync) => {
       if (variant) {
-        comp.removeEcwidProduct(variant, sync);
+        this.removeEcwidProduct(variant, sync);
       }
     });
     this.$bus.$on("back-to-home", status => {
-      comp.backToMain();
+      this.backToMain();
     });
     setInterval(() => {
-      if (comp.$route.params) {
-        if (comp.$route.params.sub) {
-          comp.syncCart();
+      if (this.$route.params) {
+        if (this.$route.params.sub) {
+          this.syncCart();
         }
       }
     }, 10000);
   },
   mounted() {
-    let comp = this;
     this.$bus.$on("store-loaded", data => {
-      comp.hasStore = true;
+      this.hasStore = true;
       u.addBodyClass("store-loaded");
     });
   },
@@ -401,27 +418,25 @@ export default {
             this.subtotal = parseFloat(cart.order.subtotal);
           }
         }
-        let comp = this;
         setTimeout(() => {
-          if (comp.numInCart < 1) {
-            comp.orderedItems = [];
-            comp.subtotal = 0;
+          if (this.numInCart < 1) {
+            this.orderedItems = [];
+            this.subtotal = 0;
           }
-          comp.syncing = false;
+          this.syncing = false;
         }, 500);
       }
     },
     addEcwidProduct(product) {
       if (Ecwid) {
         if (Ecwid.Cart) {
-          let comp = this;
           Ecwid.Cart.addProduct({
             id: product.id,
             quantity: 1,
             callback: function(success, product, cart) {
               if (success) {
                 setTimeout(() => {
-                  comp.syncCart();
+                  this.syncCart();
                 }, 500);
               }
             }
@@ -432,7 +447,6 @@ export default {
     removeEcwidProduct(product, sync) {
       if (Ecwid) {
         if (Ecwid.Cart) {
-          let comp = this;
           let cart = this.fetchCart();
           if (cart && cart.order) {
             if (cart.order.items instanceof Array) {
@@ -443,7 +457,7 @@ export default {
                 Ecwid.Cart.removeProduct(pIndex);
                 if (sync) {
                   setTimeout(() => {
-                    comp.syncCart();
+                    this.syncCart();
                   }, 1000);
                 }
               }
@@ -652,24 +666,20 @@ nav.main-nav .lang-switcher li {
 
 #cookie-policy .inner {
   position: relative;
-  max-width: 60em;
+  max-width: 72em;
   margin: 1em auto;
   text-align: left;
-  padding: 0;
+  padding: 0 5%;
   display: flex;
   flex-flow: row nowrap;
 }
 
 #cookie-policy .inner .text {
-  max-width: calc(90% - 8em);
+  width: calc(100% - 4em);
 }
 
 #cookie-policy .inner .actions {
-  max-width: 8em;
-}
-
-#cookie-policy .inner .actions button {
-  float: right;
+  width: 4em;
 }
 
 #cookie-policy.out {
@@ -684,12 +694,15 @@ nav.main-nav .lang-switcher li {
 }
 
 #cookie-policy .actions button {
+  float: right;
+  outline: none;
   background: none;
   border: solid 1px white;
   color: white;
   padding: 0.25em 0.5em;
   border-radius: 1em;
   transition: all 0.5s ease-in-out;
+  cursor: pointer;
 }
 
 #cookie-policy .actions:hover button.agree {
@@ -744,6 +757,13 @@ nav.main-nav .lang-switcher li {
   #cookie-policy .actions button {
     font-size: 1.25em;
   }
+  #cookie-policy .inner .text {
+    width: calc(100% - 6em);
+  }
+
+  #cookie-policy .inner .actions {
+    width: 6em;
+  }
 }
 
 @media screen and (min-width: 70em) {
@@ -769,6 +789,13 @@ nav.main-nav .lang-switcher li {
   }
   #cookie-policy .actions button {
     font-size: 1.375em;
+  }
+  #cookie-policy .inner .text {
+    width: calc(100% - 8em);
+  }
+
+  #cookie-policy .inner .actions {
+    width: 8em;
   }
 }
 </style>
