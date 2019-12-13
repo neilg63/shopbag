@@ -31,14 +31,18 @@ export default {
     menu: {
       type: Array,
       required: true,
-      default: []
+      default() {
+        return [];
+      }
     },
     footer: {
       type: Object,
       required: true,
-      default: {
-        copyright: "",
-        email: ""
+      default() {
+        return {
+          copyright: "",
+          email: ""
+        };
       }
     }
   },

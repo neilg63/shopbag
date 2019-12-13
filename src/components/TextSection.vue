@@ -22,6 +22,7 @@
 <script>
 import Instaapi from "./Instaapi";
 import axios from "axios";
+import u from "../utils/utils";
 
 export default {
   name: "TextSection",
@@ -80,12 +81,16 @@ export default {
       }, 5000);
     },
     assign(section) {
+      this.sectionClasses = [];
       if (section.id) {
         this.id = parseInt(section.id);
       }
       if (typeof section.title == "string") {
         this.title = section.title.trim();
         this.hasTitle = this.title.length > 1;
+        if (this.hasTitle) {
+          this.sectionClasses.push(u.cleanString(this.title));
+        }
       }
       if (typeof section.text == "string") {
         this.text = section.text.trim();
@@ -96,7 +101,7 @@ export default {
         this.numSlides = this.slides.length;
         this.hasSlides = this.numSlides > 0;
       }
-      this.sectionClasses = [];
+
       if (section.text_layout) {
         this.layout = section.text_layout;
       }
@@ -105,6 +110,7 @@ export default {
         this.block = section.block;
         this.layout = "side-block";
         this.sectionClasses.push("has-block");
+        this.sectionClasses.push(section.block);
       }
       if (this.layout) {
         this.sectionClasses.push(this.layout.replace(/_/g, "-"));
@@ -154,6 +160,12 @@ export default {
 .text-section.blocks .slides {
   display: flex;
   align-items: center;
+}
+
+.text-section.side-block > .main-text .body {
+  margin: 0 auto;
+  width: 90%;
+  max-width: 50em;
 }
 
 .text-section.single article {
@@ -296,8 +308,19 @@ export default {
     flex-flow: nowrap row;
   }
 
+  .text-section.instafeed.side-block {
+    flex-flow: nowrap column;
+  }
+
   .text-section.side-block > .subsection {
     width: 50%;
+  }
+
+  #app .text-section.instafeed.side-block > .main-text,
+  #app .text-section.instafeed.side-block > .subsection {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
   }
 
   .text-section.side-block > .main-text > article {
@@ -308,12 +331,6 @@ export default {
   .text-section.fade .slides > article {
     font-size: 1.5em;
   }
-
-  .text-section.side-block #instafeed,
-  .text-section.side-block .instafeed-wrapper,
-  #app .text-section.side-block > .main-text {
-    min-height: 62.5vh;
-  }
 }
 
 @media screen and (min-width: 80em) {
@@ -321,8 +338,8 @@ export default {
     font-size: 1.667em;
   }
 
-  #app .text-section.side-block > .aside,
-  #app .text-section.side-block > .main-text {
+  .text-section.side-block > .aside,
+  .text-section.side-block > .main-text {
     width: auto;
     max-width: 50%;
   }

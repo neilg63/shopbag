@@ -1,3 +1,5 @@
+var scrollInterval = null
+
 var utils = {
   hasBodyClass: function (className) {
     var cl = document.body.classList;
@@ -16,9 +18,10 @@ var utils = {
     if (scrollInterval) {
       clearInterval(scrollInterval);
     }
-    let scrollInterval = setInterval(function () {
+    var divisor = 1;
+    scrollInterval = setInterval(function () {
       i -= 1;
-      let divisor = fx(i, steps);
+      divisor = fx(i, steps);
 
       el.scroll(0, (ydiff / divisor) + el.scrollTop);
 
@@ -95,7 +98,7 @@ var utils = {
   },
 
   clickEl: function (path) {
-    let el = document.querySelector(path)
+    const el = document.querySelector(path)
     if (el) {
       el.click();
     }

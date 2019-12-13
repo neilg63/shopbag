@@ -1,8 +1,5 @@
 <template>
-  <div
-    id="app"
-    :class="{'store-loaded': hasStore,'show-menu': showMenu,'show-detail': showDetail,'show-home': !showDetail,'scrolled-up': !scrolledDown,'page-up': !pageDown, 'show-microcart': showMicroCart}"
-  >
+  <div id="app" :class="wrapperClasses">
     <header class="top-header">
       <div class="inner">
         <div class="bg-solid bg-element"></div>
@@ -47,9 +44,8 @@
     </div>
     <div class="main">
       <div class="home-pane">
-        <video-intro :videoSet="videoSet" />
+        <video-intro :videoSet="videoSet" :sections="sections" />
         <sections :sections="sections"></sections>
-        <slides />
         <vue-footer :menu="menu" :footer="footer" id="page-footer"></vue-footer>
       </div>
       <div class="detail-pane">
@@ -65,7 +61,7 @@
 <script>
 /*import Products from '@/components/Products'*/
 import VideoIntro from "@/components/VideoIntro";
-import Slides from "@/components/Slides";
+/* import Slides from "@/components/Slides"; */
 import Sections from "@/components/Sections";
 import VueFooter from "@/components/VueFooter";
 import CookieOverlay from "@/components/CookieOverlay";
@@ -76,7 +72,7 @@ export default {
   name: "App",
   components: {
     VideoIntro,
-    Slides,
+    /* Slides, */
     Sections,
     VueFooter,
     LangSwitcher,
@@ -157,7 +153,10 @@ export default {
         }
         if (data.videos instanceof Object) {
           if (data.videos.sizes instanceof Array) {
-            if (data.videos.sizes.length > 0 && data.videos.background instanceof Object) {
+            if (
+              data.videos.sizes.length > 0 &&
+              data.videos.background instanceof Object
+            ) {
               this.videoSet = data.videos;
               setTimeout(() => {
                 this.$bus.$emit("video-data-loaded", true);
@@ -191,9 +190,10 @@ export default {
       }, 250);
       window.addEventListener("scroll", e => {
         this.screenY = window.pageYOffset / window.innerHeight;
+        const screenYW = window.pageYOffset / (window.innerWidth * (9 / 16));
         this.scrolledDown = this.screenY > 0.125;
-        //this.pageDown = this.screenY > 0.95;
-        this.pageDown = this.screenY > 1.95;
+        this.pageDown = screenYW > 0.95;
+        //this.pageDown = this.screenY > 1.95;
       });
       if (this.updating) {
         this.$router.push(this.$route.path + "#" + this.lang);
@@ -240,6 +240,37 @@ export default {
       u.addBodyClass("store-loaded");
     });
   },
+  computed: {
+    wrapperClasses() {
+      const { path } = this.$route;
+      let alias = path.length < 4 ? "home" : u.cleanString(path.substring(1));
+      let cls = ["section-" + alias];
+      if (this.hasStore) {
+        cls.push("store-loaded");
+      }
+      if (this.showMenu) {
+        cls.push("show-menu");
+      }
+      if (this.showDetail) {
+        cls.push("show-detail");
+      }
+      if (!this.showDetail) {
+        cls.push("show-home");
+      }
+      if (!this.scrolledDown) {
+        cls.push("scrolled-up");
+      }
+      if (!this.pageDown) {
+        cls.push("page-up");
+      } else {
+        cls.push("page-down");
+      }
+      if (this.showMicroCart) {
+        cls.push("show-microcart");
+      }
+      return cls;
+    }
+  },
   methods: {
     loadMenu(data) {
       if (data instanceof Array) {
@@ -250,6 +281,7 @@ export default {
       if (sections instanceof Array) {
         return sections.map(sc => {
           sc.showBlock = false;
+          sc.is_product_set = false;
           switch (sc.type) {
             case "image_set":
               break;
@@ -289,6 +321,7 @@ export default {
             case "product_set":
               if (sc.products instanceof Array) {
                 this.processProductSet(sc);
+                sc.is_product_set = true;
               }
               break;
           }
@@ -433,7 +466,7 @@ export default {
           Ecwid.Cart.addProduct({
             id: product.id,
             quantity: 1,
-            callback: function(success, product, cart) {
+            callback: (success, product, cart) => {
               if (success) {
                 setTimeout(() => {
                   this.syncCart();
@@ -498,6 +531,11 @@ export default {
   z-index: 1;
   overflow-x: hidden;
 }
+
+#app.section-home .home-pane {
+  color: white;
+}
+
 #app ol.dot-nav,
 #app ol.arrow-nav {
   position: absolute;
@@ -711,6 +749,34 @@ nav.main-nav .lang-switcher li {
 
 #cookie-policy .actions:hover button.agree:before {
   color: green;
+}
+
+#app.section-home {
+  background-color: #000000;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='30' viewBox='0 0 1000 120'%3E%3Cg fill='none' stroke='%23333333' stroke-width='10' %3E%3Cpath d='M-500 75c0 0 125-30 250-30S0 75 0 75s125 30 250 30s250-30 250-30s125-30 250-30s250 30 250 30s125 30 250 30s250-30 250-30'/%3E%3Cpath d='M-500 45c0 0 125-30 250-30S0 45 0 45s125 30 250 30s250-30 250-30s125-30 250-30s250 30 250 30s125 30 250 30s250-30 250-30'/%3E%3Cpath d='M-500 105c0 0 125-30 250-30S0 105 0 105s125 30 250 30s250-30 250-30s125-30 250-30s250 30 250 30s125 30 250 30s250-30 250-30'/%3E%3Cpath d='M-500 15c0 0 125-30 250-30S0 15 0 15s125 30 250 30s250-30 250-30s125-30 250-30s250 30 250 30s125 30 250 30s250-30 250-30'/%3E%3Cpath d='M-500-15c0 0 125-30 250-30S0-15 0-15s125 30 250 30s250-30 250-30s125-30 250-30s250 30 250 30s125 30 250 30s250-30 250-30'/%3E%3Cpath d='M-500 135c0 0 125-30 250-30S0 135 0 135s125 30 250 30s250-30 250-30s125-30 250-30s250 30 250 30s125 30 250 30s250-30 250-30'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+body #app.section-home.page-up .top-header .bg-solid,
+body #app.section-home.page-up .top-header .bg-transition {
+  background: none;
+}
+
+#app.section-home .main {
+  margin-top: -1em;
+}
+
+#app.section-home .home-pane {
+  background: linear-gradient(
+    180deg,
+    rgba(105, 105, 105, 0) 0%,
+    rgba(105, 105, 105, 0) 25%,
+    rgba(0, 0, 0, 0.33333) 100%
+  );
+}
+
+#page-footer a,
+#page-footer {
+  color: white;
 }
 
 @media screen and (min-width: 40em) {

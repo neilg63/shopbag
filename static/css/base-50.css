@@ -1,10 +1,22 @@
+@font-face {
+  font-family: "MinionPro-Regular";
+  src: url("/static/fonts/MinionPro-Regular.eot?#iefix")
+      format("embedded-opentype"),
+    url("/static/fonts/MinionPro-Regular.otf") format("opentype"),
+    url("/static/fonts/MinionPro-Regular.woff") format("woff"),
+    url("/static/fonts/MinionPro-Regular.ttf") format("truetype"),
+    url("/static/fonts/MinionPro-Regular.svg#MinionPro-Regular") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
 body,
 #app,
 html#ecwid_html body#ecwid_body.shopfront .ecwid .ecwid-btn,
 html#ecwid_html body#ecwid_body.shopfront .ecwid-popup,
 html#ecwid_html body#ecwid_body.show-store .ec-size .ec-store,
 html#ecwid_html body#ecwid_body.show-store {
-  font-family: "EB Garamond", sans-serif;
+  font-family: "MinionPro-Regular", sans-serif;
 }
 
 a {
@@ -17,6 +29,14 @@ a:hover {
 }
 
 html {
+  font-size: 12px;
+}
+
+html.medium {
+  font-size: 14px;
+}
+
+html.large {
   font-size: 16px;
 }
 
@@ -917,13 +937,4 @@ section#ecwid-store-container {
 section#ecwid-store-container,
 #app .bg-white {
   background-color: white;
-}
-
-#instafeed figure figcaption {
-  padding: 0.5em 5% 1em 5%;
-  text-align: left;
-}
-
-#app #instafeed figure img {
-  max-width: 100%;
 }

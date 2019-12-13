@@ -1,53 +1,64 @@
 <template>
-<div class="audio-player">
-  <img v-if="media.has_preview" :src="media.preview" class="preview" v-on:click="play()" :title="tooltip" />
+  <div class="audio-player">
+    <img
+      v-if="media.has_preview"
+      :src="media.preview"
+      class="preview"
+      v-on:click="play()"
+      :title="tooltip"
+    />
     <audio class="audio-control" controls :autoplay="autoplay">
-      <source v-for="uri in media.uris" :src="uri.src" :type="uri.mimetype">
+      <source
+        v-for="(uri, index) in media.uris"
+        :src="uri.src"
+        :type="uri.mimetype"
+        :key="['audio',id,index].join('-')"
+      />
     </audio>
   </div>
 </template>
 <script>
 export default {
-  data: function () {
+  data: function() {
     return {
-      id: '',
+      id: "",
       playing: false,
-      tooltip: 'Play'
-    }
+      tooltip: "Play"
+    };
   },
   props: {
     media: {},
     autoplay: false
   },
-  created: function () {
+  created: function() {
     if (this.media.uris instanceof Array) {
       if (this.media.uris.length > 0) {
-        this.id = this.media.uris[0].src
+        this.id = this.media.uris[0].src;
       }
     }
   },
   methods: {
-    play: function () {
-      var audioEl = this.$el.querySelector('audio')
+    play: function() {
+      var audioEl = this.$el.querySelector("audio");
       if (audioEl) {
         if (audioEl.paused) {
-          audioEl.play()
-          this.tooltip = 'Pause'
+          audioEl.play();
+          this.tooltip = "Pause";
         } else {
-          audioEl.pause()
-          this.tooltip = 'Play'
+          audioEl.pause();
+          this.tooltip = "Play";
         }
       }
     },
-    changeState: function () {
-      var comp = this
-      setTimeout(function () {
-        var audioEl = comp.$el.querySelector('audio')
+    changeState: function() {
+      var comp = this;
+      setTimeout(function() {
+        var audioEl = comp.$el.querySelector("audio");
         if (audioEl) {
-          comp.tooltip = audioEl.paused ? 'Play' : 'Pause'
+          comp.tooltip = audioEl.paused ? "Play" : "Pause";
         }
-      }, 50)
+      }, 50);
     }
   }
-}
+};
 </script>
