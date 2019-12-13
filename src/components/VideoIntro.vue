@@ -372,7 +372,7 @@ export default {
             tgEl.style.bottom = "auto";
           }
           if (tl) {
-            tl.style.bottom = "100vh";
+            tl.style.top = "calc(100vh - 7.5rem)";
           }
         } else {
           plEl.style.top = "auto";
@@ -382,6 +382,7 @@ export default {
             tgEl.style.bottom = "";
           }
           if (tl) {
+            tl.style.top = "auto";
             tl.style.bottom = "";
           }
         }
@@ -470,7 +471,6 @@ video.large-background {
   position: absolute;
   right: 2.5vw;
   bottom: 0;
-  margin-bottom: 2rem;
   z-index: 30;
   display: flex;
   flex-flow: row nowrap;
@@ -508,22 +508,27 @@ video.large-background {
   user-select: none;
   text-decoration: none;
   transform: scale(1);
-  transition: all 0.75s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
 
 #video-overlay .top-links h2 a:hover {
-  transform: scale(1.25);
-  opacity: 0.6667;
+  transform: scale(1.125);
+  color: white;
 }
 
 #video-overlay .top-links h2 {
-  margin: 0 2em;
-  font-size: 1.8333em;
+  margin: 0 1em;
+  font-size: 1.83333em;
+  text-transform: uppercase;
+  margin-bottom: 5rem;
 }
 
 @media (min-width: 600px) {
   #video-overlay .scroller {
     top: 3.5rem;
+  }
+  #video-overlay .top-links h2 {
+    font-size: 2em;
   }
 }
 
@@ -547,6 +552,10 @@ video.large-background {
   #video-overlay .top-links {
     right: 5vw;
   }
+
+  #video-overlay .top-links h2 {
+    font-size: 2.3333em;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -567,6 +576,9 @@ video.large-background {
     top: 5rem;
     font-size: 1.25rem;
   }
+  #video-overlay .top-links h2 {
+    font-size: 2.6667em;
+  }
 }
 
 @media (min-width: 1280px) {
@@ -585,6 +597,9 @@ video.large-background {
   #video-overlay .scroller {
     top: 5.5rem;
     font-size: 1.3333rem;
+  }
+  #video-overlay .top-links h2 {
+    font-size: 3em;
   }
 }
 

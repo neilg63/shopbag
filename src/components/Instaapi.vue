@@ -294,12 +294,12 @@ export default {
   font-size: 0.5rem;
   background-color: rgba(0, 0, 0, 0.5);
   color: white;
-  padding: 1.25em 5% 0.5em 5%;
+  padding: 1.5em 5% 0.5em 5%;
   text-align: left;
   opacity: 0;
   height: 0;
   overflow: hidden;
-  margin: -1vw 0 0 0;
+  margin: -0.5em 0 0 0;
   pointer-events: none;
   user-select: none;
 }
@@ -455,6 +455,11 @@ export default {
     padding: 23vw 0 5vw 0;
   }
 
+  #instafeed figure {
+    width: 20.5vw;
+    height: 28vw;
+    margin: 0 3vw -10vw 3vw;
+  }
   #instafeed figure.selected {
     transform: scale(1.25) translateY(-5%);
   }
@@ -471,8 +476,8 @@ export default {
     min-height: 25vw;
   }
   #instafeed figure {
-    width: 19vw;
-    height: 29vw;
+    width: 13.5vw;
+    height: 24vw;
     margin: 0 3vw -10vw 3vw;
   }
 }
@@ -486,8 +491,8 @@ export default {
   }
 
   #instafeed figure {
-    width: 364.8px;
-    height: 556.8px;
+    width: 259.2px;
+    height: 460.8px;
     margin: 0 57.6px -192px 57.6px;
   }
 }
