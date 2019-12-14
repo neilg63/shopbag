@@ -1,5 +1,5 @@
 <template>
-  <section id="video-overlay" :class="classNames" @click="checkPlaying">
+  <section id="video-overlay" :class="classNames" @click.stop="checkPlaying">
     <video
       v-if="isLoaded"
       id="top-full-background-video"
@@ -18,42 +18,46 @@
         :media="source.media"
       />
     </video>
-    <div
-      class="toggle-foreground"
-      :class="toggleIcon"
-      @mouseover="showToggle"
-      @mouseout="hideToggle"
-      @click="toggleVideo"
-    ></div>
-    <video
-      v-if="hasForeground"
-      @mouseover="showToggle"
-      @mouseout="hideToggle"
-      id="top-inlay-video"
-      class="playable"
-      :poster="fgPoster"
-      controls
-    >
-      <source
-        v-for="(source, bgi) in foregroundSources"
-        :key="['bg',bgi].join('-')"
-        :src="source.src"
-        :type="source.type"
-        :media="source.media"
-      />
-    </video>
+    <figure class="screen-top full-height" id="foreground-container" @click.stop="checkPlaying">
+      <div
+        class="toggle-foreground"
+        :class="toggleIcon"
+        @mouseover="showToggle"
+        @mouseout="hideToggle"
+        @click="toggleVideo"
+      ></div>
+      <video
+        v-if="hasForeground"
+        @mouseover="showToggle"
+        @mouseout="hideToggle"
+        id="top-inlay-video"
+        class="playable"
+        :poster="fgPoster"
+        controls
+      >
+        <source
+          v-for="(source, bgi) in foregroundSources"
+          :key="['bg',bgi].join('-')"
+          :src="source.src"
+          :type="source.type"
+          :media="source.media"
+        />
+      </video>
+
+      <div v-if="hasTopLinks" class="top-links">
+        <h2 v-for="(tl, ti) in topLinks" :key="['top-link', ti].join('-')" :class="tl.className">
+          <router-link v-bind:to="tl.link">{{tl.title}}</router-link>
+        </h2>
+      </div>
+    </figure>
+
     <div
       class="scroller"
       :class="textScrollClass"
       :style="scrollerStyle"
-      @click="toggleTextScroller"
+      @click.stop="toggleTextScroller"
     >
       <p v-for="strapline in straplines" :key="strapline.key">{{strapline.text}}</p>
-    </div>
-    <div v-if="hasTopLinks" class="top-links">
-      <h2 v-for="(tl, ti) in topLinks" :key="['top-link', ti].join('-')" :class="tl.className">
-        <router-link v-bind:to="tl.link">{{tl.title}}</router-link>
-      </h2>
     </div>
   </section>
 </template>
@@ -93,10 +97,9 @@ export default {
       showVideoToggle: false,
       foregroundEnabled: true,
       sourceText: "",
-      scrollPos: -120,
-      textInterval: null,
-      videoTopOffset: 0,
-      textScrollEndPos: 2400
+      scrollPos: -1,
+      textInterval: -1,
+      textScrollEndPos: 24
     };
   },
   computed: {
@@ -193,7 +196,7 @@ export default {
             .map((str, si) => {
               return {
                 key: "strapline-" + si,
-                text: str.replace(/<\/?p[^>]*?>/, "") + "."
+                text: str.replace(/\.\s*$/, "") + "."
               };
             });
         }
@@ -203,7 +206,10 @@ export default {
     scrollerStyle() {
       let str = "";
       if (this.scrollPos > 0) {
-        str = "margin-left: -" + this.scrollPos * 0.0625 + "em";
+        const maxPos = this.textScrollEndPos * 0.9375;
+        const currPos = this.scrollPos < maxPos ? this.scrollPos : maxPos;
+        const emPos = currPos * 4;
+        str = "margin-left: -" + emPos + "em";
       }
       return str;
     },
@@ -237,8 +243,6 @@ export default {
                 const fgEl = document.getElementById("top-inlay-video");
                 if (fgEl) {
                   this.fgLoaded = true;
-                  window.addEventListener("resize", this.setVideoTop);
-                  this.setVideoTop();
                 }
               }, 6000);
             }
@@ -247,7 +251,11 @@ export default {
         this.calcCurrIndex();
         const firstSec = this.sections.find(sc => sc.type === "section");
         if (firstSec) {
-          this.sourceText = firstSec.text;
+          this.sourceText = firstSec.text.replace(
+            /<\/?(p|h\d|div|li|ul|ol)[^>]*?>/gi,
+            ""
+          );
+          this.textScrollEndPos = this.sourceText.length / 12;
         }
         this.scrollText();
       }, 500);
@@ -321,20 +329,23 @@ export default {
       }, ts);
     },
     toggleTextScroller() {
-      if (this.textInterval) {
+      if (this.textInterval >= 0) {
         clearInterval(this.textInterval);
-        this.textInterval = null;
+        this.textInterval = -1;
       } else {
         this.scrollText();
       }
     },
-    scrollText() {
-      this.textInterval = setInterval(() => {
+    scrollTextNext() {
+      if (this.textInterval >= 0) {
         this.scrollPos++;
         if (this.scrollPos > this.textScrollEndPos) {
-          this.scrollPos = 0 - this.textScrollEndPos / 8;
+          this.scrollPos = 0 - this.textScrollEndPos / 12;
         }
-      }, 40);
+      }
+    },
+    scrollText() {
+      this.textInterval = setInterval(this.scrollTextNext, 1000);
     },
     checkPlaying(e) {
       if (e.target) {
@@ -354,48 +365,25 @@ export default {
             break;
         }
       }
-    },
-    setVideoTop() {
-      const wh = window.innerHeight;
-      const plEl = document.getElementById("top-inlay-video");
-      const tgEl = document.querySelector(".toggle-foreground");
-      const tl = document.querySelector("#video-overlay .top-links");
-      if (plEl) {
-        const rect = plEl.getBoundingClientRect();
-        if (rect.bottom > wh) {
-          const topOffset = wh - rect.height;
-          plEl.style.top = topOffset + "px";
-          plEl.style.bottom = "auto";
-          if (tgEl) {
-            const tgH = tgEl.offsetHeight / 2;
-            tgEl.style.top = topOffset - tgH + "px";
-            tgEl.style.bottom = "auto";
-          }
-          if (tl) {
-            tl.style.top = "calc(100vh - 7.5rem)";
-          }
-        } else {
-          plEl.style.top = "auto";
-          plEl.style.bottom = "";
-          if (tgEl) {
-            tgEl.style.top = "auto";
-            tgEl.style.bottom = "";
-          }
-          if (tl) {
-            tl.style.top = "auto";
-            tl.style.bottom = "";
-          }
-        }
-      }
     }
   }
 };
 </script>
 <style>
+#video-overlay .full-height,
 #video-overlay,
 #video-overlay .large-background {
   width: 100vw;
   height: 56.25vw;
+}
+
+#video-overlay .screen-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56.25vw;
+  max-height: 100vh;
 }
 
 #app .main > div > section#video-overlay {
@@ -416,28 +404,28 @@ export default {
 
 #video-overlay .toggle-foreground {
   z-index: 40;
-  font-size: 3vw;
+  font-size: 1.5vw;
   bottom: 22vw;
   cursor: pointer;
   width: 1em;
   height: 1em;
   padding: 0.375em;
   background-color: rgba(255, 255, 255, 0.5);
-  margin: 0.1875em 0 -1.25em -0.5em;
+  margin: 0.1875em 0 -1.25em 0.625em;
   border-radius: 1em;
-  transition: all 0.5s ease-in-out;
+  transition: all 125ms ease-in-out;
   opacity: 0;
+  user-select: none;
 }
 
 #video-overlay .toggle-foreground:hover {
-  transform: scale(1.125);
+  transform: scale(1.0625);
   background-color: rgba(255, 255, 255, 0.75);
 }
 
 #video-overlay.no-foreground .toggle-foreground {
-  bottom: auto;
   left: 3vw;
-  top: 2vw;
+  opacity: 0.5;
 }
 
 #video-overlay.show-toggle .toggle-foreground {
@@ -487,14 +475,14 @@ video.large-background {
   overflow: hidden;
   display: flex;
   flex-flow: row nowrap;
-  transition: margin-left 25ms ease-in-out, opacity 1s ease-in-out;
+  transition: margin-left 1s ease-in-out, opacity 1s ease-in-out;
   user-select: none;
+  cursor: pointer;
   opacity: 1;
 }
 
 #app #video-overlay .scroller.switching {
   opacity: 0.5;
-  transition: margin-left 1s ease-in-out, opacity 1s ease-in-out;
 }
 
 #video-overlay .scroller p {
@@ -546,7 +534,8 @@ video.large-background {
 
   #video-overlay .toggle-foreground {
     left: 44%;
-    font-size: 2.5vw;
+    font-size: 1vw;
+    margin: 0.75em 0 -1.25em 1.625em;
   }
 
   #video-overlay .top-links {
@@ -562,16 +551,6 @@ video.large-background {
   #video-overlay .playable {
     width: 40%;
   }
-  /* #video-overlay .playable,
-  #video-overlay .toggle-foreground {
-    top: 5vh;
-    bottom: auto;
-  } */
-
-  /*  #video-overlay .toggle-foreground {
-    left: 39%;
-    font-size: 2vw;
-  } */
   #video-overlay .scroller {
     top: 5rem;
     font-size: 1.25rem;
